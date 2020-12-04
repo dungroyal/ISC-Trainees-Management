@@ -1,1 +1,1 @@
-# Managing-ISC-Trainees
+# ISC-Trainees-Management
