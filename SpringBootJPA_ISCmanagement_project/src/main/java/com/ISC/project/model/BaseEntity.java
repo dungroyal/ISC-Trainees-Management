@@ -8,11 +8,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
 @MappedSuperclass
 public abstract class BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 	
 	@Column(name = "createdBy")
 	private String createdBy;
@@ -20,13 +23,15 @@ public abstract class BaseEntity {
 	@Column(name = "updatedBy")
 	private String updatedBy;
 	
+	@CreatedDate
 	@Column(name = "createdDate")
 	private Date createdDate;
 	
+	@LastModifiedDate
 	@Column(name = "updatedDate")
 	private Date updatedDate;
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 

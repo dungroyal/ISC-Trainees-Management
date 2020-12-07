@@ -1,15 +1,41 @@
 package com.ISC.project.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
 @Table(name = "lecturers")
-public class Lecturer extends BaseEntity{
+public class Lecturer {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 	
-	@Column(nullable = false, length = 50)
-	private String CodeLec;
+	@Column(name = "createdBy")
+	private String createdBy;
+	
+	@Column(name = "updatedBy")
+	private String updatedBy;
+	
+	@CreatedDate
+	@Column(name = "createdDate")
+	private Date createdDate;
+	
+	@LastModifiedDate
+	@Column(name = "updatedDate")
+	private Date updatedDate; 
+	
+	
+	@Column(nullable = false, length = 50,unique = true)
+	private String codeLec;
 	
 	@Column(nullable = false, length = 50)
 	private String firstName;
@@ -29,21 +55,21 @@ public class Lecturer extends BaseEntity{
 	@Column(nullable = false, length = 50)
 	private String degree;
 	
-	@Column(length = 100)
+	@Column(nullable = false,columnDefinition = "TEXT")
 	private String image;
 	
 	@Column(length = 50)
-	private String statusLec;
+	private StatusAc statusLec;
 	
-	@Column(length = 150)
+	@Column(length = 2000)
 	private String noteLec;
 
 	public String getCodeLec() {
-		return CodeLec;
+		return codeLec;
 	}
 
 	public void setCodeLec(String codeLec) {
-		CodeLec = codeLec;
+		codeLec = codeLec;
 	}
 
 	public String getFirstName() {
@@ -102,11 +128,11 @@ public class Lecturer extends BaseEntity{
 		this.image = image;
 	}
 
-	public String getStatusLec() {
+	public StatusAc getStatusLec() {
 		return statusLec;
 	}
 
-	public void setStatusLec(String statusLec) {
+	public void setStatusLec(StatusAc statusLec) {
 		this.statusLec = statusLec;
 	}
 
@@ -116,6 +142,78 @@ public class Lecturer extends BaseEntity{
 
 	public void setNoteLec(String noteLec) {
 		this.noteLec = noteLec;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	
+
+	public Lecturer(Long id, String createdBy, String updatedBy, Date createdDate, Date updatedDate, String codeLec,
+			String firstName, String lastName, String addressLec, String phoneLec, String emailLec, String degree,
+			String image, StatusAc statusLec, String noteLec) {
+		super();
+		this.id = id;
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+		this.createdDate = createdDate;
+		this.updatedDate = updatedDate;
+		this.codeLec = codeLec;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.addressLec = addressLec;
+		this.phoneLec = phoneLec;
+		this.emailLec = emailLec;
+		this.degree = degree;
+		this.image = image;
+		this.statusLec = statusLec;
+		this.noteLec = noteLec;
+	}
+
+	public Lecturer() {
+		super();
+	}
+
+	public Lecturer(Long id) {
+		super();
+		this.id = id;
 	}
 
 	

@@ -1,14 +1,43 @@
 package com.ISC.project.model;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
 @Table(name = "students")
-public class Student extends BaseEntity{
+public class Student {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 	
-	@Column(nullable = false, length = 50)
+	@Column(name = "createdBy")
+	private String createdBy;
+	
+	@Column(name = "updatedBy")
+	private String updatedBy;
+	
+	@CreatedDate
+	@Column(name = "createdDate")
+	private Date createdDate;
+	
+	@LastModifiedDate
+	@Column(name = "updatedDate")
+	private Date updatedDate;
+	
+	@Column(nullable = false, length = 50,unique = true)
 	private String codeStu;
 	
 	@Column(nullable = false, length = 50)
@@ -20,7 +49,10 @@ public class Student extends BaseEntity{
 	@Column(nullable = false, length = 100)
 	private String addressStu;
 	
-	@Column(length = 50)
+	@Column(nullable = false, length = 50)
+	private String phoneStu;
+	
+	@Column(length = 100,unique = true)
 	private String emailStu;
 	
 	@Column(nullable = false)
@@ -29,14 +61,33 @@ public class Student extends BaseEntity{
 	@Column(nullable = false, length = 50)
 	private Double gpa;
 	
-	@Column(nullable = false, length = 50)
-	private String workingStatus;
-	
 	@Column(nullable = false)
+	private StatusAc workingStatus;
+	
+	@Column(nullable = false,columnDefinition = "TEXT")
 	private String image;
 	
-	@Column(length = 150)
+	@Column(length = 1000)
 	private String noteStu;
+
+	//mapping to company
+	@OneToMany(
+	        cascade = CascadeType.ALL
+	    )
+	    private List<Company> companies = new ArrayList<>();
+	
+	//mapping to school
+		@OneToMany(
+		        cascade = CascadeType.ALL
+		    )
+		    private List<School> school = new ArrayList<>();
+	public String getPhoneStu() {
+		return phoneStu;
+	}
+
+	public void setPhoneStu(String phoneStu) {
+		this.phoneStu = phoneStu;
+	}
 
 	public String getCodeStu() {
 		return codeStu;
@@ -95,11 +146,11 @@ public class Student extends BaseEntity{
 		this.gpa = gpa;
 	}
 
-	public String getWorkingStatus() {
+	public StatusAc getWorkingStatus() {
 		return workingStatus;
 	}
 
-	public void setWorkingStatus(String workingStatus) {
+	public void setWorkingStatus(StatusAc workingStatus) {
 		this.workingStatus = workingStatus;
 	}
 
@@ -117,6 +168,79 @@ public class Student extends BaseEntity{
 
 	public void setNoteStu(String noteStu) {
 		this.noteStu = noteStu;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	
+
+	public Student(Long id, String createdBy, String updatedBy, Date createdDate, Date updatedDate, String codeStu,
+			String firstName, String lastName, String addressStu, String phoneStu, String emailStu, TypeStudent typeStu,
+			Double gpa, StatusAc workingStatus, String image, String noteStu) {
+		super();
+		this.id = id;
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+		this.createdDate = createdDate;
+		this.updatedDate = updatedDate;
+		this.codeStu = codeStu;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.addressStu = addressStu;
+		this.phoneStu = phoneStu;
+		this.emailStu = emailStu;
+		this.typeStu = typeStu;
+		this.gpa = gpa;
+		this.workingStatus = workingStatus;
+		this.image = image;
+		this.noteStu = noteStu;
+	}
+
+	public Student() {
+		super();
+	}
+
+	public Student(Long id) {
+		super();
+		this.id = id;
 	}
 	
 	

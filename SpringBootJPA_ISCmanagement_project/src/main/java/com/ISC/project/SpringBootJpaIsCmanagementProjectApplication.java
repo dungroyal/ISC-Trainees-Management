@@ -8,6 +8,7 @@ public class SpringBootJpaIsCmanagementProjectApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringBootJpaIsCmanagementProjectApplication.class, args);
+		System.out.println("done");
 	}
 
 }

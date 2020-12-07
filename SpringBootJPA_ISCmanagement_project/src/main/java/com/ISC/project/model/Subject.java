@@ -1,29 +1,54 @@
 package com.ISC.project.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
 @Table(name = "subjects")
 public class Subject extends BaseEntity{
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 	
-	@Column
+	@Column(name = "createdBy")
+	private String createdBy;
+	
+	@Column(name = "updatedBy")
+	private String updatedBy;
+	
+	@CreatedDate
+	@Column(name = "createdDate")
+	private Date createdDate;
+	
+	@LastModifiedDate
+	@Column(name = "updatedDate")
+	private Date updatedDate;
+	
+	@Column(nullable = false, unique = true, length = 50)
 	private String codeSub;
 	
-	@Column
+	@Column(nullable = false, length = 50)
 	private String nameSub;
 	
-	@Column
+	@Column(nullable = false, length = 50)
 	private Double creditSub;
 	
-	@Column
+	@Column(nullable = false, length = 50)
 	private Double passCore;
 	
-	@Column
-	private String statusSub;
+	@Column(nullable = false)
+	private StatusAc statusSub;
 	
-	@Column
+	@Column(length = 1000)
 	private String noteSub;
 
 	public String getCodeSub() {
@@ -58,11 +83,11 @@ public class Subject extends BaseEntity{
 		this.passCore = passCore;
 	}
 
-	public String getStatusSub() {
+	public StatusAc getStatusSub() {
 		return statusSub;
 	}
 
-	public void setStatusSub(String statusSub) {
+	public void setStatusSub(StatusAc statusSub) {
 		this.statusSub = statusSub;
 	}
 
@@ -73,6 +98,72 @@ public class Subject extends BaseEntity{
 	public void setNoteSub(String noteSub) {
 		this.noteSub = noteSub;
 	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public Subject(Long id, String createdBy, String updatedBy, Date createdDate, Date updatedDate, String codeSub,
+			String nameSub, Double creditSub, Double passCore, StatusAc statusSub, String noteSub) {
+		super();
+		this.id = id;
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+		this.createdDate = createdDate;
+		this.updatedDate = updatedDate;
+		this.codeSub = codeSub;
+		this.nameSub = nameSub;
+		this.creditSub = creditSub;
+		this.passCore = passCore;
+		this.statusSub = statusSub;
+		this.noteSub = noteSub;
+	}
+
+	public Subject() {
+		super();
+	}
+
+	public Subject(Long id) {
+		super();
+		this.id = id;
+	}
+	
 	
 	
 }

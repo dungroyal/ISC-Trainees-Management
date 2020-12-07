@@ -1,12 +1,38 @@
 package com.ISC.project.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
 @Table(name = "rooms")
-public class Room extends BaseEntity{
+public class Room {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	
+	@Column(name = "createdBy")
+	private String createdBy;
+	
+	@Column(name = "updatedBy")
+	private String updatedBy;
+	
+	@CreatedDate
+	@Column(name = "createdDate")
+	private Date createdDate;
+	
+	@LastModifiedDate
+	@Column(name = "updatedDate")
+	private Date updatedDate;
+	
 	@Column(nullable = false, length = 50)
 	private String codeRoom;
 	
@@ -16,10 +42,10 @@ public class Room extends BaseEntity{
 	@Column(nullable = false)
 	private TypeRoom typeRoom;
 	
-	@Column(length = 50)
-	private String statusRoom;
+	@Column(nullable = false)
+	private StatusAc statusRoom;
 	
-	@Column(length = 150)
+	@Column(length = 1000)
 	private String noteRoom;
 
 	public String getCodeRoom() {
@@ -46,11 +72,11 @@ public class Room extends BaseEntity{
 		this.typeRoom = typeRoom;
 	}
 
-	public String getStatusRoom() {
+	public StatusAc getStatusRoom() {
 		return statusRoom;
 	}
 
-	public void setStatusRoom(String statusRoom) {
+	public void setStatusRoom(StatusAc statusRoom) {
 		this.statusRoom = statusRoom;
 	}
 
@@ -62,6 +88,71 @@ public class Room extends BaseEntity{
 		this.noteRoom = noteRoom;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public Room(Long id, String createdBy, String updatedBy, Date createdDate, Date updatedDate, String codeRoom,
+			String nameRoom, TypeRoom typeRoom, StatusAc statusRoom, String noteRoom) {
+		super();
+		this.id = id;
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+		this.createdDate = createdDate;
+		this.updatedDate = updatedDate;
+		this.codeRoom = codeRoom;
+		this.nameRoom = nameRoom;
+		this.typeRoom = typeRoom;
+		this.statusRoom = statusRoom;
+		this.noteRoom = noteRoom;
+	}
+
+	public Room() {
+		super();
+	}
+
+	public Room(Long id) {
+		super();
+		this.id = id;
+	}
+
+	
 	
 	
 }
