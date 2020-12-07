@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ISC.project.model.Course;
 
-public interface CourseRepository extends JpaRepository<Course, Integer>{
+public interface CourseRepository extends JpaRepository<Course, Long>{
 
 }
