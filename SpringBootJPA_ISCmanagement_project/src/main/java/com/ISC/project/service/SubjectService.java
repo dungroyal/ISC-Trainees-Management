@@ -1,6 +1,7 @@
 package com.ISC.project.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -16,6 +17,9 @@ public class SubjectService {
 	@Autowired
 	private SubjectRepository subjectRepository;
 	
+	public Optional<Subject> findById(long id){
+		return subjectRepository.findById(id);
+	}
 	public Subject save(Subject subject) {
 		return subjectRepository.save(subject);
 	}

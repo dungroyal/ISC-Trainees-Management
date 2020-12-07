@@ -1,5 +1,6 @@
 package com.ISC.project.model;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -14,7 +15,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
 @Table(name = "subjects")
-public class Subject extends BaseEntity{
+public class Subject{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -27,11 +28,11 @@ public class Subject extends BaseEntity{
 	
 	@CreatedDate
 	@Column(name = "createdDate")
-	private Date createdDate;
+	private LocalDateTime createdDate;
 	
 	@LastModifiedDate
 	@Column(name = "updatedDate")
-	private Date updatedDate;
+	private LocalDateTime updatedDate;
 	
 	@Column(nullable = false, unique = true, length = 50)
 	private String codeSub;
@@ -123,23 +124,23 @@ public class Subject extends BaseEntity{
 		this.updatedBy = updatedBy;
 	}
 
-	public Date getCreatedDate() {
+	public LocalDateTime getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
 	}
 
-	public Date getUpdatedDate() {
+	public LocalDateTime getUpdatedDate() {
 		return updatedDate;
 	}
 
-	public void setUpdatedDate(Date updatedDate) {
+	public void setUpdatedDate(LocalDateTime updatedDate) {
 		this.updatedDate = updatedDate;
 	}
 
-	public Subject(Long id, String createdBy, String updatedBy, Date createdDate, Date updatedDate, String codeSub,
+	public Subject(Long id, String createdBy, String updatedBy, LocalDateTime createdDate, LocalDateTime updatedDate, String codeSub,
 			String nameSub, Double creditSub, Double passCore, StatusAc statusSub, String noteSub) {
 		super();
 		this.id = id;

@@ -1,7 +1,12 @@
 package com.ISC.project.model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,10 +15,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "schools")
@@ -30,11 +38,11 @@ public class School {
 	
 	@CreatedDate
 	@Column(name = "createdDate")
-	private Date createdDate;
+	private LocalDateTime createdDate;
 	
 	@LastModifiedDate
 	@Column(name = "updatedDate")
-	private Date updatedDate;
+	private LocalDateTime updatedDate;
 	
 	@Column(nullable = false, length = 100)
 	private String nameShc;
@@ -52,9 +60,11 @@ public class School {
 	private String noteShc;
 
 	//mapping to student
-		@ManyToOne(fetch = FetchType.LAZY)
-		@JoinColumn(name = "student_id")
-	    private Student student;
+	@JsonBackReference
+	@OneToMany(
+	        cascade = CascadeType.ALL
+	    )
+	    private List<Student> student = new ArrayList<>();
 	
 	public String getNameShc() {
 		return nameShc;
@@ -120,23 +130,33 @@ public class School {
 		this.updatedBy = updatedBy;
 	}
 
-	public Date getCreatedDate() {
+	
+
+	public LocalDateTime getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
 	}
 
-	public Date getUpdatedDate() {
+	public List<Student> getStudent() {
+		return student;
+	}
+
+	public void setStudent(List<Student> student) {
+		this.student = student;
+	}
+
+	public LocalDateTime getUpdatedDate() {
 		return updatedDate;
 	}
 
-	public void setUpdatedDate(Date updatedDate) {
+	public void setUpdatedDate(LocalDateTime updatedDate) {
 		this.updatedDate = updatedDate;
 	}
 
-	public School(Long id, String createdBy, String updatedBy, Date createdDate, Date updatedDate, String nameShc,
+	public School(Long id, String createdBy, String updatedBy, LocalDateTime createdDate, LocalDateTime updatedDate, String nameShc,
 			String addressShc, String contactPerson, String websiteShc, String noteShc) {
 		super();
 		this.id = id;

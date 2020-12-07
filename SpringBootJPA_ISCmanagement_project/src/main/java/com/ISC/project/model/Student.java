@@ -1,5 +1,6 @@
 package com.ISC.project.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,10 +8,12 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -32,11 +35,11 @@ public class Student {
 	
 	@CreatedDate
 	@Column(name = "createdDate")
-	private Date createdDate;
+	private LocalDateTime createdDate;
 	
 	@LastModifiedDate
 	@Column(name = "updatedDate")
-	private Date updatedDate;
+	private LocalDateTime updatedDate;
 	
 	@Column(nullable = false, length = 50,unique = true)
 	private String codeStu;
@@ -79,11 +82,10 @@ public class Student {
 	    private List<Company> companies = new ArrayList<>();
 	
 	//mapping to school
-		@OneToMany(
-		        cascade = CascadeType.ALL
-		    )
-		@JoinColumn(name = "school_id")
-		    private List<School> school = new ArrayList<>();
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "school_id")
+    private School school;
+	
 	public String getPhoneStu() {
 		return phoneStu;
 	}
@@ -197,25 +199,25 @@ public class Student {
 		this.updatedBy = updatedBy;
 	}
 
-	public Date getCreatedDate() {
+	public LocalDateTime getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
 	}
 
-	public Date getUpdatedDate() {
+	public LocalDateTime getUpdatedDate() {
 		return updatedDate;
 	}
 
-	public void setUpdatedDate(Date updatedDate) {
+	public void setUpdatedDate(LocalDateTime updatedDate) {
 		this.updatedDate = updatedDate;
 	}
 
 	
 
-	public Student(Long id, String createdBy, String updatedBy, Date createdDate, Date updatedDate, String codeStu,
+	public Student(Long id, String createdBy, String updatedBy, LocalDateTime createdDate, LocalDateTime updatedDate, String codeStu,
 			String firstName, String lastName, String addressStu, String phoneStu, String emailStu, TypeStudent typeStu,
 			Double gpa, StatusAc workingStatus, String image, String noteStu) {
 		super();

@@ -1,6 +1,7 @@
 package com.ISC.project.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -16,7 +17,9 @@ import com.ISC.project.model.Lecturer;
 public class LecturerService {
 	@Autowired
 	private LecturerRepository lecturerRepository;
-	
+	public Optional<Lecturer> findById(long id){
+		return lecturerRepository.findById(id);
+	}
 	public Lecturer save(Lecturer lecture) {
 		return lecturerRepository.save(lecture);
 	}

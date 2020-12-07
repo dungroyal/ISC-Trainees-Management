@@ -1,6 +1,7 @@
 package com.ISC.project.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -17,6 +18,9 @@ public class CourseStudentService {
 	@Autowired
 	private CourseStudentRepo courseStudentRepo;
 	
+	public Optional<CourseStudent> findById(EmbemdedCourseStudentId id){
+		return courseStudentRepo.findById(id);
+	}
 	public CourseStudent save(CourseStudent courseStudent) {
 		return courseStudentRepo.save(courseStudent);
 	}

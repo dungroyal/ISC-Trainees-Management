@@ -18,9 +18,9 @@ public class StudentSubject implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private EmbemdedStudentSubject id = new EmbemdedStudentSubject();
+	private EmbemdedStudentSubjectId id = new EmbemdedStudentSubjectId();
 	
-	//map to major
+	//map to student
 		@ManyToOne(optional = false)
 		@MapsId("studentId")
 		private Student student;
@@ -31,7 +31,7 @@ public class StudentSubject implements Serializable{
 		private Subject subject;
 
 		
-		public StudentSubject(EmbemdedStudentSubject id, Student student, Subject subject) {
+		public StudentSubject(EmbemdedStudentSubjectId id, Student student, Subject subject) {
 			super();
 			this.id = id;
 			this.student = student;
@@ -42,16 +42,16 @@ public class StudentSubject implements Serializable{
 			super();
 		}
 
-		public StudentSubject(EmbemdedStudentSubject id) {
+		public StudentSubject(EmbemdedStudentSubjectId id) {
 			super();
 			this.id = id;
 		}
 
-		public EmbemdedStudentSubject getId() {
+		public EmbemdedStudentSubjectId getId() {
 			return id;
 		}
 
-		public void setId(EmbemdedStudentSubject id) {
+		public void setId(EmbemdedStudentSubjectId id) {
 			this.id = id;
 		}
 

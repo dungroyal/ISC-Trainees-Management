@@ -1,6 +1,7 @@
 package com.ISC.project.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -16,6 +17,9 @@ public class MajorService {
 	@Autowired
 	private MajorRepository majorRepository;
 	
+	public Optional<Major> findById(long id){
+		return majorRepository.findById(id);
+	}
 	public Major save(Major major) {
 		return majorRepository.save(major);
 	}

@@ -1,5 +1,6 @@
 package com.ISC.project.model;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -27,11 +28,11 @@ public class Room {
 	
 	@CreatedDate
 	@Column(name = "createdDate")
-	private Date createdDate;
+	private LocalDateTime createdDate;
 	
 	@LastModifiedDate
 	@Column(name = "updatedDate")
-	private Date updatedDate;
+	private LocalDateTime updatedDate;
 	
 	@Column(nullable = false, length = 50)
 	private String codeRoom;
@@ -112,23 +113,23 @@ public class Room {
 		this.updatedBy = updatedBy;
 	}
 
-	public Date getCreatedDate() {
+	public LocalDateTime getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
 	}
 
-	public Date getUpdatedDate() {
+	public LocalDateTime getUpdatedDate() {
 		return updatedDate;
 	}
 
-	public void setUpdatedDate(Date updatedDate) {
+	public void setUpdatedDate(LocalDateTime updatedDate) {
 		this.updatedDate = updatedDate;
 	}
 
-	public Room(Long id, String createdBy, String updatedBy, Date createdDate, Date updatedDate, String codeRoom,
+	public Room(Long id, String createdBy, String updatedBy, LocalDateTime createdDate, LocalDateTime updatedDate, String codeRoom,
 			String nameRoom, TypeRoom typeRoom, StatusAc statusRoom, String noteRoom) {
 		super();
 		this.id = id;

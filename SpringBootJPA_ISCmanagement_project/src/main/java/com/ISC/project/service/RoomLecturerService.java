@@ -1,6 +1,7 @@
 package com.ISC.project.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -18,7 +19,9 @@ import com.ISC.project.model.RoomLecturer;
 public class RoomLecturerService {
 	@Autowired
 	private RoomLecturerRepo roomLecturerRepo;
-	
+	public Optional<RoomLecturer> findById(EmbemdedRoomLecturerId id){
+		return roomLecturerRepo.findById(id);
+	}
 	public RoomLecturer save(RoomLecturer roomLecturer) {
 		return roomLecturerRepo.save(roomLecturer);
 	}
