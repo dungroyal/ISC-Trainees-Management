@@ -56,7 +56,6 @@ public class Company {
 
 	//mapping to student
 		@ManyToOne(fetch = FetchType.LAZY)
-		@JoinColumn(name = "student_id")
 	    private Student student;
 	public String getNameCom() {
 		return nameCom;

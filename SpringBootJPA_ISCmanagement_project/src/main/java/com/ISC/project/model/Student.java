@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -74,12 +75,14 @@ public class Student {
 	@OneToMany(
 	        cascade = CascadeType.ALL
 	    )
+	@JoinColumn(name = "company_id")
 	    private List<Company> companies = new ArrayList<>();
 	
 	//mapping to school
 		@OneToMany(
 		        cascade = CascadeType.ALL
 		    )
+		@JoinColumn(name = "school_id")
 		    private List<School> school = new ArrayList<>();
 	public String getPhoneStu() {
 		return phoneStu;

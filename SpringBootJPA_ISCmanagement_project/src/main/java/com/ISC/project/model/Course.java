@@ -57,7 +57,6 @@ public class Course {
 
 	//mapping to major
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "major_id")
     private Major major;
 	
 	public String getCodeCourse() {
