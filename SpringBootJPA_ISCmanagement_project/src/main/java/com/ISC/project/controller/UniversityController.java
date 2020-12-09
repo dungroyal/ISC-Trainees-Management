@@ -1,6 +1,7 @@
 package com.ISC.project.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ISC.project.exception.ResourseNotFoundException;
 import com.ISC.project.model.University;
+import com.ISC.project.payload.ResultRespon;
 import com.ISC.project.service.UniversityService;
 
 @CrossOrigin
@@ -27,41 +29,44 @@ public class UniversityController {
 	
 	//get all university
 	@GetMapping("/listUniversity")
-	public List<University> listuniversity(){
-		return universityService.listAlluniversity();
+	public ResultRespon listUniversity() {
+		return new ResultRespon(0,"Success",this.universityService.listAlluniversity());
 	}
 	
 	//get one university
 	@GetMapping("/getUniversity") 
-	public University getuniversity(@RequestParam("id") long id) {
-		return universityService.findById(id).orElseThrow(() ->new ResourseNotFoundException("not found university with id: " + id));
-	}  
+	public ResultRespon getUniversity(@RequestParam("id") long id) {
+		List<University> univer = new ArrayList<>();
+		univer.add(universityService.findById(id).orElseThrow(() -> new ResourseNotFoundException("not found university with id: " + id)));
+		return new ResultRespon(0,"Success",univer);
+	}
 	
 	//post university
 	@PostMapping("/newUniversity")
-	public University adduniversity(@RequestBody University university) {
-	university.setCreatedDate(LocalDateTime.now());
-		return universityService.save(university);
+	public ResultRespon addUniversity(@RequestBody University university) {
+		List<University> univer = new ArrayList<>();
+		university.setCreatedDate(LocalDateTime.now());
+		univer.add(universityService.save(university));
+		return new ResultRespon(0,"Success",univer);
 	}
+	
 	
 	//update university
 	@PutMapping("/editUniversity")
-	public University edituniversity(@RequestBody University university,@RequestParam("id") long id) {
+	public ResultRespon editUniversity(@RequestBody University university,@RequestParam("id") long id) {
+		List<University> univer = new ArrayList<>();
 		University olduniversity = universityService.findById(id).orElseThrow(()->new ResourseNotFoundException("not found university with id: " + id));
-		olduniversity.setNameUni(university.getNameUni());
-		olduniversity.setNoteUni(university.getNoteUni());
-		olduniversity.setAddressUni(university.getAddressUni());
-		olduniversity.setContactPerson(university.getContactPerson());
-		olduniversity.setWebsiteUni(university.getWebsiteUni());
-		olduniversity.setUpdatedDate(LocalDateTime.now());
-		return universityService.save(olduniversity);
+		univer.add(universityService.save(olduniversity));
+		return new ResultRespon(0,"Success",univer);
 		
 	}
 	
 	//delete university
 	@DeleteMapping("/deleteUniversity")
-	public void deleteuniversity(@RequestParam("id") long id) {
+	public ResultRespon deleteUniversity(@RequestParam("id") long id) {
 		universityService.findById(id).orElseThrow(()->new ResourseNotFoundException("not found university with id: " + id));
-		universityService.delete(id);
+		this.universityService.delete(id);
+		return new ResultRespon(0,"Success");
 	}
+	
 }

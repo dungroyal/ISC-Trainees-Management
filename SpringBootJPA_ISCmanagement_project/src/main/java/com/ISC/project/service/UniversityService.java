@@ -29,7 +29,7 @@ public class UniversityService {
 		return universityRepository.findAll();
 	}
 
-	public University get(long id) {
+	public University getOne(long id) {
 		return universityRepository.findById(id).get();
 	}
 
