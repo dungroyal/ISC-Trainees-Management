@@ -19,6 +19,8 @@ import com.ISC.project.exception.ResourseNotFoundException;
 import com.ISC.project.model.University;
 import com.ISC.project.payload.ResultRespon;
 import com.ISC.project.service.UniversityService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 @CrossOrigin
 @RestController
@@ -42,12 +44,24 @@ public class UniversityController {
 	}
 	
 	//post university
-	@PostMapping("/newUniversity")
-	public ResultRespon addUniversity(@RequestBody University university) {
+	@PostMapping(value = "/newUniversity",consumes = "multipart/form-data")
+	public ResultRespon addUniversity(
+			@RequestParam("nameUni") String nameUni,
+			@RequestParam("addressUni") String addressUni,
+			@RequestParam("contactPerson") String contactPerson,
+			@RequestParam("websiteUni") String websiteUni,
+			@RequestParam("noteUni") String noteUni,
+			@RequestParam("createdBy") String createdBy,
+			@RequestParam("updatedBy") String updatedBy) throws JsonMappingException,JsonProcessingException {
 		List<University> univer = new ArrayList<>();
-		university.setCreatedDate(LocalDateTime.now());
-		univer.add(universityService.save(university));
-		return new ResultRespon(0,"Success",univer);
+		univer.add(new University(createdBy, updatedBy, nameUni, addressUni, contactPerson, websiteUni, noteUni));
+		univer.get(0).setCreatedDate(LocalDateTime.now());
+		if(this.universityService.checkNameUni(nameUni).isEmpty()) {
+			this.universityService.save(univer.get(0));
+			return new ResultRespon(0,"Add university success",univer);
+		}else {
+			throw new ResourseNotFoundException("Duplicate University Name");
+		}
 	}
 	
 	

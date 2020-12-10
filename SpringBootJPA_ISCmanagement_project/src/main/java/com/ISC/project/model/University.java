@@ -177,5 +177,17 @@ public class University {
 		this.id = id;
 	}
 
+	public University(String createdBy, String updatedBy, String nameUni, String addressUni, String contactPerson,
+			String websiteUni, String noteUni) {
+		super();
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+		this.nameUni = nameUni;
+		this.addressUni = addressUni;
+		this.contactPerson = contactPerson;
+		this.websiteUni = websiteUni;
+		this.noteUni = noteUni;
+	}
 
+	
 }

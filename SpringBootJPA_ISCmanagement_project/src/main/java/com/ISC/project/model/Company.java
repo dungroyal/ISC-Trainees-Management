@@ -171,6 +171,19 @@ public class Company {
 		this.id = id;
 	}
 
+	public Company(String createdBy, String updatedBy, String nameCom, String addresCom, String contactPerson,
+			String websiteCom, String statusCom, String noteCom) {
+		super();
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+		this.nameCom = nameCom;
+		this.addresCom = addresCom;
+		this.contactPerson = contactPerson;
+		this.websiteCom = websiteCom;
+		this.statusCom = statusCom;
+		this.noteCom = noteCom;
+	}
+
 	
 	
 	

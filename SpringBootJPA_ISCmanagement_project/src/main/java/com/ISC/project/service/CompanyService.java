@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ISC.project.dao.CompanyRepository;
 import com.ISC.project.model.Company;
@@ -36,4 +37,7 @@ public class CompanyService {
 		companyRepository.deleteById(id);
 	}
 	
+	public List<String> checkNameCom(@RequestParam("newNameCom") String newNameCom){
+		return this.companyRepository.checkNameCom(newNameCom);
+	}
 }
