@@ -6,6 +6,8 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.ISC.project.dao.RoomRepository;
@@ -39,5 +41,13 @@ public class RoomService {
 	
 	public List<String> checkCodeRoom(String codeRoom){
 		return roomRepository.checkCodeRoom(codeRoom);
+	}
+	
+	public Page<Room> findRoom(Pageable pageable){
+		return roomRepository.findRoom(pageable);
+	}
+	
+	public List<Room> searchRoom(String keyWord){
+		return roomRepository.searchRoom(keyWord);
 	}
 }

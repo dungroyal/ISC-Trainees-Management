@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -83,4 +87,32 @@ public class RoomController {
 		return new ResultRespon(0,"Delete room witd id:"+id+" success");
 	}
 	
+	@GetMapping("/room/pagination") 
+	public ResultRespon paginationRoom(
+			@RequestParam(name="page", required = false, defaultValue = "1") Integer page,
+			@RequestParam(name="size", required = false, defaultValue = "1") Integer size,
+			@RequestParam(name="sort", required = false, defaultValue = "ASC") String sort) {
+		Sort sortable = null;
+		if(sort.equals("ASC")) {
+			sortable = Sort.by("nameRoom").ascending();
+		}
+		if(sort.equals("DESC")) {
+			sortable = Sort.by("nameRoom").descending();
+		}
+		
+		Pageable pageable = PageRequest.of(page, size, sortable);
+		Page<Room> room = roomService.findRoom(pageable);
+		List<Page<Room>> rooms = new ArrayList<>();
+		rooms.add(room);
+		return new ResultRespon(0, "Success", rooms);
+	}
+	
+	@GetMapping("/searchRoom") 
+	public ResultRespon searchRoom(@RequestParam("keyWord") String keyWord) {
+		if(this.roomService.searchRoom(keyWord).isEmpty()) {
+			throw new ResourseNotFoundException("Not found room witd keyword: "+keyWord);
+		}else {
+			return new ResultRespon(0, "Search success", this.roomService.searchRoom(keyWord));
+		}
+	}
 }
