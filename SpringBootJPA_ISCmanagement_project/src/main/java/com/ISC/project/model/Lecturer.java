@@ -1,22 +1,21 @@
 package com.ISC.project.model;
 
 import java.time.LocalDateTime;
+
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
-@Table(name = "students")
-public class Student {
+@Table(name = "lecturers")
+public class Lecturer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -35,8 +34,9 @@ public class Student {
 	@Column(name = "updatedDate")
 	private LocalDateTime updatedDate;
 	
+	
 	@Column(nullable = false, length = 50,unique = true)
-	private String codeStu;
+	private String codeLec;
 	
 	@Column(nullable = false, length = 50)
 	private String firstName;
@@ -44,49 +44,33 @@ public class Student {
 	@Column(nullable = false, length = 50)
 	private String lastName;
 	
-	@Column(nullable = false, length = 100)
-	private String addressStu;
+	@Column(length = 100)
+	private String addressLec;
 	
 	@Column(nullable = false, length = 50)
-	private String phoneStu;
+	private String phoneLec;
 	
-	@Column(length = 100,unique = true, nullable= false)
-	private String emailStu;
-	
-	@Column(nullable = false)
-	private TypeStudent typeStu;
+	@Column(nullable = false, length = 50, unique = true)
+	private String emailLec;
 	
 	@Column(nullable = false, length = 50)
-	private Double gpa;
-	
-	@Column(nullable = false)
-	private StatusAc workingStatus;
+	private String degree;
 	
 	@Column(nullable = false,columnDefinition = "TEXT")
 	private String image;
 	
-	@Column(length = 1000)
-	private String noteStu;
+	@Column(length = 50)
+	private StatusAc statusLec;
 	
-	//mapping to school
-	@ManyToOne( fetch = FetchType.LAZY)
-//	@JoinColumn(name = "university_id")
-    private University university	;
-	
-	public String getPhoneStu() {
-		return phoneStu;
+	@Column(length = 2000)
+	private String noteLec;
+
+	public String getCodeLec() {
+		return codeLec;
 	}
 
-	public void setPhoneStu(String phoneStu) {
-		this.phoneStu = phoneStu;
-	}
-
-	public String getCodeStu() {
-		return codeStu;
-	}
-
-	public void setCodeStu(String codeStu) {
-		this.codeStu = codeStu;
+	public void setCodeLec(String codeLec) {
+		this.codeLec = codeLec;
 	}
 
 	public String getFirstName() {
@@ -105,45 +89,36 @@ public class Student {
 		this.lastName = lastName;
 	}
 
-	public String getAddressStu() {
-		return addressStu;
+	public String getAddressLec() {
+		return addressLec;
 	}
 
-	public void setAddressStu(String addressStu) {
-		this.addressStu = addressStu;
+	public void setAddressLec(String addressLec) {
+		this.addressLec = addressLec;
 	}
 
-	public String getEmailStu() {
-		return emailStu;
+	public String getPhoneLec() {
+		return phoneLec;
 	}
 
-	public void setEmailStu(String emailStu) {
-		this.emailStu = emailStu;
+	public void setPhoneLec(String phoneLec) {
+		this.phoneLec = phoneLec;
 	}
 
-	
-	public TypeStudent getTypeStu() {
-		return typeStu;
+	public String getEmailLec() {
+		return emailLec;
 	}
 
-	public void setTypeStu(TypeStudent typeStu) {
-		this.typeStu = typeStu;
+	public void setEmailLec(String emailLec) {
+		this.emailLec = emailLec;
 	}
 
-	public Double getGpa() {
-		return gpa;
+	public String getDegree() {
+		return degree;
 	}
 
-	public void setGpa(Double gpa) {
-		this.gpa = gpa;
-	}
-
-	public StatusAc getWorkingStatus() {
-		return workingStatus;
-	}
-
-	public void setWorkingStatus(StatusAc workingStatus) {
-		this.workingStatus = workingStatus;
+	public void setDegree(String degree) {
+		this.degree = degree;
 	}
 
 	public String getImage() {
@@ -154,12 +129,20 @@ public class Student {
 		this.image = image;
 	}
 
-	public String getNoteStu() {
-		return noteStu;
+	public StatusAc getStatusLec() {
+		return statusLec;
 	}
 
-	public void setNoteStu(String noteStu) {
-		this.noteStu = noteStu;
+	public void setStatusLec(StatusAc statusLec) {
+		this.statusLec = statusLec;
+	}
+
+	public String getNoteLec() {
+		return noteLec;
+	}
+
+	public void setNoteLec(String noteLec) {
+		this.noteLec = noteLec;
 	}
 
 	public Long getId() {
@@ -204,36 +187,36 @@ public class Student {
 
 	
 
-	public Student(Long id, String createdBy, String updatedBy, LocalDateTime createdDate, LocalDateTime updatedDate, String codeStu,
-			String firstName, String lastName, String addressStu, String phoneStu, String emailStu, TypeStudent typeStu,
-			Double gpa, StatusAc workingStatus, String image, String noteStu) {
+	public Lecturer(Long id, String createdBy, String updatedBy, LocalDateTime createdDate, LocalDateTime updatedDate, String codeLec,
+			String firstName, String lastName, String addressLec, String phoneLec, String emailLec, String degree,
+			String image, StatusAc statusLec, String noteLec) {
 		super();
 		this.id = id;
 		this.createdBy = createdBy;
 		this.updatedBy = updatedBy;
 		this.createdDate = createdDate;
 		this.updatedDate = updatedDate;
-		this.codeStu = codeStu;
+		this.codeLec = codeLec;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.addressStu = addressStu;
-		this.phoneStu = phoneStu;
-		this.emailStu = emailStu;
-		this.typeStu = typeStu;
-		this.gpa = gpa;
-		this.workingStatus = workingStatus;
+		this.addressLec = addressLec;
+		this.phoneLec = phoneLec;
+		this.emailLec = emailLec;
+		this.degree = degree;
 		this.image = image;
-		this.noteStu = noteStu;
+		this.statusLec = statusLec;
+		this.noteLec = noteLec;
 	}
 
-	public Student() {
+	public Lecturer() {
 		super();
 	}
 
-	public Student(Long id) {
+	public Lecturer(Long id) {
 		super();
 		this.id = id;
 	}
+
 	
 	
 

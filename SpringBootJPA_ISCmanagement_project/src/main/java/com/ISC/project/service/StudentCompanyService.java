@@ -21,7 +21,6 @@ public class StudentCompanyService {
 	public Optional<StudentCompany> findById(EmbemdedStudentCompanyId id){
 		return studentCompanyRepo.findById(id);
 	}
-	
 	public StudentCompany save(StudentCompany studentCompany) {
 		return studentCompanyRepo.save(studentCompany);
 	}
