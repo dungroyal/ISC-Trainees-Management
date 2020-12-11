@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,19 +45,12 @@ public class UniversityController {
 	}
 	
 	//post university
-	@PostMapping(value = "/newUniversity",consumes = "multipart/form-data")
-	public ResultRespon addUniversity(
-			@RequestParam("nameUni") String nameUni,
-			@RequestParam("addressUni") String addressUni,
-			@RequestParam("contactPerson") String contactPerson,
-			@RequestParam("websiteUni") String websiteUni,
-			@RequestParam("noteUni") String noteUni,
-			@RequestParam("createdBy") String createdBy,
-			@RequestParam("updatedBy") String updatedBy) throws JsonMappingException,JsonProcessingException {
+	@PostMapping(value = "/newUniversity")
+	public ResultRespon addUniversity(@RequestBody University university) throws JsonMappingException,JsonProcessingException {
 		List<University> univer = new ArrayList<>();
-		univer.add(new University(createdBy, updatedBy, nameUni, addressUni, contactPerson, websiteUni, noteUni));
+		univer.add(university);
 		univer.get(0).setCreatedDate(LocalDateTime.now());
-		if(this.universityService.checkNameUni(nameUni).isEmpty()) {
+		if(this.universityService.checkNameUni(university.getNameUni()).isEmpty()) {
 			this.universityService.save(univer.get(0));
 			return new ResultRespon(0,"Add university success",univer);
 		}else {
@@ -70,8 +64,21 @@ public class UniversityController {
 	public ResultRespon editUniversity(@RequestBody University university,@RequestParam("id") long id) {
 		List<University> univer = new ArrayList<>();
 		University olduniversity = universityService.findById(id).orElseThrow(()->new ResourseNotFoundException("not found university with id: " + id));
-		univer.add(universityService.save(olduniversity));
-		return new ResultRespon(0,"Success",univer);
+		if(this.universityService.checkNameUni(university.getNameUni()).isEmpty()) {
+			olduniversity.setUpdatedDate(LocalDateTime.now());
+			olduniversity.setNameUni(university.getNameUni());
+			olduniversity.setAddressUni(university.getAddressUni());
+			olduniversity.setContactPerson(university.getContactPerson());
+			olduniversity.setUpdatedBy(university.getUpdatedBy());
+			olduniversity.setNoteUni(university.getNoteUni());
+			olduniversity.setWebsiteUni(university.getWebsiteUni());
+			univer.add(olduniversity);
+			this.universityService.save(univer.get(0));
+			return new ResultRespon(0,"Update university success",univer);
+		}else {
+			throw new ResourseNotFoundException("Duplicate University Name");
+		}
+
 		
 	}
 	
@@ -80,7 +87,7 @@ public class UniversityController {
 	public ResultRespon deleteUniversity(@RequestParam("id") long id) {
 		universityService.findById(id).orElseThrow(()->new ResourseNotFoundException("not found university with id: " + id));
 		this.universityService.delete(id);
-		return new ResultRespon(0,"Success");
+		return new ResultRespon(0,"Delete university id = "+id+ " success");
 	}
 	
 }

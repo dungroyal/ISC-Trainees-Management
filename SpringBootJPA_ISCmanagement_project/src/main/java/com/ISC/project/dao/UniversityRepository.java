@@ -10,4 +10,5 @@ import com.ISC.project.model.University;
 public interface UniversityRepository extends JpaRepository<University, Long>{
 	@Query("select nameUni from University where nameUni = :newNameUni")
 	public List<String > checkNameUni(@RequestParam("newNameUni") String newNameUni);
+	
 }

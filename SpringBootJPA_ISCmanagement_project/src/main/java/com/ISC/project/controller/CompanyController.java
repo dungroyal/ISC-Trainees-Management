@@ -19,6 +19,8 @@ import com.ISC.project.exception.ResourseNotFoundException;
 import com.ISC.project.model.Company;
 import com.ISC.project.payload.ResultRespon;
 import com.ISC.project.service.CompanyService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 @CrossOrigin
 @RestController
@@ -42,20 +44,12 @@ public class CompanyController {
 	}
 	
 	//post company
-	@PostMapping(value = "/newCompany", consumes = "multipart/form-data")
-	public ResultRespon addCompany(
-			@RequestParam("nameCom") String nameCom,
-			@RequestParam("addresCom") String addresCom,
-			@RequestParam("contactPerson") String contactPerson,
-			@RequestParam("websiteCom") String websiteCom,
-			@RequestParam("statusCom") String statusCom,
-			@RequestParam("createdBy") String createdBy,
-			@RequestParam("noteCom") String noteCom,
-			@RequestParam("updatedBy") String updatedBy) {
+	@PostMapping(value = "/newCompany")
+	public ResultRespon addCompany(@RequestBody Company company){
 		List<Company> compa = new ArrayList<Company>();
-		compa.add(new Company(createdBy, updatedBy, nameCom, addresCom, contactPerson, websiteCom, statusCom, noteCom));
+		compa.add(company);
 		compa.get(0).setCreatedDate(LocalDateTime.now());
-		if(this.companyService.checkNameCom(nameCom).isEmpty()) {
+		if(this.companyService.checkNameCom(company.getNameCom()).isEmpty()) {
 			this.companyService.save(compa.get(0));
 			return new ResultRespon(0,"Add company success",compa);
 		}else {
@@ -68,14 +62,29 @@ public class CompanyController {
 	public ResultRespon editCompany(@RequestBody Company company,@RequestParam("id") long id) {
 		List<Company> compa = new ArrayList<Company>();
 		Company oldcompany = companyService.findById(id).orElseThrow(() -> new ResourseNotFoundException("not found company with id: "+ id));
-		compa.add(companyService.save(oldcompany));
-		return new ResultRespon(0,"Success",compa);
+		if(this.companyService.checkNameCom(company.getNameCom()).isEmpty()){
+			oldcompany.setNameCom(company.getNameCom());
+			oldcompany.setAddresCom(company.getAddresCom());
+			oldcompany.setContactPerson(company.getContactPerson());
+			oldcompany.setNoteCom(company.getNoteCom());
+			oldcompany.setStatusCom(company.getStatusCom());
+			oldcompany.setWebsiteCom(company.getWebsiteCom());
+			oldcompany.setUpdatedBy(company.getUpdatedBy());
+			oldcompany.setUpdatedDate(LocalDateTime.now());
+			compa.add(oldcompany);
+			this.companyService.save(compa.get(0));
+			return new ResultRespon(0,"Update company success",compa);
+		}else {
+			throw new ResourseNotFoundException("Duplicate company name");
+		}
+		
 	}
 	
 	//delete company
 	@DeleteMapping("/deleteCompany")
 	public ResultRespon deleteCompany(@RequestParam("id") long id) {
 		companyService.findById(id).orElseThrow(() -> new ResourseNotFoundException("not found company with id: "+ id));
-		return new ResultRespon(0,"Success");
+		this.companyService.delete(id);
+		return new ResultRespon(0,"Delete company id = " + id + " success");
 	}
 }
