@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ISC.project.dao.RoomRepository;
-import com.ISC.project.model.Lecturer;
 import com.ISC.project.model.Room;
 
 @Service
@@ -36,5 +35,9 @@ public class RoomService {
 	
 	public void delete(long id) {
 		roomRepository.deleteById(id);
+	}
+	
+	public List<String> checkCodeRoom(String codeRoom){
+		return roomRepository.checkCodeRoom(codeRoom);
 	}
 }
