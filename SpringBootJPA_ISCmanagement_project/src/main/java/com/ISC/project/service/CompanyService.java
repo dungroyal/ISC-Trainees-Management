@@ -6,6 +6,8 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -39,5 +41,13 @@ public class CompanyService {
 	
 	public List<String> checkNameCom(@RequestParam("newNameCom") String newNameCom){
 		return this.companyRepository.checkNameCom(newNameCom);
+	}
+	
+	public List<Company> searchCompany(String keyWord){
+		return this.companyRepository.searchCom(keyWord);
+	}
+	
+	public Page<Company> findCompa(Pageable pageable){
+		return this.companyRepository.findCompa(pageable);
 	}
 }
