@@ -31,6 +31,7 @@ public class RoomController {
 	@GetMapping("/listRoom")
 	public ResultRespon listRoom() {
 		return new ResultRespon(0,"Get list room success",this.roomService.listAllRoom());
+	}
 	//get one Room
 	@GetMapping("/getRoom") 
 	public ResultRespon getRoom(@RequestParam("id") long id) {
