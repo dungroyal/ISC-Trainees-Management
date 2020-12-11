@@ -35,4 +35,7 @@ public class RoomSubjectService {
 	public void delete(EmbemdedRoomSubjectId id) {
 		roomSubjectRepo.deleteById(id);
 	}
+	public void deleteTwo(RoomSubject roomSubject) {
+		roomSubjectRepo.delete(roomSubject);
+	}
 }
