@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ISC.project.dao.SubjectRepository;
 import com.ISC.project.model.Subject;
@@ -34,5 +35,10 @@ public class SubjectService {
 	
 	public void delete(long id) {
 		subjectRepository.deleteById(id);
+	}
+	
+	//Check code subject
+	public List<String> checkCodeSubject(@RequestParam("newCodeSubject") String newCodeSubject) {
+		return this.subjectRepository.checkCodeSubject(newCodeSubject);
 	}
 }

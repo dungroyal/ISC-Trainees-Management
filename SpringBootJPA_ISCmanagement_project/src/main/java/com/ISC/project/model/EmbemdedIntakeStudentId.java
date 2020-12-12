@@ -6,6 +6,11 @@ import java.util.Objects;
 import javax.persistence.Column;
 
 public class EmbemdedIntakeStudentId implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8965829268844325331L;
+
 	@Column(name = "intake_id",nullable = false)
 	private Long intakeId;
 	

@@ -1,5 +1,6 @@
 package com.ISC.project.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.persistence.EmbeddedId;
@@ -8,73 +9,88 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "IntakeStudent")
-public class IntakeStudent {
+public class IntakeStudent implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6269309540703092830L;
+
 	@EmbeddedId
 	private EmbemdedIntakeStudentId id = new EmbemdedIntakeStudentId();
-	
+
 	//map to intake
-			@ManyToOne(optional = false)
-			@MapsId("intakeId")
-			private Intake intake;
-			
-			//map to student
-			@ManyToOne(optional = false)
-			@MapsId("studentId")
-			private Student student;
+	@ManyToOne(optional = false)
+	@JsonBackReference
+	@MapsId("intakeId")
+	private Intake intake;
 
-			public IntakeStudent(EmbemdedIntakeStudentId id, Intake intake, Student student) {
-				super();
-				this.id = id;
-				this.intake = intake;
-				this.student = student;
-			}
+	//map to student
+	@ManyToOne(optional = false)
+	@JsonBackReference
+	@MapsId("studentId")
+	private Student student;
 
-			public IntakeStudent() {
-				super();
-			}
+	public IntakeStudent(EmbemdedIntakeStudentId id, Intake intake, Student student) {
+		super();
+		this.id = id;
+		this.intake = intake;
+		this.student = student;
+	}
 
-			public EmbemdedIntakeStudentId getId() {
-				return id;
-			}
+	public IntakeStudent(Intake intake, Student student) {
+		super();
+		this.intake = intake;
+		this.student = student;
+	}
 
-			public void setId(EmbemdedIntakeStudentId id) {
-				this.id = id;
-			}
+	public IntakeStudent() {
+		super();
+	}
 
-			public Intake getintake() {
-				return intake;
-			}
+	public EmbemdedIntakeStudentId getId() {
+		return id;
+	}
 
-			public void setintake(Intake intake) {
-				this.intake = intake;
-			}
+	public void setId(EmbemdedIntakeStudentId id) {
+		this.id = id;
+	}
 
-			public Student getStudent() {
-				return student;
-			}
+	public Intake getIntake() {
+		return intake;
+	}
 
-			public void setStudent(Student student) {
-				this.student = student;
-			}
-			
-			//hash code
-			 @Override
-			    public int hashCode() {
-			        return Objects.hash(intake, student);
-			    }
-			
-			//Override equals
-			@Override
-		   public boolean equals(Object o) {
-		       if (this == o) return true;
+	public void setIntake(Intake intake) {
+		this.intake = intake;
+	}
 
-		       if (o == null || getClass() != o.getClass())
-		           return false;
+	public Student getStudent() {
+		return student;
+	}
 
-		       IntakeStudent that = (IntakeStudent) o;
-		       return Objects.equals(this.intake, that.intake) &&
-		              Objects.equals(this.student, that.student);
-		   }
+	public void setStudent(Student student) {
+		this.student = student;
+	}
+
+	//hash code
+	@Override
+	public int hashCode() {
+		return Objects.hash(intake, student);
+	}
+
+	//Override equals
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+
+		if (o == null || getClass() != o.getClass())
+			return false;
+
+		IntakeStudent that = (IntakeStudent) o;
+		return Objects.equals(this.intake, that.intake) &&
+				Objects.equals(this.student, that.student);
+	}
 }

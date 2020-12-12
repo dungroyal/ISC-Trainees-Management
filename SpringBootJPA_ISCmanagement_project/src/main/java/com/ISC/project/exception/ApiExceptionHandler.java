@@ -19,6 +19,13 @@ public class ApiExceptionHandler{
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public ResultRespon handleAllException(Exception ex, WebRequest request) {
         // quá trình kiểm soat lỗi diễn ra ở đây
+    	if(ex.getLocalizedMessage().startsWith("could not execute statement; SQL [n/a]; constraint [UK_76a7f3cl1evph68tkgfivirbk]")) {
+    		return new ResultRespon(1, "Duplicate Student Code");
+    	}
+    	if(ex.getLocalizedMessage().startsWith("could not execute statement; SQL [n/a]; constraint [UK_8hyd9vyx1ttnb2kdpog7bljf8]")) {
+    		return new ResultRespon(1, "Duplicate Student Email");
+    	}
+    	
         return new ResultRespon(1, ex.getLocalizedMessage());
     }
 }
