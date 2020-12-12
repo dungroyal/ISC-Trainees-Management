@@ -43,6 +43,10 @@ public class CompanyService {
 		return this.companyRepository.checkNameCom(newNameCom);
 	}
 	
+	public String getNameById(@RequestParam("id") long id) {
+		return this.companyRepository.getNameById(id);
+	}
+	
 	public List<Company> searchCompany(String keyWord){
 		return this.companyRepository.searchCom(keyWord);
 	}

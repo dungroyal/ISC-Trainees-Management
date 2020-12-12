@@ -51,4 +51,8 @@ public class UniversityService {
 	public Page<University> findUni(Pageable pageable){
 		return this.universityRepository.findUni(pageable);
 	}
+	
+	public String getNameById(@RequestParam("id") long id) {
+		return this.universityRepository.getNameById(id);
+	}
 }

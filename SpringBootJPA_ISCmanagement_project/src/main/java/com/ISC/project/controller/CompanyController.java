@@ -27,6 +27,13 @@ import com.ISC.project.service.CompanyService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/api")
@@ -35,25 +42,53 @@ public class CompanyController {
 	private CompanyService companyService;
 	
 	//get all company
+	//Doc for getAll company
+		@Operation(summary = "Get all companies", description = "Show all companies under the databse")
+		@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Company.class))),
+		responseCode = "200",description = "Get all companies success")
+		@ApiResponses(value = {
+				@ApiResponse(responseCode = "200", description = "Success"),
+				@ApiResponse(responseCode = "404", description = "Not found"),
+				@ApiResponse(responseCode = "401", description = "Authorization Required"),
+				@ApiResponse(responseCode = "403", description = "Forbidden"),
+				@ApiResponse(responseCode = "500", description = "Internal Error Server")
+		})
 	@GetMapping("/listCompany")
 	public ResultRespon listCompany(){
 		return new ResultRespon(0,"Success",this.companyService.listAllCompany());
 	}
 	
 	//get one company
+		// DOC for getOne  company
+				@Operation(summary = "Get one companies", description = "Show one company under the database")
+				@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Company.class))),
+				responseCode = "200", description = "Get one companies success")
+				@ApiResponses(value = {
+						@ApiResponse(responseCode = "200", description = "Success"),
+						@ApiResponse(responseCode = "404", description = "Not found"),
+						@ApiResponse(responseCode = "401", description = "Authorization Required"),
+						@ApiResponse(responseCode = "403", description = "Forbidden"),
+						@ApiResponse(responseCode = "500", description = "Internal Error Server")
+				})
 	@GetMapping("/getCompany") 
 	public ResultRespon getCompany(@RequestParam("id") long id) {
 		List<Company> compa = new ArrayList<>();
 		compa.add(companyService.findById(id).orElseThrow(() -> new ResourseNotFoundException("not found company with id: " + id)));
-		if(compa.isEmpty()) {
-			throw new ResourseNotFoundException("Not found company by id " + id);
-		}else {
 			return new ResultRespon(0,"Success",compa);
-		}
-		
 	}
 	
 	//post company
+				//DOC for add new company
+				@Operation(summary = "Add new company", description = "Add new company from the database")
+				@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Company.class))),
+				responseCode = "200", description = "Add companies success")
+				@ApiResponses(value = {
+						@ApiResponse(responseCode = "200", description = "Success"),
+						@ApiResponse(responseCode = "404", description = "Not found"),
+						@ApiResponse(responseCode = "401", description = "Authorization Required"),
+						@ApiResponse(responseCode = "403", description = "Forbidden"),
+						@ApiResponse(responseCode = "500", description = "Internal Error Server")
+				})
 	@PostMapping(value = "/newCompany")
 	public ResultRespon addCompany(@RequestBody Company company){
 		List<Company> compa = new ArrayList<Company>();
@@ -72,8 +107,8 @@ public class CompanyController {
 	public ResultRespon editCompany(@RequestBody Company company,@RequestParam("id") long id) {
 		List<Company> compa = new ArrayList<Company>();
 		Company oldcompany = companyService.findById(id).orElseThrow(() -> new ResourseNotFoundException("not found company with id: "+ id));
-		if(this.companyService.checkNameCom(company.getNameCom()).isEmpty()){
-			oldcompany.setNameCom(company.getNameCom());
+		
+		if(this.companyService.getNameById(id).equals(company.getNameCom())) {
 			oldcompany.setAddresCom(company.getAddresCom());
 			oldcompany.setContactPerson(company.getContactPerson());
 			oldcompany.setNoteCom(company.getNoteCom());
@@ -85,12 +120,25 @@ public class CompanyController {
 			this.companyService.save(compa.get(0));
 			return new ResultRespon(0,"Update company success",compa);
 		}else {
-			throw new ResourseNotFoundException("Duplicate company name");
+			if(this.companyService.checkNameCom(company.getNameCom()).isEmpty()) {
+				oldcompany.setNameCom(company.getNameCom());
+				oldcompany.setAddresCom(company.getAddresCom());
+				oldcompany.setContactPerson(company.getContactPerson());
+				oldcompany.setNoteCom(company.getNoteCom());
+				oldcompany.setStatusCom(company.getStatusCom());
+				oldcompany.setWebsiteCom(company.getWebsiteCom());
+				oldcompany.setUpdatedBy(company.getUpdatedBy());
+				oldcompany.setUpdatedDate(LocalDateTime.now());
+				compa.add(oldcompany);
+				this.companyService.save(compa.get(0));
+				return new ResultRespon(0,"Update company success",compa);
+			}else {
+				throw new ResourseNotFoundException("Duplicate company name");
+			}
 		}
 		
 	}
-	
-	//delete company
+
 	@DeleteMapping(value="/deleteCompany")
 	public ResultRespon deleteCompany(@RequestParam("id") long id) {
 		companyService.findById(id).orElseThrow(() -> new ResourseNotFoundException("not found company with id: "+ id));

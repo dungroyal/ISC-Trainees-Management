@@ -13,6 +13,9 @@ public interface UniversityRepository extends JpaRepository<University, Long>{
 	@Query("select nameUni from University where nameUni = :newNameUni")
 	public List<String > checkNameUni(@RequestParam("newNameUni") String newNameUni);
 	
+	@Query("select nameUni from University where id = ?1")
+	public String getNameById(@RequestParam("id") long id);
+	
 	@Query("select uni from University uni where concat(uni.nameUni,uni.addressUni,uni.contactPerson,uni.websiteUni,uni.noteUni) like %?1%")
 	public List<University> searchUni(String keyWord);
 	

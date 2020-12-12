@@ -28,6 +28,13 @@ import com.ISC.project.service.UniversityService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 
 
 @CrossOrigin
@@ -38,25 +45,54 @@ public class UniversityController {
 	private UniversityService universityService;
 	
 	//get all university
+	//Doc for getAll university
+	@Operation(summary = "Get all universities", description = "Show all universities under the databse")
+	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = University.class))),
+	responseCode = "200",description = "Get all universities success")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Success"),
+			@ApiResponse(responseCode = "404", description = "Not found"),
+			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+			@ApiResponse(responseCode = "403", description = "Forbidden"),
+			@ApiResponse(responseCode = "500", description = "Internal Error Server")
+	})
 	@GetMapping("/listUniversity")
 	public ResultRespon listUniversity() {
 		return new ResultRespon(0,"Success",this.universityService.listAlluniversity());
 	}
 	
 	//get one university
+	// DOC for getOne  university
+		@Operation(summary = "Get one universities", description = "Show one university under the database")
+		@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = University.class))),
+		responseCode = "200", description = "Get one universities success")
+		@ApiResponses(value = {
+				@ApiResponse(responseCode = "200", description = "Success"),
+				@ApiResponse(responseCode = "404", description = "Not found"),
+				@ApiResponse(responseCode = "401", description = "Authorization Required"),
+				@ApiResponse(responseCode = "403", description = "Forbidden"),
+				@ApiResponse(responseCode = "500", description = "Internal Error Server")
+		})
 	@GetMapping("/getUniversity") 
 	public ResultRespon getUniversity(@RequestParam("id") long id) {
 		List<University> univer = new ArrayList<>();
 		univer.add(universityService.findById(id).orElseThrow(() -> new ResourseNotFoundException("not found university with id: " + id)));
-		if(univer.isEmpty()) {
-			throw new ResourseNotFoundException("Not found university by id: " + id);
-		}else {
-			return new ResultRespon(0,"Success",univer);
-		}
+		return new ResultRespon(0,"Success",univer);
 
 	}
 	
 	//post university
+		//DOC for add new university
+		@Operation(summary = "Add new university", description = "Add new university from the database")
+		@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = University.class))),
+		responseCode = "200", description = "Add universities success")
+		@ApiResponses(value = {
+				@ApiResponse(responseCode = "200", description = "Success"),
+				@ApiResponse(responseCode = "404", description = "Not found"),
+				@ApiResponse(responseCode = "401", description = "Authorization Required"),
+				@ApiResponse(responseCode = "403", description = "Forbidden"),
+				@ApiResponse(responseCode = "500", description = "Internal Error Server")
+		})
 	@PostMapping(value = "/newUniversity")
 	public ResultRespon addUniversity(@RequestBody University university) throws JsonMappingException,JsonProcessingException {
 		List<University> univer = new ArrayList<>();
@@ -76,9 +112,9 @@ public class UniversityController {
 	public ResultRespon editUniversity(@RequestBody University university,@RequestParam("id") long id) {
 		List<University> univer = new ArrayList<>();
 		University olduniversity = universityService.findById(id).orElseThrow(()->new ResourseNotFoundException("not found university with id: " + id));
-		if(this.universityService.checkNameUni(university.getNameUni()).isEmpty()) {
+		
+		if(this.universityService.getNameById(id).equals(university.getNameUni())) {
 			olduniversity.setUpdatedDate(LocalDateTime.now());
-			olduniversity.setNameUni(university.getNameUni());
 			olduniversity.setAddressUni(university.getAddressUni());
 			olduniversity.setContactPerson(university.getContactPerson());
 			olduniversity.setUpdatedBy(university.getUpdatedBy());
@@ -88,9 +124,21 @@ public class UniversityController {
 			this.universityService.save(univer.get(0));
 			return new ResultRespon(0,"Update university success",univer);
 		}else {
-			throw new ResourseNotFoundException("Duplicate University Name");
+			if(this.universityService.checkNameUni(university.getNameUni()).isEmpty()) {
+				olduniversity.setUpdatedDate(LocalDateTime.now());
+				olduniversity.setNameUni(university.getNameUni());
+				olduniversity.setAddressUni(university.getAddressUni());
+				olduniversity.setContactPerson(university.getContactPerson());
+				olduniversity.setUpdatedBy(university.getUpdatedBy());
+				olduniversity.setNoteUni(university.getNoteUni());
+				olduniversity.setWebsiteUni(university.getWebsiteUni());
+				univer.add(olduniversity);
+				this.universityService.save(univer.get(0));
+				return new ResultRespon(0,"Update university success",univer);
+			}else {
+				throw new ResourseNotFoundException("Duplicate University Name");
+			}
 		}
-
 		
 	}
 	
