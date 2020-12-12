@@ -13,6 +13,9 @@ import com.ISC.project.model.Room;
 public interface RoomRepository extends JpaRepository<Room, Long>{
 	@Query("Select codeRoom From Room Where codeRoom = :newCodeRoom")
 	public List<String> checkCodeRoom(@RequestParam("codeRoom") String newCodeRoom);
+
+	@Query("Select codeRoom From Room Where codeRoom not in (:newCodeRoom)")
+	public List<String> checkCodeRoomUpdate(@RequestParam("newCodeRoom") String newCodeRoom);
 	
 	@Query("select ro from Room ro")
 	public Page<Room> findRoom(Pageable pageable);

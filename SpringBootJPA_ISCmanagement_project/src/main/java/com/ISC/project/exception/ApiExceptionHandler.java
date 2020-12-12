@@ -19,6 +19,10 @@ public class ApiExceptionHandler{
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public ResultRespon handleAllException(Exception ex, WebRequest request) {
         // quá trình kiểm soat lỗi diễn ra ở đây
+    	if(ex.getLocalizedMessage().startsWith("could not execute statement; SQL [n/a]; constraint [UK_5d6a3s9bhtbn846qqk9op1lka]")) {
+    		return new ResultRespon(1,"Duplicate code room");
+    	}
         return new ResultRespon(1, ex.getLocalizedMessage());
+        
     }
 }

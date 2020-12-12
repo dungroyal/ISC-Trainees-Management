@@ -33,7 +33,7 @@ public class Room {
 	@Column(name = "updatedDate")
 	private LocalDateTime updatedDate;
 	
-	@Column(nullable = false, length = 50)
+	@Column(nullable = false, length = 50, unique = true)
 	private String codeRoom;
 	
 	@Column(nullable = false, length = 50)

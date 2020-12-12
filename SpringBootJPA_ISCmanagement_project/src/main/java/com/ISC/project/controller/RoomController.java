@@ -58,11 +58,11 @@ public class RoomController {
 	}
 	
 	//update Room
-		@PutMapping("/editRoom")
-		public ResultRespon editRoom(@RequestBody Room room,@RequestParam("id") long id) {
-			if(this.roomService.checkCodeRoom(room.getCodeRoom()).isEmpty()) {
-				List<Room> newRoom = new ArrayList<>();
-				Room oldRoom = roomService.findById(id).orElseThrow(()->new ResourseNotFoundException("Not found room with id: " + id));
+	@PutMapping("/editRoom")
+	public ResultRespon editRoom(@RequestBody Room room,@RequestParam("id") long id) {
+		List<Room> newRoom = new ArrayList<>();
+		Room oldRoom = roomService.findById(id).orElseThrow(()->new ResourseNotFoundException("Not found room with id: " + id));
+		if(!this.roomService.checkCodeRoom(room.getCodeRoom()).isEmpty()) {
 				oldRoom.setCodeRoom(room.getCodeRoom());
 				oldRoom.setNameRoom(room.getNameRoom());
 				oldRoom.setTypeRoom(room.getTypeRoom());
@@ -74,10 +74,25 @@ public class RoomController {
 				oldRoom.setUpdatedDate(LocalDateTime.now());
 				newRoom.add(roomService.save(oldRoom));
 				return new ResultRespon(0,"Update success",newRoom);
-			}else {
-				throw new ResourseNotFoundException("Duplicate code room");
+		}else if(this.roomService.checkCodeRoom(room.getCodeRoom()).isEmpty()){
+			if(!this.roomService.checkCodeRoomUpdate(room.getCodeRoom()).contains(room.getCodeRoom())) {
+				System.out.println(this.roomService.checkCodeRoomUpdate(room.getCodeRoom()));
+				oldRoom.setCodeRoom(room.getCodeRoom());
+				oldRoom.setNameRoom(room.getNameRoom());
+				oldRoom.setTypeRoom(room.getTypeRoom());
+				oldRoom.setStatusRoom(room.getStatusRoom());
+				oldRoom.setNoteRoom(room.getNoteRoom());
+				oldRoom.setCreatedBy(room.getCreatedBy());
+				oldRoom.setUpdatedBy(room.getUpdatedBy());
+				oldRoom.setCreatedDate(room.getCreatedDate());
+				oldRoom.setUpdatedDate(LocalDateTime.now());
+				newRoom.add(roomService.save(oldRoom));
+				return new ResultRespon(0,"Update success with new code room",newRoom);
 			}
+			throw new ResourseNotFoundException("Duplicate code room");
 		}
+		throw new ResourseNotFoundException("Duplicate code room");
+	}
 	
 	//delete Room
 	@DeleteMapping("/deleteRoom")

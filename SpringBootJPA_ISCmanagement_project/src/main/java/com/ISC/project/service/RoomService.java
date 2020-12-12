@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ISC.project.dao.RoomRepository;
 import com.ISC.project.model.Room;
@@ -49,5 +50,10 @@ public class RoomService {
 	
 	public List<Room> searchRoom(String keyWord){
 		return roomRepository.searchRoom(keyWord);
+	}
+	
+
+	public List<String> checkCodeRoomUpdate(@RequestParam("newCodeRoom") String newCodeRoom){
+		return roomRepository.checkCodeRoomUpdate(newCodeRoom);
 	}
 }
