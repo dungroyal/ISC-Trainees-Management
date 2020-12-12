@@ -78,7 +78,12 @@ public class Student {
 	@Column(length = 1000)
 	@Schema(description = "Note")
 	private String noteStu;
-	
+
+	//mapping to school
+	@ManyToOne( fetch = FetchType.LAZY)
+	@JsonBackReference
+	//	@JoinColumn(name = "university_id")
+	private University university;
 	public University getUniversity() {
 		return university;
 	}
@@ -86,12 +91,6 @@ public class Student {
 	public void setUniversity(University university) {
 		this.university = university;
 	}
-
-	//mapping to school
-	@ManyToOne( fetch = FetchType.LAZY)
-	@JsonBackReference
-	//	@JoinColumn(name = "university_id")
-	private University university;
 
 	public String getPhoneStu() {
 		return phoneStu;

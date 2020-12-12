@@ -35,6 +35,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
+import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -71,8 +73,7 @@ public class StudentController {
 	//Get One Student
 	// DOC for getOne  Student
 	@Operation(summary = "Get one Students", description = "Show one student under the database")
-	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class))),
-	responseCode = "200", description = "Get one Students success")
+	@ApiResponse(responseCode = "200", description = "Get one Students success", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class)), mediaType = "application/json"))
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Success"),
 			@ApiResponse(responseCode = "404", description = "Not found"),
@@ -93,8 +94,7 @@ public class StudentController {
 	//Add new Student
 	//DOC for add new Student
 	@Operation(summary = "Add new Student", description = "Add new student from the database")
-	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class))),
-	responseCode = "200", description = "Add Students success")
+	@ApiResponse(responseCode = "200", description = "Add Students success", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class)), mediaType = "multipart/form-data"))
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Success"),
 			@ApiResponse(responseCode = "404", description = "Not found"),
@@ -106,19 +106,22 @@ public class StudentController {
 	public ResultRespon addStudent (
 			@RequestParam("firstName") String firstName,
 			@RequestParam("lastName") String lastName,
-			@Parameter(description = "Student ID number is required!", required = true)
+			@Parameter(description = "Student Code is required!", required = true)
 			@RequestParam("code") String code,
 			@RequestParam("address") String address,
 			@RequestParam("phoneNumber") String phoneNumber,
+			@Parameter(description = "Student Email is required!", required = true)
 			@RequestParam("email") String email,
 			@RequestParam("typeStudent") TypeStudent typeStudent,
 			@Parameter(description = "GPA of the student during the course of study", required = true)
 			@RequestParam("GPA") Double GPA,
 			@RequestParam("workingStatus") StatusAc workingStatus,
 			@RequestParam("note") String note,
+			@Parameter(description = "Upload Image Student", schema = @Schema(type = "file"), content = @Content(mediaType = "multipart/form-data"))
 			@RequestParam("image") MultipartFile image,
 			@RequestParam("createdBy") String createdBy,
 			@RequestParam("updatedBy") String updatedBy,
+			@Parameter(description = "Id of University")
 			@RequestParam("univerId") Long univerId) throws JsonMappingException, JsonProcessingException {
 
 		//Get University
@@ -128,10 +131,10 @@ public class StudentController {
 		List<Student> students = new ArrayList<Student>();
 		//Get URL image
 		String fileName = this.fileStorageService.storeFile(image) + " " + code;
-		String fileDowloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-				.path("/downloadFile/")
-				.path(fileName)
-				.toUriString();
+//		String fileDowloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+//				.path("/downloadFile/")
+//				.path(fileName)
+//				.toUriString();
 		//		createdDate = LocalDateTime.now();
 		students.add(new Student(createdBy, updatedBy,code, firstName, lastName, address, phoneNumber, 
 				email, typeStudent, GPA, workingStatus, fileName, note, university));
@@ -150,22 +153,37 @@ public class StudentController {
 	}
 
 	//Update Student with new Image
+	//DOC for update Student
+	@Operation(summary = "Update Student", description = "Update  student with new image from the database")
+	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class))),
+	responseCode = "200", description = "Update Students success")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Success"),
+			@ApiResponse(responseCode = "404", description = "Not found"),
+			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+			@ApiResponse(responseCode = "403", description = "Forbidden"),
+			@ApiResponse(responseCode = "500", description = "Internal Error Server")
+	})
 	@PutMapping(value = "/updateStudentImg", consumes = "multipart/form-data")
 	public ResultRespon upateStudentNewImage (
 			@RequestParam("id") Long id,
 			@RequestParam("firstName") String firstName,
 			@RequestParam("lastName") String lastName,
+			@Parameter(description = "Student Code is required!", required = true)
 			@RequestParam("code") String code,
 			@RequestParam("address") String address,
 			@RequestParam("phoneNumber") String phoneNumber,
+			@Parameter(description = "Student Email is required!", required = true)
 			@RequestParam("email") String email,
 			@RequestParam("typeStudent") TypeStudent typeStudent,
+			@Parameter(description = "GPA of the student during the course of study", required = true)
 			@RequestParam("GPA") Double GPA,
 			@RequestParam("workingStatus") StatusAc workingStatus,
 			@RequestParam("note") String note,
 			@RequestParam("image") MultipartFile image,
 			@RequestParam("createdBy") String createdBy,
 			@RequestParam("updatedBy") String updatedBy,
+			@Parameter(description = "Id of University")
 			@RequestParam("univerId") Long univerId) throws JsonMappingException, JsonProcessingException {
 
 		//Get University
@@ -179,10 +197,10 @@ public class StudentController {
 		List<Student> students = new ArrayList<Student>();
 		//Get URL image
 		String fileName = this.fileStorageService.storeFile(image) + " " + code;
-		String fileDowloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-				.path("/downloadFile/")
-				.path(fileName)
-				.toUriString();
+//		String fileDowloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+//				.path("/downloadFile/")
+//				.path(fileName)
+//				.toUriString();
 		//Update Student
 		updateStudent.setFirstName(firstName);
 		updateStudent.setLastName(lastName);
@@ -226,21 +244,36 @@ public class StudentController {
 	}
 
 	//Update Student NO Image
+	//DOC for update Student NO IMAGE
+	@Operation(summary = "Update Student", description = "Update new student no image from the database")
+	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class))),
+	responseCode = "200", description = "Update Students success")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Success"),
+			@ApiResponse(responseCode = "404", description = "Not found"),
+			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+			@ApiResponse(responseCode = "403", description = "Forbidden"),
+			@ApiResponse(responseCode = "500", description = "Internal Error Server")
+	})
 	@PutMapping(value = "/updateStudentNotImg")
 	public ResultRespon upateStudentNewImage (
 			@RequestParam("id") Long id,
 			@RequestParam("firstName") String firstName,
 			@RequestParam("lastName") String lastName,
+			@Parameter(description = "Student Code is required!", required = true)
 			@RequestParam("code") String code,
 			@RequestParam("address") String address,
 			@RequestParam("phoneNumber") String phoneNumber,
+			@Parameter(description = "Student Email is required!", required = true)
 			@RequestParam("email") String email,
 			@RequestParam("typeStudent") TypeStudent typeStudent,
+			@Parameter(description = "GPA of the student during the course of study", required = true)
 			@RequestParam("GPA") Double GPA,
 			@RequestParam("workingStatus") StatusAc workingStatus,
 			@RequestParam("note") String note,
 			@RequestParam("createdBy") String createdBy,
 			@RequestParam("updatedBy") String updatedBy,
+			@Parameter(description = "Id of University")
 			@RequestParam("univerId") Long univerId) throws JsonMappingException, JsonProcessingException {
 
 		//Get University
@@ -296,8 +329,21 @@ public class StudentController {
 	}
 	
 	//Delete Student
+	@Operation(summary = "Delete Student", description = "Delete from the database")
+	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class))),
+	responseCode = "200", description = "Update Students success")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Success"),
+			@ApiResponse(responseCode = "404", description = "Not found"),
+			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+			@ApiResponse(responseCode = "403", description = "Forbidden"),
+			@ApiResponse(responseCode = "500", description = "Internal Error Server")
+	})
 	@DeleteMapping("/deleteStudent")
-	public ResultRespon deleteStudent(@RequestParam("id") Long id) {
+	public ResultRespon deleteStudent(
+			// DOC for id of student
+			@Parameter(description = "The student's id is required", required = true)
+			@RequestParam("id") Long id) {
 		Student student = this.studentService.findById(id)
 				.orElseThrow(() -> new ResourseNotFoundException("Not Found Student"));
 		try {
@@ -308,9 +354,23 @@ public class StudentController {
 		return new ResultRespon(0, "Delete Student Success");
 	}
 	//Pagination
+	@Operation(summary = "Pagination Student", description = "Pagination student")
+	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class))),
+	responseCode = "200", description = "Success")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Success"),
+			@ApiResponse(responseCode = "404", description = "Not found"),
+			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+			@ApiResponse(responseCode = "403", description = "Forbidden"),
+			@ApiResponse(responseCode = "500", description = "Internal Error Server")
+	})
 	@GetMapping( value = "/student/pagination")
-	public ResultRespon paginationStudent(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+	public ResultRespon paginationStudent(
+			@Parameter(description = "Number of page", required = false)
+			@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+			@Parameter(description = "Items in page", required = false)
 			@RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
+			@Parameter(description = "Sort by filed of Intems", required = false)
 			@RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
 		Sort sortable = null;
 		if (sort.equals("ASC")) {
@@ -327,8 +387,21 @@ public class StudentController {
 	}
 	
 	//Search Student
+	// DOC Search
+	@Operation(summary = "Search Student", description = "Search student")
+	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class))),
+	responseCode = "200", description = "Success")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Success"),
+			@ApiResponse(responseCode = "404", description = "Not found"),
+			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+			@ApiResponse(responseCode = "403", description = "Forbidden"),
+			@ApiResponse(responseCode = "500", description = "Internal Error Server")
+	})
 	@GetMapping(value = "/searchStudent")
-	public ResultRespon searchStudent(@RequestParam("keyWord") String keyWord) {
+	public ResultRespon searchStudent(
+			@Parameter(description = "Enter the keywords you want to search", required = false)
+			@RequestParam("keyWord") String keyWord) {
 		if(this.studentService.searchStudent(keyWord).isEmpty()) {
 			throw new ResourseNotFoundException("Not Found Student");
 		} else {

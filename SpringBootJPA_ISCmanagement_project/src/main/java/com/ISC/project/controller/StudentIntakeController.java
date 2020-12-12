@@ -21,8 +21,18 @@ import com.ISC.project.service.IntakeService;
 import com.ISC.project.service.IntakeStudentService;
 import com.ISC.project.service.StudentService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api")
+@Tag(name = "Student_Intake", description = "CRUD for Student_Intake")
 public class StudentIntakeController {
 	@Autowired
 	private StudentService studentService;
@@ -32,20 +42,60 @@ public class StudentIntakeController {
 	private IntakeStudentService intakeStudentService;
 
 	//Get all 
+	//Get All Id Student and Id Intake
+	@Operation(summary = "Get All Id Student and Id Intake", description = "Show all Id Student and Id Intake under the database")
+	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = IntakeStudent.class))),
+	responseCode = "200", description = "Get All Id Student and Id Intake success")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Success"),
+			@ApiResponse(responseCode = "404", description = "Not found"),
+			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+			@ApiResponse(responseCode = "403", description = "Forbidden"),
+			@ApiResponse(responseCode = "500", description = "Internal Error Server")
+	})
 	@GetMapping(value = "/allStudentIntake")
 	public ResultRespon allStudentIntake() {
 		return new ResultRespon(0, "Success", this.intakeStudentService.listAllCourseStudent());
 	}
 
-	//Get One
+	//Get List ID Intake By Id Student
+	//Get List ID Intake By Id Student DOC
+	@Operation(summary = "Get List ID Intake By Id Student", description = "Get List ID Intake By Id Student under the database")
+	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = IntakeStudent.class))),
+	responseCode = "200", description = "Get List ID Intake By Id Student success")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Success"),
+			@ApiResponse(responseCode = "404", description = "Not found"),
+			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+			@ApiResponse(responseCode = "403", description = "Forbidden"),
+			@ApiResponse(responseCode = "500", description = "Internal Error Server")
+	})
 	@GetMapping(value = "/getIntakeOfStu") 
-	public ResultRespon getIntakeOfStu(@RequestParam("studentId") Long studentId) {
+	public ResultRespon getIntakeOfStu(
+			@Parameter(description = ("Id student"), required = true)
+			@RequestParam("studentId") Long studentId) {
 		return new ResultRespon(0, "Success", this.intakeStudentService.listIntakeOfStu(studentId));
 	}
-
+	
+	
 	//Post IntakeStudent
+	//Post ID Intake By Id Student DOC
+	@Operation(summary = "Post ID Intake By Id Student DOC", description = "Post ID Intake By Id Student DOC from the database")
+	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = IntakeStudent.class))),
+	responseCode = "200", description = "Success")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Success"),
+			@ApiResponse(responseCode = "404", description = "Not found"),
+			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+			@ApiResponse(responseCode = "403", description = "Forbidden"),
+			@ApiResponse(responseCode = "500", description = "Internal Error Server")
+	})
 	@PostMapping(value = "/postIntakeOfStu")
-	public ResultRespon addIntakeOfStu(@RequestParam("studentId") Long studentId, @RequestParam("intakeId") Long [] intakeId) {
+	public ResultRespon addIntakeOfStu(
+			@Parameter(description = ("Id student"), required = true)
+			@RequestParam("studentId") Long studentId, 
+			@Parameter(description = ("Array intake id"), required = true)
+			@RequestParam("intakeId") Long [] intakeId) {
 		List<IntakeStudent> intakeStudents = new ArrayList<IntakeStudent>();
 		Student student = this.studentService.findById(studentId)
 				.orElseThrow(() -> new ResourceNotFoundException("Not found Student id"));
@@ -60,21 +110,51 @@ public class StudentIntakeController {
 	}
 
 	//Update intake of student
+	//Put ID Intake By Id Student DOC
+	@Operation(summary = "Put ID Intake By Id Student DOC", description = "Put ID Intake By Id Student DOC from the database")
+	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = IntakeStudent.class))),
+	responseCode = "200", description = "Success")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Success"),
+			@ApiResponse(responseCode = "404", description = "Not found"),
+			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+			@ApiResponse(responseCode = "403", description = "Forbidden"),
+			@ApiResponse(responseCode = "500", description = "Internal Error Server")
+	})
 	@PutMapping(value = "/updateIntakeOfStu")
-	public ResultRespon updateIntakeOfStu(@RequestParam("newIntakeId") List<Long> newIntakeId, @RequestParam("studentId") Long studentId
-			, @RequestParam("intakeId") List<Long> intakeId) {
+	public ResultRespon updateIntakeOfStu(
+			@Parameter(description = ("List new Intake ID"), required = true)
+			@RequestParam("newIntakeId") List<Long> newIntakeId, 
+			@Parameter(description = ("Student ID"), required = true)
+			@RequestParam("studentId") Long studentId, 
+			@Parameter(description = ("List Old Intake ID"), required = true)
+			@RequestParam("intakeId") List<Long> intakeId) {
 		this.intakeStudentService.updateIntakeOfStuArray(newIntakeId, studentId, intakeId);
 		return new ResultRespon(0, "Update Intake Of Student Success", this.intakeStudentService.listIntakeOfStu(studentId));
 	}
 
 	//Update intake of student with array intakeId
+	//Put ID Intake By Id Student DOC
+	@Operation(summary = "Put ID Intake By Id Student DOC", description = "Put ID Intake By Id Student DOC from the database")
+	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = IntakeStudent.class))),
+	responseCode = "200", description = "Success")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Success"),
+			@ApiResponse(responseCode = "404", description = "Not found"),
+			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+			@ApiResponse(responseCode = "403", description = "Forbidden"),
+			@ApiResponse(responseCode = "500", description = "Internal Error Server")
+	})
 	@PutMapping(value = "/updateIntakeOfStuArray")
-	public ResultRespon updateIntakeOfStuArray(@RequestParam("studentId") Long studentId, @RequestParam("intakeId") Long [] intakeId,
+	public ResultRespon updateIntakeOfStuArray(
+			@Parameter(description = ("Student ID"), required = true)
+			@RequestParam("studentId") Long studentId,
+			@Parameter(description = ("List Old Intake ID"), required = true)
+			@RequestParam("intakeId") Long [] intakeId,
+			@Parameter(description = ("List new Intake ID"), required = true)
 			@RequestParam("newIntakeId") Long [] newIntakeId) {
-		
 		List<IntakeStudent> intakeStudents = new ArrayList<IntakeStudent>();
-		
-		//Tim stu 
+		 
 		Student student = this.studentService.findById(studentId)
 				.orElseThrow(() -> new ResourceNotFoundException("Not found student id"));
 		
@@ -91,15 +171,27 @@ public class StudentIntakeController {
 			intakeStudent.setStudent(student);
 			intakeStudent.setIntake(this.intakeService.findById(newIntakeId[j]).orElseThrow(() -> new ResourceNotFoundException("Not found Intake Id")));
 			intakeStudents.add(this.intakeStudentService.save(intakeStudent));
-//			return new ResultRespon(0, "Success", intakeStudents);
 		}
-//		intakeStudents.forEach(e -> System.out.println(e));
 		return new ResultRespon(0, "Success", intakeStudents);
 	}
 	
 	//Delete intake student
+	//Delete ID Intake By Id Student DOC
+	@Operation(summary = "Delete ID Intake By Id Student DOC", description = "Delete ID Intake By Id Student DOC from the database")
+	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = IntakeStudent.class))),
+	responseCode = "200", description = "Success")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Success"),
+			@ApiResponse(responseCode = "404", description = "Not found"),
+			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+			@ApiResponse(responseCode = "403", description = "Forbidden"),
+			@ApiResponse(responseCode = "500", description = "Internal Error Server")
+	})
 	@DeleteMapping(value = "/deleteIntakeOfStu") 
-	public ResultRespon deleteIntakeOfStu(@RequestParam("studentId") Long studentId,
+	public ResultRespon deleteIntakeOfStu(
+			@Parameter(description = ("Student ID"), required = true)
+			@RequestParam("studentId") Long studentId,
+			@Parameter(description = ("Intake ID"), required = true)
 			@RequestParam("intakeId") Long intakeId) {
 		this.intakeStudentService.findById(new EmbemdedIntakeStudentId(intakeId, studentId))
 		.orElseThrow(() -> new ResourceNotFoundException("Not found IntakeStudent"));
