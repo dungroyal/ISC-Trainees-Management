@@ -12,11 +12,14 @@ import javax.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 @Entity
 @Table(name = "rooms")
 public class Room {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Schema(description = "Room UUID in the database")
 	private Long id;
 	
 	@Column(name = "createdBy")
@@ -34,6 +37,7 @@ public class Room {
 	private LocalDateTime updatedDate;
 	
 	@Column(nullable = false, length = 50, unique = true)
+	@Schema(description = "Room code is unique")
 	private String codeRoom;
 	
 	@Column(nullable = false, length = 50)
