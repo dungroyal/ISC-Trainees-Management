@@ -1,18 +1,14 @@
 package com.ISC.project.dao;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import java.util.List;
 import com.ISC.project.model.Lecturer;
-import com.ISC.project.model.Major;
 
-public interface LecturerRepository extends JpaRepository<Lecturer, Long> {
-
+public interface LecturerRepository extends JpaRepository<Lecturer, Long>{
 	@Query("select codeLec from Lecturer where codeLec = :newCodeLec")
 	public List<String> checkCodeLecturer(@RequestParam("codeLec") String newCodeLec);
 

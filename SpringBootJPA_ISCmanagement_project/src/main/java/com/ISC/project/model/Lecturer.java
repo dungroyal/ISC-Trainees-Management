@@ -2,7 +2,6 @@ package com.ISC.project.model;
 
 import java.time.LocalDateTime;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,49 +19,48 @@ public class Lecturer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(name = "createdBy")
 	private String createdBy;
-	
+
 	@Column(name = "updatedBy")
 	private String updatedBy;
-	
+
 	@CreatedDate
 	@Column(name = "createdDate")
 	private LocalDateTime createdDate;
-	
+
 	@LastModifiedDate
 	@Column(name = "updatedDate")
 	private LocalDateTime updatedDate;
-	
-	
-	@Column(nullable = false, length = 50,unique = true)
+
+	@Column(nullable = false, length = 50, unique = true)
 	private String codeLec;
-	
+
 	@Column(nullable = false, length = 50)
 	private String firstName;
-	
+
 	@Column(nullable = false, length = 50)
 	private String lastName;
-	
+
 	@Column(length = 100)
 	private String addressLec;
-	
+
 	@Column(nullable = false, length = 50)
 	private String phoneLec;
-	
+
 	@Column(nullable = false, length = 50, unique = true)
 	private String emailLec;
-	
+
 	@Column(nullable = false, length = 50)
 	private String degree;
-	
-	@Column(nullable = false,columnDefinition = "TEXT")
-	private MultipartFile image;
-	
+
+	@Column(nullable = false, columnDefinition = "TEXT")
+	private String image;
+
 	@Column(length = 50)
 	private StatusAc statusLec;
-	
+
 	@Column(length = 2000)
 	private String noteLec;
 
@@ -122,11 +120,11 @@ public class Lecturer {
 		this.degree = degree;
 	}
 
-	public MultipartFile getImage() {
+	public String getImage() {
 		return image;
 	}
 
-	public void setImage(MultipartFile image) {
+	public void setImage(String image) {
 		this.image = image;
 	}
 
@@ -186,11 +184,9 @@ public class Lecturer {
 		this.updatedDate = updatedDate;
 	}
 
-	
-
-	public Lecturer(Long id, String createdBy, String updatedBy, LocalDateTime createdDate, LocalDateTime updatedDate, String codeLec,
-			String firstName, String lastName, String addressLec, String phoneLec, String emailLec, String degree,
-			MultipartFile image, StatusAc statusLec, String noteLec) {
+	public Lecturer(Long id, String createdBy, String updatedBy, LocalDateTime createdDate, LocalDateTime updatedDate,
+			String codeLec, String firstName, String lastName, String addressLec, String phoneLec, String emailLec,
+			String degree, String image, StatusAc statusLec, String noteLec) {
 		super();
 		this.id = id;
 		this.createdBy = createdBy;
@@ -219,7 +215,7 @@ public class Lecturer {
 	}
 
 	public Lecturer(String createdBy, String updatedBy, String codeLec, String firstName, String lastName,
-			String addressLec, String phoneLec, String emailLec, String degree, MultipartFile image, StatusAc statusLec,
+			String addressLec, String phoneLec, String emailLec, String degree, String image, StatusAc statusLec,
 			String noteLec) {
 		super();
 		this.createdBy = createdBy;
@@ -235,8 +231,5 @@ public class Lecturer {
 		this.statusLec = statusLec;
 		this.noteLec = noteLec;
 	}
-
-	
-	
 
 }

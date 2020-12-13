@@ -63,11 +63,11 @@ public class Intake {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "major_id")
 	private Major major;
-	
+
 	// mapping to intakeSubject
 	@OneToMany(mappedBy = "intake")
 	private List<IntakeSubject> intakeSubject = new ArrayList<>();
-	
+
 	// mapping to intakeStudent
 	@OneToMany(mappedBy = "intake")
 	private List<IntakeStudent> intakeStudent = new ArrayList<>();
