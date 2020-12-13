@@ -9,46 +9,46 @@ import javax.persistence.MapsId;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "CourseStudent")
-public class CourseStudent {
+@Table(name = "IntakeStudent")
+public class IntakeStudent {
 	@EmbeddedId
-	private EmbemdedCourseStudentId id = new EmbemdedCourseStudentId();
+	private EmbemdedIntakeStudentId id = new EmbemdedIntakeStudentId();
 	
-	//map to course
+	//map to intake
 			@ManyToOne(optional = false)
-			@MapsId("courseId")
-			private Course course;
+			@MapsId("intakeId")
+			private Intake intake;
 			
 			//map to student
 			@ManyToOne(optional = false)
 			@MapsId("studentId")
 			private Student student;
 
-			public CourseStudent(EmbemdedCourseStudentId id, Course course, Student student) {
+			public IntakeStudent(EmbemdedIntakeStudentId id, Intake intake, Student student) {
 				super();
 				this.id = id;
-				this.course = course;
+				this.intake = intake;
 				this.student = student;
 			}
 
-			public CourseStudent() {
+			public IntakeStudent() {
 				super();
 			}
 
-			public EmbemdedCourseStudentId getId() {
+			public EmbemdedIntakeStudentId getId() {
 				return id;
 			}
 
-			public void setId(EmbemdedCourseStudentId id) {
+			public void setId(EmbemdedIntakeStudentId id) {
 				this.id = id;
 			}
 
-			public Course getCourse() {
-				return course;
+			public Intake getintake() {
+				return intake;
 			}
 
-			public void setCourse(Course course) {
-				this.course = course;
+			public void setintake(Intake intake) {
+				this.intake = intake;
 			}
 
 			public Student getStudent() {
@@ -62,7 +62,7 @@ public class CourseStudent {
 			//hash code
 			 @Override
 			    public int hashCode() {
-			        return Objects.hash(course, student);
+			        return Objects.hash(intake, student);
 			    }
 			
 			//Override equals
@@ -73,8 +73,8 @@ public class CourseStudent {
 		       if (o == null || getClass() != o.getClass())
 		           return false;
 
-		       CourseStudent that = (CourseStudent) o;
-		       return Objects.equals(this.course, that.course) &&
+		       IntakeStudent that = (IntakeStudent) o;
+		       return Objects.equals(this.intake, that.intake) &&
 		              Objects.equals(this.student, that.student);
 		   }
 }

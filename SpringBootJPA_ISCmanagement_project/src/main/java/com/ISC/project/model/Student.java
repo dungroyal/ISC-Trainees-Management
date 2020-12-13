@@ -1,11 +1,6 @@
 package com.ISC.project.model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -56,7 +50,7 @@ public class Student {
 	@Column(nullable = false, length = 50)
 	private String phoneStu;
 	
-	@Column(length = 100,unique = true)
+	@Column(length = 100,unique = true, nullable= false)
 	private String emailStu;
 	
 	@Column(nullable = false)
@@ -73,18 +67,11 @@ public class Student {
 	
 	@Column(length = 1000)
 	private String noteStu;
-
-	//mapping to company
-	@OneToMany(
-	        cascade = CascadeType.ALL
-	    )
-	@JoinColumn(name = "company_id")
-	    private List<Company> companies = new ArrayList<>();
 	
 	//mapping to school
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "school_id")
-    private School school;
+	@ManyToOne( fetch = FetchType.LAZY)
+//	@JoinColumn(name = "university_id")
+    private University university	;
 	
 	public String getPhoneStu() {
 		return phoneStu;

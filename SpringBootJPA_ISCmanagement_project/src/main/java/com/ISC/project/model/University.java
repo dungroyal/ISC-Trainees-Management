@@ -1,20 +1,19 @@
 package com.ISC.project.model;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -24,62 +23,60 @@ import org.springframework.data.annotation.LastModifiedDate;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Table(name = "schools")
-public class School {
+@Table(name = "university")
+public class University {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(name = "createdBy")
 	private String createdBy;
-	
+
 	@Column(name = "updatedBy")
 	private String updatedBy;
-	
+
 	@CreatedDate
 	@Column(name = "createdDate")
 	private LocalDateTime createdDate;
-	
+
 	@LastModifiedDate
 	@Column(name = "updatedDate")
 	private LocalDateTime updatedDate;
-	
+
 	@Column(nullable = false, length = 100)
-	private String nameShc;
-	
+	private String nameUni;
+
 	@Column(nullable = false)
-	private String addressShc;
-	
+	private String addressUni;
+
 	@Column(nullable = false, length = 150)
 	private String contactPerson;
-	
+
 	@Column(length = 50)
-	private String websiteShc;
-	
+	private String websiteUni;
+
 	@Column(length = 1000)
-	private String noteShc;
+	private String noteUni;
 
 	//mapping to student
 	@JsonBackReference
-	@OneToMany(
-	        cascade = CascadeType.ALL
-	    )
-	    private List<Student> student = new ArrayList<>();
-	
-	public String getNameShc() {
-		return nameShc;
+	@OneToMany(mappedBy = "university")
+	private List<Student> student = new ArrayList<>();
+
+	public String getNameUni() {
+		return nameUni;
 	}
 
-	public void setNameShc(String nameShc) {
-		this.nameShc = nameShc;
+	public void setNameUni(String nameUni) {
+		this.nameUni = nameUni;
 	}
 
-	public String getAddressShc() {
-		return addressShc;
+	public String getAddressUni() {
+		return addressUni;
 	}
 
-	public void setAddressShc(String addressShc) {
-		this.addressShc = addressShc;
+	public void setAddressUni(String addressUni) {
+		this.addressUni = addressUni;
 	}
 
 	public String getContactPerson() {
@@ -90,20 +87,20 @@ public class School {
 		this.contactPerson = contactPerson;
 	}
 
-	public String getWebsiteShc() {
-		return websiteShc;
+	public String getWebsiteUni() {
+		return websiteUni;
 	}
 
-	public void setWebsiteShc(String websiteShc) {
-		this.websiteShc = websiteShc;
+	public void setWebsiteUni(String websiteUni) {
+		this.websiteUni = websiteUni;
 	}
 
-	public String getNoteShc() {
-		return noteShc;
+	public String getNoteUni() {
+		return noteUni;
 	}
 
-	public void setNoteShc(String noteShc) {
-		this.noteShc = noteShc;
+	public void setNoteUni(String noteUni) {
+		this.noteUni = noteUni;
 	}
 
 	public Long getId() {
@@ -130,7 +127,7 @@ public class School {
 		this.updatedBy = updatedBy;
 	}
 
-	
+
 
 	public LocalDateTime getCreatedDate() {
 		return createdDate;
@@ -156,29 +153,29 @@ public class School {
 		this.updatedDate = updatedDate;
 	}
 
-	public School(Long id, String createdBy, String updatedBy, LocalDateTime createdDate, LocalDateTime updatedDate, String nameShc,
-			String addressShc, String contactPerson, String websiteShc, String noteShc) {
+	public University(Long id, String createdBy, String updatedBy, LocalDateTime createdDate, LocalDateTime updatedDate, String nameUni,
+			String addressUni, String contactPerson, String websiteUni, String noteUni) {
 		super();
 		this.id = id;
 		this.createdBy = createdBy;
 		this.updatedBy = updatedBy;
 		this.createdDate = createdDate;
 		this.updatedDate = updatedDate;
-		this.nameShc = nameShc;
-		this.addressShc = addressShc;
+		this.nameUni = nameUni;
+		this.addressUni = addressUni;
 		this.contactPerson = contactPerson;
-		this.websiteShc = websiteShc;
-		this.noteShc = noteShc;
+		this.websiteUni = websiteUni;
+		this.noteUni = noteUni;
 	}
 
-	public School() {
+	public University() {
 		super();
 	}
 
-	public School(Long id) {
+	public University(Long id) {
 		super();
 		this.id = id;
 	}
-	
-	
+
+
 }

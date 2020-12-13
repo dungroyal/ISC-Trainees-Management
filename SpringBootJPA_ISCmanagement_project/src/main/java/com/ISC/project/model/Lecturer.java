@@ -1,7 +1,7 @@
 package com.ISC.project.model;
 
 import java.time.LocalDateTime;
-import java.util.Date;
+
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -44,13 +44,13 @@ public class Lecturer {
 	@Column(nullable = false, length = 50)
 	private String lastName;
 	
-	@Column(nullable = false, length = 50)
+	@Column(length = 100)
 	private String addressLec;
 	
 	@Column(nullable = false, length = 50)
 	private String phoneLec;
 	
-	@Column(nullable = false, length = 50)
+	@Column(nullable = false, length = 50, unique = true)
 	private String emailLec;
 	
 	@Column(nullable = false, length = 50)
@@ -70,7 +70,7 @@ public class Lecturer {
 	}
 
 	public void setCodeLec(String codeLec) {
-		codeLec = codeLec;
+		this.codeLec = codeLec;
 	}
 
 	public String getFirstName() {

@@ -9,52 +9,47 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
-@Table(name = "RoomSubject")
-public class RoomSubject implements Serializable{
+@Table(name = "IntakeSubject")
+public class IntakeSubject implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@EmbeddedId
-	private EmbemdedRoomSubjectId id = new EmbemdedRoomSubjectId();
+	private EmbemdedIntakeSubjectId id = new EmbemdedIntakeSubjectId();
 	
-	//map to room
+		//map to intake
+		@JsonBackReference
 		@ManyToOne(optional = false)
-		@MapsId("roomId")
-		private Room room;
+		@MapsId("intakeId")
+		private Intake intake;
 		
 		//map to subject
+		@JsonBackReference
 		@ManyToOne(optional = false)
 		@MapsId("subjectId")
 		private Subject subject;
 
-		public RoomSubject(EmbemdedRoomSubjectId id, Room room, Subject subject) {
-			super();
-			this.id = id;
-			this.room = room;
-			this.subject = subject;
-		}
-
-		public RoomSubject() {
-			super();
-		}
-
-		public RoomSubject(EmbemdedRoomSubjectId id) {
-			super();
-			this.id = id;
-		}
-
-		public EmbemdedRoomSubjectId getId() {
+		
+		
+		public EmbemdedIntakeSubjectId getId() {
 			return id;
 		}
 
-		public void setId(EmbemdedRoomSubjectId id) {
+		public void setId(EmbemdedIntakeSubjectId id) {
 			this.id = id;
 		}
 
-		public Room getRoom() {
-			return room;
+		public Intake getIntake() {
+			return intake;
 		}
 
-		public void setRoom(Room room) {
-			this.room = room;
+		public void setIntake(Intake intake) {
+			this.intake = intake;
 		}
 
 		public Subject getSubject() {
@@ -64,11 +59,15 @@ public class RoomSubject implements Serializable{
 		public void setSubject(Subject subject) {
 			this.subject = subject;
 		}
-		
+
+		public static long getSerialversionuid() {
+			return serialVersionUID;
+		}
+
 		//hash code
 		 @Override
 		    public int hashCode() {
-		        return Objects.hash(room, subject);
+		        return Objects.hash(intake, subject);
 		    }
 		
 		//Override equals
@@ -79,8 +78,8 @@ public class RoomSubject implements Serializable{
 	       if (o == null || getClass() != o.getClass())
 	           return false;
 
-	       RoomSubject that = (RoomSubject) o;
-	       return Objects.equals(this.room, that.room) &&
+	       IntakeSubject that = (IntakeSubject) o;
+	       return Objects.equals(this.intake, that.intake) &&
 	              Objects.equals(this.subject, that.subject);
 	   }
 }

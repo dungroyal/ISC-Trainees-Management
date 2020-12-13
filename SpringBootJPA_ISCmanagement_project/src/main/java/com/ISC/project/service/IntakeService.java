@@ -8,27 +8,27 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ISC.project.dao.CourseRepository;
-import com.ISC.project.model.Course;
+import com.ISC.project.dao.IntakeRepository;
+import com.ISC.project.model.Intake;
 
 @Service
 @Transactional
-public class CourseService {
+public class IntakeService {
 	@Autowired
-	private CourseRepository courseRepository;
+	private IntakeRepository courseRepository;
 	
-	public Optional<Course> findById(long id){
+	public Optional<Intake> findById(long id){
 		return courseRepository.findById(id);
 	} 
-	public Course save(Course course) {
+	public Intake save(Intake course) {
 		return courseRepository.save(course);
 	}
 	
-	public List<Course> listAllCourse(){
+	public List<Intake> listAllCourse(){
 		return courseRepository.findAll();
 	}
 	
-	public Course get(long id) {
+	public Intake get(long id) {
 		return courseRepository.findById(id).get();
 	}
 	

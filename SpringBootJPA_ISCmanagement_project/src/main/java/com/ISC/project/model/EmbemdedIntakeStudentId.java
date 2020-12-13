@@ -5,29 +5,29 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 
-public class EmbemdedCourseStudentId implements Serializable{
-	@Column(name = "course_id",nullable = false)
-	private Long courseId;
+public class EmbemdedIntakeStudentId implements Serializable{
+	@Column(name = "intake_id",nullable = false)
+	private Long intakeId;
 	
 	@Column(name = "student_id",nullable = false)
 	private Long studentId;
 
-	public EmbemdedCourseStudentId(Long courseId, Long studentId) {
+	public EmbemdedIntakeStudentId(Long intakeId, Long studentId) {
 		super();
-		this.courseId = courseId;
+		this.intakeId = intakeId;
 		this.studentId = studentId;
 	}
 	
-	public EmbemdedCourseStudentId() {
+	public EmbemdedIntakeStudentId() {
 		super();
 	}
 
-	public Long getCourseId() {
-		return courseId;
+	public Long getintakeId() {
+		return intakeId;
 	}
 
-	public void setCourseId(Long courseId) {
-		this.courseId = courseId;
+	public void setintakeId(Long intakeId) {
+		this.intakeId = intakeId;
 	}
 
 	public Long getStudentId() {
@@ -41,7 +41,7 @@ public class EmbemdedCourseStudentId implements Serializable{
 	//hash code
 	 @Override
 	    public int hashCode() {
-	        return Objects.hash(courseId, studentId);
+	        return Objects.hash(intakeId, studentId);
 	    }
 	
 	//Override equals
@@ -52,8 +52,8 @@ public class EmbemdedCourseStudentId implements Serializable{
       if (o == null || getClass() != o.getClass())
           return false;
 
-      EmbemdedCourseStudentId that = (EmbemdedCourseStudentId) o;
-      return Objects.equals(this.courseId, that.courseId) &&
+      EmbemdedIntakeStudentId that = (EmbemdedIntakeStudentId) o;
+      return Objects.equals(this.intakeId, that.intakeId) &&
              Objects.equals(this.studentId, that.studentId);
   }
 }

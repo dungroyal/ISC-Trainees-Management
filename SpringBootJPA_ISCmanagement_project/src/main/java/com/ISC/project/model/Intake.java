@@ -9,7 +9,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -19,8 +18,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
-@Table(name = "courses")
-public class Course {
+@Table(name = "intakes")
+public class Intake {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -40,10 +39,10 @@ public class Course {
 	private LocalDateTime updatedDate;
 	
 	@Column(nullable = false, length = 50, unique = true)
-	private String codeCourse;
+	private String codeIntake;
 	
 	@Column(nullable = false, length = 200)
-	private String nameCourse;
+	private String nameIntake;
 	
 	@Temporal(TemporalType.DATE)
 	@Column(nullable = false)
@@ -54,26 +53,26 @@ public class Course {
 	private Date endDay;
 	
 	@Column(length = 150)
-	private StatusCourse statusCourse;
+	private StatusIntake statusIntake;
 
 	//mapping to major
 	@ManyToOne(fetch = FetchType.LAZY)
     private Major major;
 	
-	public String getCodeCourse() {
-		return codeCourse;
+	public String getCodeIntake() {
+		return codeIntake;
 	}
 
-	public void setCodeCourse(String codeCourse) {
-		this.codeCourse = codeCourse;
+	public void setCodeIntake(String codeIntake) {
+		this.codeIntake = codeIntake;
 	}
 
-	public String getNameCourse() {
-		return nameCourse;
+	public String getNameIntake() {
+		return nameIntake;
 	}
 
-	public void setNameCourse(String nameCourse) {
-		this.nameCourse = nameCourse;
+	public void setNameIntake(String nameIntake) {
+		this.nameIntake = nameIntake;
 	}
 
 	public Date getStartDay() {
@@ -94,12 +93,12 @@ public class Course {
 
 	
 
-	public StatusCourse getStatusCourse() {
-		return statusCourse;
+	public StatusIntake getStatusIntake() {
+		return statusIntake;
 	}
 
-	public void setStatusCourse(StatusCourse statusCourse) {
-		this.statusCourse = statusCourse;
+	public void setStatusIntake(StatusIntake statusIntake) {
+		this.statusIntake = statusIntake;
 	}
 
 	public Long getId() {
@@ -144,26 +143,26 @@ public class Course {
 
 	
 
-	public Course(Long id, String createdBy, String updatedBy, LocalDateTime createdDate, LocalDateTime updatedDate, String codeCourse,
-			String nameCourse, Date startDay, Date endDay, StatusCourse statusCourse) {
+	public Intake(Long id, String createdBy, String updatedBy, LocalDateTime createdDate, LocalDateTime updatedDate, String codeIntake,
+			String nameIntake, Date startDay, Date endDay, StatusIntake statusIntake) {
 		super();
 		this.id = id;
 		this.createdBy = createdBy;
 		this.updatedBy = updatedBy;
 		this.createdDate = createdDate;
 		this.updatedDate = updatedDate;
-		this.codeCourse = codeCourse;
-		this.nameCourse = nameCourse;
+		this.codeIntake = codeIntake;
+		this.nameIntake = nameIntake;
 		this.startDay = startDay;
 		this.endDay = endDay;
-		this.statusCourse = statusCourse;
+		this.statusIntake = statusIntake;
 	}
 
-	public Course() {
+	public Intake() {
 		super();
 	}
 
-	public Course(Long id) {
+	public Intake(Long id) {
 		super();
 		this.id = id;
 	}
