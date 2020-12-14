@@ -42,77 +42,75 @@ public class CompanyController {
 	@Autowired
 	private CompanyService companyService;
 
-	//get all company
-	//Doc for getAll company
+	// get all company
+	// Doc for getAll company
 	@Operation(summary = "Get all companies", description = "Show all companies under the databse")
-	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Company.class))),
-	responseCode = "200",description = "Get all companies success")
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Success"),
+	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Company.class))), responseCode = "200", description = "Get all companies success")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
 			@ApiResponse(responseCode = "404", description = "Not found"),
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
-			@ApiResponse(responseCode = "500", description = "Internal Error Server")
-	})
+			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
 	@GetMapping("/listCompany")
-	public ResultRespon listCompany(){
-		return new ResultRespon(0,"Success",this.companyService.listAllCompany());
+	public ResultRespon listCompany() {
+		return new ResultRespon(0, "Success", this.companyService.listAllCompany());
 	}
 
-	//get one company
-	// DOC for getOne  company
+	// get one company
+	// DOC for getOne company
 	@Operation(summary = "Get one companies", description = "Show one company under the database")
-	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Company.class))),
-	responseCode = "200", description = "Get one companies success")
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Success"),
+	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Company.class))), responseCode = "200", description = "Get one companies success")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
 			@ApiResponse(responseCode = "404", description = "Not found"),
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
-			@ApiResponse(responseCode = "500", description = "Internal Error Server")
-	})
-	@GetMapping("/getCompany") 
-	public ResultRespon getCompany(
-			@RequestParam("id") long id) {
+			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
+	@GetMapping("/getCompany")
+	public ResultRespon getCompany(@RequestParam("id") long id) {
 		List<Company> compa = new ArrayList<>();
-		compa.add(companyService.findById(id).orElseThrow(() -> new ResourseNotFoundException("not found company with id: " + id)));
-		return new ResultRespon(0,"Success",compa);
+		compa.add(companyService.findById(id)
+				.orElseThrow(() -> new ResourseNotFoundException("not found company with id: " + id)));
+		return new ResultRespon(0, "Success", compa);
 	}
 
-	//post company
-	//DOC for add new company
+	// post company
+	// DOC for add new company
 	@Operation(summary = "Add new company", description = "Add new company from the database")
-	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Company.class))),
-	responseCode = "200", description = "Add companies success")
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Success"),
+	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Company.class))), responseCode = "200", description = "Add companies success")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
 			@ApiResponse(responseCode = "404", description = "Not found"),
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
-			@ApiResponse(responseCode = "500", description = "Internal Error Server")
-	})
+			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
 	@PostMapping(value = "/newCompany")
-	public ResultRespon addCompany(@RequestBody Company company){
+	public ResultRespon addCompany(@RequestBody Company company) {
 		List<Company> compa = new ArrayList<Company>();
 		compa.add(company);
 		compa.get(0).setCreatedDate(LocalDateTime.now());
-		if(this.companyService.checkNameCom(company.getNameCom()).isEmpty()) {
+		if (this.companyService.checkNameCom(company.getNameCom()).isEmpty()) {
 			this.companyService.save(compa.get(0));
-			return new ResultRespon(0,"Add company success",compa);
-		}else {
+			return new ResultRespon(0, "Add company success", compa);
+		} else {
 			throw new ResourseNotFoundException("Duplicate Company Name");
 		}
 	}
 
-	//update company
-	@PutMapping(value="/editCompany")
-	public ResultRespon editCompany(
-			@RequestBody Company company,
-			@RequestParam("id") long id) {
+	// update company
+	// DOC for update company
+	@Operation(summary = "Update company", description = "Update company from the database")
+	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Company.class))), responseCode = "200", description = "Update company success")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
+			@ApiResponse(responseCode = "404", description = "Not found"),
+			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+			@ApiResponse(responseCode = "403", description = "Forbidden"),
+			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
+	@PutMapping(value = "/editCompany")
+	public ResultRespon editCompany(@RequestBody Company company, @RequestParam("id") long id) {
 		List<Company> compa = new ArrayList<Company>();
-		Company oldcompany = companyService.findById(id).orElseThrow(() -> new ResourseNotFoundException("not found company with id: "+ id));
+		Company oldcompany = companyService.findById(id)
+				.orElseThrow(() -> new ResourseNotFoundException("not found company with id: " + id));
 
-		if(this.companyService.getNameById(id).equals(company.getNameCom())) {
+		if (this.companyService.getNameById(id).equals(company.getNameCom())) {
 			oldcompany.setAddresCom(company.getAddresCom());
 			oldcompany.setContactPerson(company.getContactPerson());
 			oldcompany.setNoteCom(company.getNoteCom());
@@ -122,9 +120,9 @@ public class CompanyController {
 			oldcompany.setUpdatedDate(LocalDateTime.now());
 			compa.add(oldcompany);
 			this.companyService.save(compa.get(0));
-			return new ResultRespon(0,"Update company success",compa);
-		}else {
-			if(this.companyService.checkNameCom(company.getNameCom()).isEmpty()) {
+			return new ResultRespon(0, "Update company success", compa);
+		} else {
+			if (this.companyService.checkNameCom(company.getNameCom()).isEmpty()) {
 				oldcompany.setNameCom(company.getNameCom());
 				oldcompany.setAddresCom(company.getAddresCom());
 				oldcompany.setContactPerson(company.getContactPerson());
@@ -135,59 +133,86 @@ public class CompanyController {
 				oldcompany.setUpdatedDate(LocalDateTime.now());
 				compa.add(oldcompany);
 				this.companyService.save(compa.get(0));
-				return new ResultRespon(0,"Update company success",compa);
-			}else {
+				return new ResultRespon(0, "Update company success", compa);
+			} else {
 				throw new ResourseNotFoundException("Duplicate company name");
 			}
 		}
 
 	}
 
-	@DeleteMapping(value="/deleteCompany")
+	// delete company
+	// DOC for delete company
+	@Operation(summary = "Delete company", description = "Delete company from the database")
+	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Company.class))), responseCode = "200", description = "Delete company success")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
+			@ApiResponse(responseCode = "404", description = "Not found"),
+			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+			@ApiResponse(responseCode = "403", description = "Forbidden"),
+			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
+	@DeleteMapping(value = "/deleteCompany")
 	public ResultRespon deleteCompany(@RequestParam("id") Long id) {
-		//		companyService.findById(id).orElseThrow(() -> new ResourseNotFoundException("not found company with id: "+ id));
-		//		if(this.companyService.findById(id).isEmpty()) {
-		//			throw new ResourseNotFoundException("Nothing to delete");
-		//		}else {
-		//			this.companyService.delete(id);
-		//			return new ResultRespon(0,"Delete company id = " + id + " success");
-		//		}
+		// companyService.findById(id).orElseThrow(() -> new
+		// ResourseNotFoundException("not found company with id: "+ id));
+		// if(this.companyService.findById(id).isEmpty()) {
+		// throw new ResourseNotFoundException("Nothing to delete");
+		// }else {
+		// this.companyService.delete(id);
+		// return new ResultRespon(0,"Delete company id = " + id + " success");
+		// }
 		Company company = this.companyService.findById(id)
-				.orElseThrow(() -> new ResourseNotFoundException("Not Found Student"));
+				.orElseThrow(() -> new ResourseNotFoundException("Not Found Company"));
 		try {
 			this.companyService.delete(company.getId());
-		}catch (Exception e) {
+		} catch (Exception e) {
 			throw new ResourseNotFoundException("Company can not be delete");
 		}
 		return new ResultRespon(0, "Delete company Success");
 	}
 
-	//search by name
-	@GetMapping(value="/searchCompany")
+	// search by name
+	// DOC for search company
+	@Operation(summary = "Search company", description = "Search company from the database")
+	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Company.class))), responseCode = "200", description = "Search company success")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
+			@ApiResponse(responseCode = "404", description = "Not found"),
+			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+			@ApiResponse(responseCode = "403", description = "Forbidden"),
+			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
+	@GetMapping(value = "/searchCompany")
 	public ResultRespon searchCompany(@RequestParam("keyWord") String keyWord) {
-		if(this.companyService.searchCompany(keyWord).isEmpty()) {
+		if (this.companyService.searchCompany(keyWord).isEmpty()) {
 			throw new ResourseNotFoundException("Not found company by keyword " + keyWord);
-		}else {
-			return new ResultRespon(0,"Success",this.companyService.searchCompany(keyWord));
+		} else {
+			return new ResultRespon(0, "Success", this.companyService.searchCompany(keyWord));
 		}
 	}
 
-	//Pagination
+	// Pagination
+	// DOC for pagination company
+	@Operation(summary = "pagination company", description = "pagination company from the database")
+	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Company.class))), responseCode = "200", description = "pagination company success")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
+			@ApiResponse(responseCode = "404", description = "Not found"),
+			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+			@ApiResponse(responseCode = "403", description = "Forbidden"),
+			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
 	@GetMapping("/company/pagination")
-	public ResultRespon paginationUniversity(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
-			@RequestParam(name = "size",required = false,defaultValue = "1") Integer size,
-			@RequestParam(name = "sort",required = false,defaultValue = "1") String sort) {
+	public ResultRespon paginationUniversity(
+			@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+			@RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
+			@RequestParam(name = "sort", required = false, defaultValue = "1") String sort) {
 		Sort sortable = null;
-		if(sort.equals("ASC")) {
+		if (sort.equals("ASC")) {
 			sortable = Sort.by("nameCom").ascending();
 		}
-		if(sort.equals("DESC")) {
+		if (sort.equals("DESC")) {
 			sortable = Sort.by("nameCom").descending();
 		}
-		Pageable pageable = PageRequest.of(page, size,sortable);
+		Pageable pageable = PageRequest.of(page, size, sortable);
 		Page<Company> compa = companyService.findCompa(pageable);
 		List<Page<Company>> companies = new ArrayList<Page<Company>>();
 		companies.add(compa);
-		return new ResultRespon(0,"Success",companies);
+		return new ResultRespon(0, "Success", companies);
 	}
 }
