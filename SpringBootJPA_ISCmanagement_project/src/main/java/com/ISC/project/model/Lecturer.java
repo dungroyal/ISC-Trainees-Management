@@ -217,7 +217,20 @@ public class Lecturer {
 		this.id = id;
 	}
 
-	
-	
-
+	public Lecturer(String createdBy, String updatedBy,String codeLec, String firstName, String lastName, String addressLec, String phoneLec, String emailLec,
+			String degree, String image, StatusAc statusLec, String noteLec) {
+		super();
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+		this.codeLec = codeLec;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.addressLec = addressLec;
+		this.phoneLec = phoneLec;
+		this.emailLec = emailLec;
+		this.degree = degree;
+		this.image = image;
+		this.statusLec = statusLec;
+		this.noteLec = noteLec;
+	}
 }
