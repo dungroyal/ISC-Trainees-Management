@@ -35,7 +35,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/room")
 @Tag(name = "Room", description = "CRUD for Room")
 public class RoomController {
 	@Autowired

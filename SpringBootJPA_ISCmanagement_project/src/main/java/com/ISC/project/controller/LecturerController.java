@@ -38,7 +38,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @CrossOrigin(maxAge = 3600)
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/api/lecturer")
 @Tag(name = "Lecturer", description = "CRUD for Lecturer")
 public class LecturerController {
 	@Autowired
