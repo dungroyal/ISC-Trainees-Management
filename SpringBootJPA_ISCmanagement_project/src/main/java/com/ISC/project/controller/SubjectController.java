@@ -100,6 +100,7 @@ public class SubjectController {
 				throw new ResourseNotFoundException("Duplicate Code");
 			}
 		}
+		
 		// Update Subject
 		// DOC for update Subject
 		@Operation(summary = "Update Subject with ID", description = "Update Subject with ID")
@@ -113,7 +114,9 @@ public class SubjectController {
 				@ApiResponse(responseCode = "500", description = "Internal Error Server")
 		})
 		@PutMapping("/editSubject")
-		public ResultRespon editSubject(@RequestBody Subject subject, @Parameter(description = "The Subject id is required", required = true)  @RequestParam("id") Long id) {
+		public ResultRespon editSubject(
+				@RequestBody Subject subject, 
+				@Parameter(description = "The Subject id is required", required = true)  @RequestParam("id") Long id) {
 			List<Subject> newSubject = new ArrayList<>();
 			Subject oldSubject = subjectService.findById(id).orElseThrow(()->new ResourseNotFoundException("Not found Subject with id: " + id));
 			if(!this.subjectService.checkCodeSubject(subject.getCodeSub()).isEmpty()) {

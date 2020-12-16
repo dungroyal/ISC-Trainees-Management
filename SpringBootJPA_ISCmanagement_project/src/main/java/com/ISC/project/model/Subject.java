@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 @Entity
 @Table(name = "subjects")
 public class Subject{
@@ -33,6 +35,7 @@ public class Subject{
 	private LocalDateTime updatedDate;
 	
 	@Column(nullable = false, unique = true, length = 50)
+	@Schema(description = "Code Subject")
 	private String codeSub;
 	
 	@Column(nullable = false, length = 50)
