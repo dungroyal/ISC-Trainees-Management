@@ -1,10 +1,10 @@
-// import axios from 'axios';
-
+import axios from 'axios';
 
 const url = {
-    baseURL : "https:8080//www.saigontech.edu.vn/restful-api",
+    baseURL : 'localhost:8080/api',
+         university: '/university'
 
-}
+};
 const instance = axios.create({
     baseURL : url.baseURL,
     headers: {
