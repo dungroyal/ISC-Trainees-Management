@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,8 +31,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+@CrossOrigin(maxAge = 3600)
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/intake")
 @Tag(name = "Intake", description = "CRUD for intake")
 public class IntakeController {
 	@Autowired
@@ -48,7 +50,7 @@ public class IntakeController {
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
 	@GetMapping(value = "/listIntake")
 	public ResultRespon listIntake() {
-		return new ResultRespon(0, "Success", this.intakeService.listAllIntake());
+		return new ResultRespon(0, "Success", this.intakeService.listAllCourse());
 	}
 
 	// get one intake

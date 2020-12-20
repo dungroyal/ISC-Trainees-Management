@@ -16,10 +16,15 @@ import com.ISC.project.service.FileStorageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+@CrossOrigin
 @RestController
+@RequestMapping(value = "/api/file")
+@Tag(name = "Upload File", description = "Upload and download file")
 public class FileController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileController.class);
@@ -28,7 +33,8 @@ public class FileController {
     private FileStorageService fileStorageService;
     
     @PostMapping("/uploadFile")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) throws JsonMappingException, JsonProcessingException {
+    public UploadFileResponse uploadFile(
+    		@RequestParam("file") MultipartFile file) throws JsonMappingException, JsonProcessingException {
     	
 //		ObjectMapper obj = new ObjectMapper();
 //		Pokemon pokemonMapper = obj.readValue(pokemon, Pokemon.class);

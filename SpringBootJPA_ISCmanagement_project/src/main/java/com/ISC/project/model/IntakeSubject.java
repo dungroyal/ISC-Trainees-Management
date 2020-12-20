@@ -30,8 +30,34 @@ public class IntakeSubject implements Serializable{
 		@MapsId("subjectId")
 		private Subject subject;
 
-		
-		
+		public EmbemdedIntakeSubjectId getId() {
+			return id;
+		}
+
+		public void setId(EmbemdedIntakeSubjectId id) {
+			this.id = id;
+		}
+
+		public Intake getIntake() {
+			return intake;
+		}
+
+		public void setIntake(Intake intake) {
+			this.intake = intake;
+		}
+
+		public Subject getSubject() {
+			return subject;
+		}
+
+		public void setSubject(Subject subject) {
+			this.subject = subject;
+		}
+
+		public static long getSerialversionuid() {
+			return serialVersionUID;
+		}
+
 		//hash code
 		 @Override
 		    public int hashCode() {

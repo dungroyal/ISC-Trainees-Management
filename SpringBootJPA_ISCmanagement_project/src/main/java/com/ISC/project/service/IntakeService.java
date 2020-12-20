@@ -2,12 +2,15 @@ package com.ISC.project.service;
 
 import java.util.List;
 import java.util.Optional;
+
 import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import com.ISC.project.dao.IntakeRepository;
 import com.ISC.project.model.Intake;
 
@@ -24,7 +27,7 @@ public class IntakeService {
 		return intakeRepository.save(course);
 	}
 	
-	public List<Intake> listAllIntake(){
+	public List<Intake> listAllCourse(){
 		return intakeRepository.findAll();
 	}
 	
@@ -48,5 +51,4 @@ public class IntakeService {
 	public List<Intake> searchIntake(String keyWord){
 		return this.intakeRepository.searchIntake(keyWord);
 	}
-	
 }
