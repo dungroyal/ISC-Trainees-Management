@@ -75,6 +75,11 @@ public class StudentController {
 	})
 	@GetMapping(value = "/allStudent")
 	public ResultRespon allStudent() {
+		String fileDowloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+		.path("/downloadFile/")
+		.path("rrr")
+		.toUriString();
+		System.out.println(fileDowloadUri);
 		return new ResultRespon(0, "Success", this.studentService.listAllStudent());
 	}
 	
@@ -131,8 +136,6 @@ public class StudentController {
 			@Parameter(description = "Upload Image Student", schema = @Schema(type = "file"))
 			@RequestParam("image") MultipartFile image,
 			@RequestParam("createdBy") String createdBy,
-			@Parameter(required = false, allowEmptyValue = true, schema = @Schema(nullable = true))
-			@RequestParam("updatedBy") String updatedBy,
 			@Parameter(description = "Id of University")
 			@RequestParam("univerId") Long univerId) throws JsonMappingException, JsonProcessingException {
 
@@ -142,13 +145,13 @@ public class StudentController {
 		//Save Student
 		List<Student> students = new ArrayList<Student>();
 		//Get URL image
-		String fileName = this.fileStorageService.storeFile(image) + " " + code;
+		String fileName = this.fileStorageService.storeFile(image, code);
 //		String fileDowloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
 //				.path("/downloadFile/")
 //				.path(fileName)
 //				.toUriString();
 		//		createdDate = LocalDateTime.now();
-		students.add(new Student(createdBy, updatedBy,code, firstName, lastName, address, phoneNumber, 
+		students.add(new Student(createdBy,code, firstName, lastName, address, phoneNumber, 
 				email, typeStudent, GPA, workingStatus, fileName, note, university));
 		students.get(0).setCreatedDate(LocalDateTime.now());
 		// Check EXISTS of code Student
@@ -194,7 +197,6 @@ public class StudentController {
 			@RequestParam("workingStatus") StatusAc workingStatus,
 			@RequestParam("note") String note,
 			@RequestParam("image") MultipartFile image,
-			@RequestParam("createdBy") String createdBy,
 			@RequestParam("updatedBy") String updatedBy,
 			@Parameter(description = "Id of University")
 			@RequestParam("univerId") Long univerId) throws JsonMappingException, JsonProcessingException {
@@ -209,7 +211,7 @@ public class StudentController {
 		//Save Student
 		List<Student> students = new ArrayList<Student>();
 		//Get URL image
-		String fileName = this.fileStorageService.storeFile(image) + " " + code;
+		String fileName = this.fileStorageService.storeFile(image, code);
 //		String fileDowloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
 //				.path("/downloadFile/")
 //				.path(fileName)
@@ -284,7 +286,6 @@ public class StudentController {
 			@RequestParam("GPA") Double GPA,
 			@RequestParam("workingStatus") StatusAc workingStatus,
 			@RequestParam("note") String note,
-			@RequestParam("createdBy") String createdBy,
 			@RequestParam("updatedBy") String updatedBy,
 			@Parameter(description = "Id of University")
 			@RequestParam("univerId") Long univerId) throws JsonMappingException, JsonProcessingException {
@@ -377,7 +378,7 @@ public class StudentController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@GetMapping( value = "/student/pagination")
+	@GetMapping( value = "/pagination")
 	public ResultRespon paginationStudent(
 			@Parameter(description = "Number of page", required = false)
 			@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,

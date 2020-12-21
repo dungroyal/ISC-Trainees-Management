@@ -59,6 +59,14 @@ public class Intake {
 	@ManyToOne(fetch = FetchType.LAZY)
     private Major major;
 	
+	public Major getMajor() {
+		return major;
+	}
+
+	public void setMajor(Major major) {
+		this.major = major;
+	}
+
 	public String getCodeIntake() {
 		return codeIntake;
 	}

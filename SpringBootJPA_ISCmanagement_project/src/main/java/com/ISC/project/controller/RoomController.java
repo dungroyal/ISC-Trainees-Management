@@ -182,7 +182,7 @@ public class RoomController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@GetMapping("/room/pagination") 
+	@GetMapping("/pagination") 
 	public ResultRespon paginationRoom(
 			@RequestParam(name="page", required = false, defaultValue = "1") Integer page,
 			@RequestParam(name="size", required = false, defaultValue = "1") Integer size,

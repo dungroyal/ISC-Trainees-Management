@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-@CrossOrigin
+@CrossOrigin (maxAge = 3600)
 @RestController
 @RequestMapping(value = "/api/file")
 @Tag(name = "Upload File", description = "Upload and download file")
@@ -39,7 +39,7 @@ public class FileController {
 //		ObjectMapper obj = new ObjectMapper();
 //		Pokemon pokemonMapper = obj.readValue(pokemon, Pokemon.class);
 		
-        String fileName = fileStorageService.storeFile(file);
+        String fileName = fileStorageService.storeFile(file, "a");
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/downloadFile/")
                 .path(fileName)

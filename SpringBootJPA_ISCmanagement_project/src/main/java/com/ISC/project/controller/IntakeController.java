@@ -20,8 +20,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.ISC.project.exception.ResourseNotFoundException;
 import com.ISC.project.model.Intake;
+import com.ISC.project.model.Major;
 import com.ISC.project.payload.ResultRespon;
 import com.ISC.project.service.IntakeService;
+import com.ISC.project.service.MajorService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -38,7 +41,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class IntakeController {
 	@Autowired
 	private IntakeService intakeService;
-
+	@Autowired
+	private MajorService majorService;
 	// get all intake
 	// Doc for getAll intake
 	@Operation(summary = "Get all intakes", description = "Show all intakes under the databse")
@@ -80,9 +84,12 @@ public class IntakeController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
 	@PostMapping(value = "/newIntake")
-	public ResultRespon addIntake(@RequestBody Intake intake) {
+	public ResultRespon addIntake(@RequestBody Intake intake, @RequestParam("majorId") Long majorId) {
+		Major major = this.majorService.findById(majorId)
+				.orElseThrow(() -> new ResourceNotFoundException("Not Found Major"));
 		List<Intake> intakeList = new ArrayList<>();
 		intake.setCreatedDate(LocalDateTime.now());
+		intake.setMajor(major);
 		if (this.intakeService.checkCodeIntake(intake.getCodeIntake()).isEmpty()) {
 			intakeList.add(intakeService.save(intake));
 			return new ResultRespon(0, "Add Intake Success", intakeList);
@@ -101,7 +108,9 @@ public class IntakeController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
 	@PutMapping(value = "/editIntake")
-	public ResultRespon editIntake(@RequestBody Intake intake, @RequestParam("id") long id) {
+	public ResultRespon editIntake(@RequestBody Intake intake, @RequestParam("id") long id, @RequestParam("majorId") Long majorId) {
+		Major major = this.majorService.findById(majorId)
+				.orElseThrow(() -> new ResourceNotFoundException("Not Found Major"));
 		List<Intake> intakeList = new ArrayList<>();
 		Intake oldIntake = intakeService.findById(id)
 				.orElseThrow(() -> new ResourseNotFoundException("Not found intake"));
@@ -113,6 +122,7 @@ public class IntakeController {
 			oldIntake.setStartDay(intake.getStartDay());
 			oldIntake.setEndDay(intake.getEndDay());
 			oldIntake.setStatusIntake(intake.getStatusIntake());
+			oldIntake.setMajor(major);
 			intakeList.add(oldIntake);
 			this.intakeService.save(intakeList.get(0));
 			return new ResultRespon(0, "Update Intake Success", intakeList);
@@ -126,6 +136,7 @@ public class IntakeController {
 				oldIntake.setStartDay(intake.getStartDay());
 				oldIntake.setEndDay(intake.getEndDay());
 				oldIntake.setStatusIntake(intake.getStatusIntake());
+				oldIntake.setMajor(major);
 				intakeList.add(oldIntake);
 				this.intakeService.save(intakeList.get(0));
 				return new ResultRespon(0, "Update Intake Success", intakeList);
@@ -164,7 +175,7 @@ public class IntakeController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/intake/pagination")
+	@GetMapping(value = "/pagination")
 	public ResultRespon paginationIntake(
 			@Parameter(description = "Number of page", required = false) @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@Parameter(description = "Items in page", required = false) @RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
