@@ -119,6 +119,7 @@ public class UniversityController {
 			olduniversity.setContactPerson(university.getContactPerson());
 			olduniversity.setUpdatedBy(university.getUpdatedBy());
 			olduniversity.setNoteUni(university.getNoteUni());
+			olduniversity.setCreatedBy(university.getCreatedBy());
 			olduniversity.setWebsiteUni(university.getWebsiteUni());
 			univer.add(olduniversity);
 			this.universityService.save(univer.get(0));
@@ -130,6 +131,7 @@ public class UniversityController {
 				olduniversity.setAddressUni(university.getAddressUni());
 				olduniversity.setContactPerson(university.getContactPerson());
 				olduniversity.setUpdatedBy(university.getUpdatedBy());
+				olduniversity.setCreatedBy(university.getCreatedBy());
 				olduniversity.setNoteUni(university.getNoteUni());
 				olduniversity.setWebsiteUni(university.getWebsiteUni());
 				univer.add(olduniversity);
@@ -186,7 +188,7 @@ public class UniversityController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping("/pagination")
+	@GetMapping("/university/pagination")
 	public ResultRespon paginationUniversity(
 			@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
