@@ -4,18 +4,19 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { Button, Modal } from "react-bootstrap";
+import MultiSelect from "react-multi-select-component";
+import { DropdownList } from 'react-widgets'
+import Select from 'react-select';
 import Input from "../../Controls/input";
-import CustomInput from "../../Controls/customInput";
 import studentService from "../../Services/studentService";
 import univerService from "../../Services/universityService";
 import companyService from "../../Services/companyService";
 import intakeService from "../../Services/intakeService";
 import api from "../../Services/api";
 
-
-// import MultiSelectCheckboxTypeStu from "../controlsStudent/selectBoxTypeStu";
-// import MultiSelectCheckboxWorkingStatus from "../controlsStudent/selectBoxWorkingStatus";
-// import MultiSelectCheckboxUniversity from "../controlsStudent/selectBoxUniversity";
+// import MultiSelectCheckboxTypeStu from "../../Controls/selectBoxTypeStu";
+// import MultiSelectCheckboxWorkingStatus from "../../Controls/selectBoxWorkingStatus";
+// import MultiSelectCheckboxUniversity from "../../Controls/selectBoxUniversity";
 
 
 import "./student.css";
@@ -63,7 +64,7 @@ const Student = (props) => {
 
   // Option For MultiCheckBox University
   const [selectedUniver, setSelectedUniver] = useState([]);
-  const [univers, setuniver] = useState([]);
+  const [univers, setUniver] = useState([]);
 
   // Option For MultiCheckBox Company
   const [selectedCompany, setSelectedCompany] = useState([]);
@@ -101,15 +102,15 @@ const Student = (props) => {
   // Formik
   const formik = useFormik({
     initialValues: {
-      studentCode: "",
+      codeStu: "",
       lastName: "",
       firstName: "",
-      email: "",
-      GPA: "",
-      phone: "",
-      address: "",
-      createdBy: "",
-      note: "",
+      emailStu: "",
+      gpa: "",
+      phoneStu: "",
+      addressStu: "",
+      createdBy: "Admin",
+      noteStu: "",
       image: "",
       typeStudent: "",
       workingStatus: "",
@@ -117,7 +118,7 @@ const Student = (props) => {
       university: "",
     },
     validationSchema: Yup.object({
-      studentCode: Yup.string()
+      codeStu: Yup.string()
         .required("Required")
         .min(2, "Up to 255 characters"),
       lastName: Yup.string()
@@ -126,18 +127,22 @@ const Student = (props) => {
       firstName: Yup.string()
         .required("Required")
         .min(2, "Up to 255 characters"),
-      email: Yup.string().required("Required").min(2, "Up to 200 characters"),
-      GPA: Yup.string().required("Required"),
-      phone: Yup.string().required("Required").min(2, "Up to 200 characters"),
-      address: Yup.string().required("Required").min(2, "Up to 255 characters"),
+      emailStu: Yup.string().required("Required").min(2, "Up to 200 characters"),
+      gpa: Yup.string().required("Required"),
+      phoneStu: Yup.string().required("Required").min(2, "Up to 200 characters"),
+      addressStu: Yup.string().required("Required").min(2, "Up to 255 characters"),
       createdBy: Yup.string().min(2, "Up to 200 characters"),
-      note: Yup.string().min(2, "Up to 2000 characters"),
+      noteStu: Yup.string().min(2, "Up to 2000 characters"),
     }),
     onSubmit: (values) => {
       handleFormSubmit(values);
+      console.log(values);
     },
   });
   // console.log(students[students.length - 1].id);
+
+
+
 
   // Load Data
   const loadData = () => {
@@ -146,17 +151,18 @@ const Student = (props) => {
         setStudent(res.data);
       }
     });
-    //Get all university
-    univerService.getAll().then((res) => {
-      if (res.status === 0) {
-        setuniver(res.data);
-        // univers.forEach((e) => console.log(e));
-      }
-    });
+
     //Get all company
     companyService.getAll().then((res) => {
       if (res.status === 0) {
         setCompanies(res.data);
+      }
+    });
+
+    //Get all university
+    univerService.getAll().then((res) => {
+      if (res.status === 0) {
+        setUniver(res.data);
       }
     });
     //Get all intake
@@ -229,14 +235,14 @@ const Student = (props) => {
         .add1(
           formik.values.firstName,
           formik.values.lastName,
-          formik.values.studentCode,
-          formik.values.address,
-          formik.values.phone,
-          formik.values.email,
+          formik.values.codeStu,
+          formik.values.addressStu,
+          formik.values.phoneStu,
+          formik.values.emailStu,
           selectedTypeStu[0],
-          formik.values.GPA,
+          formik.values.gpa,
           selectedWorkingStatus[0],
-          formik.values.note,
+          formik.values.noteStu,
           formik.values.image,
           formik.values.createdBy,
           selectedUniver[0].value
@@ -272,14 +278,14 @@ const Student = (props) => {
         .updateImg(
           formik.values.firstName,
           formik.values.lastName,
-          formik.values.studentCode,
-          formik.values.address,
-          formik.values.phone,
-          formik.values.email,
+          formik.values.codeStu,
+          formik.values.addressStu,
+          formik.values.phoneStu,
+          formik.values.emailStu,
           selectedTypeStu[0],
-          formik.values.GPA,
+          formik.values.gpa,
           selectedWorkingStatus[0],
-          formik.values.note,
+          formik.values.noteStu,
           formik.values.image,
           formik.values.createdBy,
           selectedUniver[0].value,
@@ -560,9 +566,9 @@ const Student = (props) => {
         <Modal.Header closeButton>
           <Modal.Title>New Student</Modal.Title>
         </Modal.Header>
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={formik.handleSubmit} enctype="multipart/form-data">
           <Modal.Body>
-            <div className="row">         
+            <div className="row px-3">         
               <div className="col-sm-12 col-lg-2">
                 <div className="avatar-upload-jsk py-2">
                   <div className="avatar-edit">
@@ -576,128 +582,194 @@ const Student = (props) => {
               </div>
               <div className="col-sm-12 col-lg-10">
                 <div className="row">
-                <div className="col-md-6">
-                    <div className="form-group">
-                      <label htmlFor="formrow-password-input">Khóa học</label>
-                      <select className="custom-select">
-                        <option selected>Chọn trạng thái</option>
-                        <option value={1}>One</option>
-                        <option value={2}>Two</option>
-                        <option value={3}>Three</option>
-                      </select>
-                    </div>
-                  </div>
-                <CustomInput
-                    column="6"
-                    id="txtStuLastName"
-                    type="text"
-                    label="Last Name:"
-                    labelSize="6"
-                    rows="1"
-                    frmField={formik.getFieldProps("lastName")}
-                    err={formik.touched.lastName && formik.errors.lastName}
-                    errMessage={formik.errors.lastName}
-                    value={formik.values.lastName}
-                    onChange={formik.handleChange}
+
+            {/* <Multi Select Checkbox Intake /> */}
+              <div className="col-6">
+              <div class="form-group">
+                <label htmlFor="multicheckIntake"> Khóa học </label>
+                  <MultiSelect
+                    id="multicheckIntake"
+                    options={intakes.map((e) => ({
+                      label: e.nameIntake,
+                      value: e.id,
+                      // disabled: selectedIntake.length >= 1 ? true : false,
+                    }))}
+                    value={selectedIntake}
+                    onChange={setSelectedIntake}
+                    labelledBy={"Select Company"}
+                    hasSelectAll={false}
+                    shouldToggleOnHover={true}
                   />
-                  <CustomInput
-                    column="6"
-                    id="txtStuLastName"
-                    type="text"
-                    label="Last Name:"
-                    labelSize="6"
-                    rows="1"
-                    frmField={formik.getFieldProps("lastName")}
-                    err={formik.touched.lastName && formik.errors.lastName}
-                    errMessage={formik.errors.lastName}
-                    value={formik.values.lastName}
-                    onChange={formik.handleChange}
-                  />
-                  <CustomInput
-                    column="6"
-                    id="txtStuLastName"
-                    type="text"
-                    label="Last Name:"
-                    labelSize="6"
-                    rows="1"
-                    frmField={formik.getFieldProps("lastName")}
-                    err={formik.touched.lastName && formik.errors.lastName}
-                    errMessage={formik.errors.lastName}
-                    value={formik.values.lastName}
-                    onChange={formik.handleChange}
-                  />
-                  <CustomInput
-                    column="6"
-                    id="txtStuLastName"
-                    type="text"
-                    label="Last Name:"
-                    labelSize="6"
-                    rows="1"
-                    frmField={formik.getFieldProps("lastName")}
-                    err={formik.touched.lastName && formik.errors.lastName}
-                    errMessage={formik.errors.lastName}
-                    value={formik.values.lastName}
-                    onChange={formik.handleChange}
-                  />
-                  <CustomInput
-                    column="6"
-                    id="txtStuLastName"
-                    type="text"
-                    label="Last Name:"
-                    labelSize="6"
-                    rows="1"
-                    frmField={formik.getFieldProps("lastName")}
-                    err={formik.touched.lastName && formik.errors.lastName}
-                    errMessage={formik.errors.lastName}
-                    value={formik.values.lastName}
-                    onChange={formik.handleChange}
-                  />
-                  <CustomInput
-                    column="6"
-                    id="txtStuLastName"
-                    type="text"
-                    label="Last Name:"
-                    labelSize="6"
-                    rows="1"
-                    frmField={formik.getFieldProps("lastName")}
-                    err={formik.touched.lastName && formik.errors.lastName}
-                    errMessage={formik.errors.lastName}
-                    value={formik.values.lastName}
-                    onChange={formik.handleChange}
-                  />
-                  <CustomInput
-                    column="6"
-                    id="txtStuLastName"
-                    type="text"
-                    label="Last Name:"
-                    labelSize="6"
-                    rows="1"
-                    frmField={formik.getFieldProps("lastName")}
-                    err={formik.touched.lastName && formik.errors.lastName}
-                    errMessage={formik.errors.lastName}
-                    value={formik.values.lastName}
-                    onChange={formik.handleChange}
-                  />
-                  <div className="col-md-6">
-                    <div className="form-group">
-                      <label htmlFor="formrow-password-input">Trường</label>
-                      <select className="custom-select">
-                        <option selected>Chọn khóa trường</option>
-                        <option value={1}>One</option>
-                        <option value={2}>Two</option>
-                        <option value={3}>Three</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="col-md-12">
-                    <div className="form-group">
-                      <label htmlFor="formrow-password-input">Ghi chú</label>
-                      <textarea className="form-control" id="productdesc" placeholder="Mô tả, giới thiệu về học viên." rows={2} defaultValue={""} />
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
+            
+            <Input
+                id="image1"
+                type="file"
+                rows="1"
+                frmField={formik.getFieldProps("image")}
+                err={formik.touched.image && formik.errors.image}
+                errMessage={formik.errors.image}
+                value={formik.values.image}
+                onChange={formik.handleChange}
+              />
+
+            <Input
+              typeInput="1"
+              column="6"
+              rows="1"
+              id="codeStu"
+              name="codeStu"
+              type="text"
+              label="Mã sinh viên"
+              frmField={formik.getFieldProps("codeStu")}
+              err={formik.touched.codeStu && formik.errors.codeStu}
+              errMessage={formik.errors.codeStu}
+              value={formik.values.codeStu}
+              onChange={formik.handleChange}
+            />
+            
+            <Input
+              typeInput="1"
+              column="6"
+              rows="1"
+              id="txtStuFirstName"
+              type="text"
+              label="Họ và tên lót"
+              frmField={formik.getFieldProps("firstName")}
+              err={formik.touched.firstName && formik.errors.firstName}
+              errMessage={formik.errors.firstName}
+              value={formik.values.firstName}
+              onChange={formik.handleChange}
+            />
+
+            <Input
+              typeInput="1"
+              column="6"
+              rows="1"
+              id="txtStuLastName"
+              type="text"
+              label="Tên"
+              frmField={formik.getFieldProps("lastName")}
+              err={formik.touched.lastName && formik.errors.lastName}
+              errMessage={formik.errors.lastName}
+              value={formik.values.lastName}
+              onChange={formik.handleChange}
+            />
+
+            <Input
+              typeInput="1"
+              column="6"
+              rows="1"
+              id="txtStuEmail"
+              type="email"
+              label="Email"
+              frmField={formik.getFieldProps("emailStu")}
+              err={formik.touched.emailStu && formik.errors.emailStu}
+              errMessage={formik.errors.emailStu}
+              value={formik.values.emailStu}
+              onChange={formik.handleChange}
+            />
+            <Input
+              typeInput="1"
+              column="6"
+              rows="1"
+              id="txtStuPhone"
+              type="text"
+              label="Số điện thoại"
+              frmField={formik.getFieldProps("phoneStu")}
+              err={formik.touched.phoneStu && formik.errors.phoneStu}
+              errMessage={formik.errors.phoneStu}
+              value={formik.values.phoneStu}
+              onChange={formik.handleChange}
+            />
+            <Input
+              typeInput="1"
+              column="6"
+              rows="1"
+              id="txtStuAddress"
+              type="text"
+              label="Địa chỉ"
+              frmField={formik.getFieldProps("addressStu")}
+              err={formik.touched.addressStu && formik.errors.addressStu}
+              errMessage={formik.errors.addressStu}
+              value={formik.values.addressStu}
+              onChange={formik.handleChange}
+            />
+
+            {/* <Multi Select Checkbox TypeStu /> */}
+            <div className="col-sm-6">
+              <div className="form-group">
+                <label htmlFor="multicheckUniver">Trạng thái</label>
+                  <MultiSelect
+                    id="multicheckTypeStu"
+                    options={optionsTypeStu}
+                    value={optionsTypeStu.filter((obj) =>
+                      selectedTypeStu.includes(obj.value)
+                    )} // set selected values
+                    onChange={handleChangeTypeStu}
+                    labelledBy={"Select Type Student"}
+                    hasSelectAll={false}
+                    shouldToggleOnHover={true}
+                    // {...formik.getFieldProps("typeStudent")}
+                  />
+                </div>
+            </div>
+            {/* <Multi Select Checkbox TypeStu /> */}
+
+
+            {/* <Multi Select Checkbox University /> */}
+            <div className="col-sm-6">
+              <div className="form-group">
+                <label htmlFor="multicheckUniver">Trường</label>
+                  <MultiSelect
+                    id="multicheckUniver"
+                    options={univers.map((e) => ({
+                      label: e.nameUni,
+                      value: e.id,
+                      disabled: selectedUniver.length >= 1 ? true : false,
+                    }))}
+                    value={selectedUniver}
+                    onChange={setSelectedUniver}
+                    labelledBy={"Select University"}
+                    hasSelectAll={false}
+                    shouldToggleOnHover={true}
+                    // {...formik.getFieldProps("university")}
+                  />
+              </div>
+            </div>
+            {/* <Multi Select Checkbox University /> */}
+            <Input
+              typeInput="1"
+              column="6"
+              rows="1"
+              id="txtStuGPA"
+              type="number"
+              label="Điển trung bình"
+              frmField={formik.getFieldProps("gpa")}
+              err={formik.touched.gpa && formik.errors.gpa}
+              errMessage={formik.errors.gpa}
+              value={formik.values.gpa}
+              onChange={formik.handleChange}
+            />
+            <Input
+              typeInput="1"
+              column="12"
+              rows="2"
+              id="txtStuNote"
+              type="text"
+              label="Note:"
+              frmField={formik.getFieldProps("noteStu")}
+              err={formik.touched.note && formik.errors.note}
+              errMessage={formik.errors.note}
+              value={formik.values.note}
+              onChange={formik.handleChange}
+            />
+              
+              </div>
+            </div>
+          </div>
+
 
           </Modal.Body>
           <Modal.Footer>

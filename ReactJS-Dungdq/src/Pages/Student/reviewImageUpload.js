@@ -1,7 +1,7 @@
 import $ from 'jquery'; 
 
 $( document ).ready(function() {
-    console.log("OKEEEEEEEEEEEEEEE");
+    // console.log("OKEEEEEEEEEEEEEEE");
 
     $("#imageUpload").change(function() {
         console.log("UPload");

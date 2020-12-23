@@ -9,6 +9,15 @@ const url = {
     addStudent: "/student/newStudent",
     getOneStudent: "/student/oneStudent",
     updateStuImg: "/student/updateStudentImg",
+    //University
+    listUniversity: "/university/listUniversity",
+    getOneUniversity: "/university/getUniversity",
+    //Company
+    listCompany: "/company/listCompany",
+    getOneCompany: "/company/getCompany",
+    //Intake
+    listIntake: "/intake/listIntake",
+    getOnIntake:"/intake/getIntake",
 }
 const instance = axios.create({
     baseURL : url.baseURL,
