@@ -18,11 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.ISC.project.exception.ResourseNotFoundException;
 import com.ISC.project.model.Lecturer;
 import com.ISC.project.model.StatusAc;
-import com.ISC.project.model.Student;
 import com.ISC.project.payload.ResultRespon;
 import com.ISC.project.service.FileStorageService;
 import com.ISC.project.service.LecturerService;
@@ -38,8 +36,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+@CrossOrigin(maxAge = 3600)
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/api/lecturer")
 @Tag(name = "Lecturer", description = "CRUD for Lecturer")
 public class LecturerController {
 	@Autowired
@@ -94,19 +93,20 @@ public class LecturerController {
 			@Parameter(description = "Lecturer Code is required!", required = true) @RequestParam("codeLec") String codeLec,
 			@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName,
 			@RequestParam("addressLec") String addressLec, @RequestParam("phoneLec") String phoneLec,
-			@Parameter(description = "Student Email is required!", required = true) @RequestParam("emailLec") String emailLec,
+			@Parameter(description = "Lecturer Email is required!", required = true) @RequestParam("emailLec") String emailLec,
 			@RequestParam("degree") String degree,
-			@Parameter(description = "Upload Image Lecturer", schema = @Schema(type = "file"), content = @Content(mediaType = "multipart/form-data")) @RequestParam("image") MultipartFile image,
-			@RequestParam("statusLec") StatusAc statusLec, @RequestParam("noteLec") String noteLec)
+			@Parameter(description = "Upload Image Lecturer", schema = @Schema(type = "file"), content = @Content(mediaType = "multipart/form-data"))
+	@RequestParam("image") MultipartFile image,
+	@RequestParam("statusLec") StatusAc statusLec, @RequestParam("noteLec") String noteLec)
 			throws JsonMappingException, JsonProcessingException {
 
 		// Save lecturer
 		List<Lecturer> lecturers = new ArrayList<Lecturer>();
 
 		// Getting URL image
-		String fileName = this.fileStorageService.storeFile(image);
-//		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFile/")
-//				.path(fileName).toUriString();
+		String fileName = this.fileStorageService.storeFile(image, codeLec);
+		//		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFile/")
+		//				.path(fileName).toUriString();
 
 		// createDate = LocalDateTime.now()
 		lecturers.add(new Lecturer(createdBy, updatedBy, codeLec, firstName, lastName, addressLec, phoneLec, emailLec,
@@ -146,16 +146,16 @@ public class LecturerController {
 			@RequestParam("degree") String degree,
 			@Parameter(description = "Upload Image Lecturer", schema = @Schema(type = "file"), content = @Content(mediaType = "multipart/form-data")) @RequestParam("image") MultipartFile image,
 			@RequestParam("statusLec") StatusAc statusLec, @RequestParam("noteLec") String noteLec)
-			throws JsonMappingException, JsonProcessingException {
+					throws JsonMappingException, JsonProcessingException {
 
 		Lecturer updateLecturer = this.lecturerService.findById(id)
 				.orElseThrow(() -> new ResourseNotFoundException("Not Found Lecturer"));
 		List<Lecturer> lecturers = new ArrayList<Lecturer>();
 
 		// Getting URL image
-		String fileName = this.fileStorageService.storeFile(image);
-//		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFile/")
-//				.path(fileName).toUriString();
+		String fileName = this.fileStorageService.storeFile(image, codeLec);
+		//		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFile/")
+		//				.path(fileName).toUriString();
 
 		updateLecturer.setCreatedBy(createdBy);
 		updateLecturer.setUpdatedBy(updatedBy);
@@ -287,7 +287,7 @@ public class LecturerController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/lecturer/pagination")
+	@GetMapping(value = "/pagination")
 	public ResultRespon paginationLecturer(
 			@Parameter(description = "Number of page", required = false) @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@Parameter(description = "Items in page", required = false) @RequestParam(name = "size", required = false, defaultValue = "1") Integer size,

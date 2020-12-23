@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ISC.project.dao.IntakeSubjectRepo;
 import com.ISC.project.model.IntakeSubject;
@@ -35,5 +36,9 @@ public class IntakeSubjectService {
 	
 	public void delete(EmbemdedIntakeSubjectId id) {
 		courseSubjectRepo.deleteById(id);
+	}
+	
+	public List<IntakeSubject> getSubjectOfIntake(@RequestParam("intakeId") Long intakeId){
+		return courseSubjectRepo.listIntakeOfStu(intakeId);
 	}
 }

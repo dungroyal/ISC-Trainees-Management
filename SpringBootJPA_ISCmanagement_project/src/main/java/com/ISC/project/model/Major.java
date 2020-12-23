@@ -47,8 +47,8 @@ public class Major  {
 	
 	//mapping to intake
 	@OneToMany(mappedBy = "major")
-	    private List<Intake> intakes = new ArrayList<>();
-
+	private List<Intake> intakes = new ArrayList<>();
+	
 	public String getCodeMajor() {
 		return codeMajor;
 	}
@@ -134,8 +134,6 @@ public class Major  {
 	public Major() {
 		super();
 	}
-
-
 
 		
 	

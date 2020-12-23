@@ -36,4 +36,8 @@ public class StudentCompanyService {
 	public void delete(EmbemdedStudentCompanyId id) {
 		studentCompanyRepo.deleteById(id);
 	}
+	
+	public List<StudentCompany> getStudentCompany(Long studentId){
+		return studentCompanyRepo.getStudentCompany(studentId);
+	}
 }

@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,8 +31,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+@CrossOrigin
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/api/subject")
 @Tag(name = "Subject", description = "CRUD for subject")
 public class SubjectController {
 	@Autowired
@@ -165,7 +167,7 @@ public class SubjectController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/subject/pagination")
+	@GetMapping(value = "/pagination")
 	public ResultRespon paginationSubject(
 			@Parameter(description = "Number of page", required = false) @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@Parameter(description = "Items in page", required = false) @RequestParam(name = "size", required = false, defaultValue = "1") Integer size,

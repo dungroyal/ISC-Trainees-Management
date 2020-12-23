@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.ISC.project.model.Intake;
 
 public interface IntakeRepository extends JpaRepository<Intake, Long>{
+	
 	@Query("select codeIntake from Intake where codeIntake = :newCodeIntake")
 	public List<String> checkCodeIntake(@RequestParam("newCodeIntake") String newCodeIntake);
 	

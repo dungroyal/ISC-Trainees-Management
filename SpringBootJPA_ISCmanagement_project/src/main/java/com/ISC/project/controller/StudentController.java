@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,17 +35,23 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.enums.ParameterStyle;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+@CrossOrigin(maxAge = 3600)
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/api/student")
 @Tag(name = "Student", description = "CRUD for Student")
 public class StudentController {
 	@Autowired
@@ -67,13 +75,19 @@ public class StudentController {
 	})
 	@GetMapping(value = "/allStudent")
 	public ResultRespon allStudent() {
+		String fileDowloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+		.path("/downloadFile/")
+		.path("rrr")
+		.toUriString();
+		System.out.println(fileDowloadUri);
 		return new ResultRespon(0, "Success", this.studentService.listAllStudent());
 	}
 	
 	//Get One Student
 	// DOC for getOne  Student
 	@Operation(summary = "Get one Students", description = "Show one student under the database")
-	@ApiResponse(responseCode = "200", description = "Get one Students success", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class)), mediaType = "application/json"))
+	@ApiResponse(responseCode = "200", description = "Get one Students success",
+	content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class))))
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Success"),
 			@ApiResponse(responseCode = "404", description = "Not found"),
@@ -92,9 +106,11 @@ public class StudentController {
 	}
 
 	//Add new Student
+	@PostMapping(value = "/newStudent", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
 	//DOC for add new Student
-	@Operation(summary = "Add new Student", description = "Add new student from the database")
-	@ApiResponse(responseCode = "200", description = "Add Students success", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class)), mediaType = "multipart/form-data"))
+	@Operation(summary = "Add new Student", description = "Add new student from the database",
+			requestBody = @RequestBody(content = @Content(mediaType = "multipart/form-data")))
+	@ApiResponse(responseCode = "200", description = "Add Students success", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class))))
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Success"),
 			@ApiResponse(responseCode = "404", description = "Not found"),
@@ -102,7 +118,6 @@ public class StudentController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@PostMapping(value = "/newStudent", consumes = "multipart/form-data")
 	public ResultRespon addStudent (
 			@RequestParam("firstName") String firstName,
 			@RequestParam("lastName") String lastName,
@@ -116,11 +131,11 @@ public class StudentController {
 			@Parameter(description = "GPA of the student during the course of study", required = true)
 			@RequestParam("GPA") Double GPA,
 			@RequestParam("workingStatus") StatusAc workingStatus,
+			@Parameter(required = false, allowEmptyValue = true, schema = @Schema(nullable = true))
 			@RequestParam("note") String note,
-			@Parameter(description = "Upload Image Student", schema = @Schema(type = "file"), content = @Content(mediaType = "multipart/form-data"))
+			@Parameter(description = "Upload Image Student", schema = @Schema(type = "file"))
 			@RequestParam("image") MultipartFile image,
 			@RequestParam("createdBy") String createdBy,
-			@RequestParam("updatedBy") String updatedBy,
 			@Parameter(description = "Id of University")
 			@RequestParam("univerId") Long univerId) throws JsonMappingException, JsonProcessingException {
 
@@ -130,13 +145,13 @@ public class StudentController {
 		//Save Student
 		List<Student> students = new ArrayList<Student>();
 		//Get URL image
-		String fileName = this.fileStorageService.storeFile(image) + " " + code;
+		String fileName = this.fileStorageService.storeFile(image, code);
 //		String fileDowloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
 //				.path("/downloadFile/")
 //				.path(fileName)
 //				.toUriString();
 		//		createdDate = LocalDateTime.now();
-		students.add(new Student(createdBy, updatedBy,code, firstName, lastName, address, phoneNumber, 
+		students.add(new Student(createdBy,code, firstName, lastName, address, phoneNumber, 
 				email, typeStudent, GPA, workingStatus, fileName, note, university));
 		students.get(0).setCreatedDate(LocalDateTime.now());
 		// Check EXISTS of code Student
@@ -154,7 +169,8 @@ public class StudentController {
 
 	//Update Student with new Image
 	//DOC for update Student
-	@Operation(summary = "Update Student", description = "Update  student with new image from the database")
+	@Operation(summary = "Update Student", description = "Update  student with new image from the database",
+			requestBody = @RequestBody(content = @Content(mediaType = "multipart/form-data")))
 	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class))),
 	responseCode = "200", description = "Update Students success")
 	@ApiResponses(value = {
@@ -181,7 +197,6 @@ public class StudentController {
 			@RequestParam("workingStatus") StatusAc workingStatus,
 			@RequestParam("note") String note,
 			@RequestParam("image") MultipartFile image,
-			@RequestParam("createdBy") String createdBy,
 			@RequestParam("updatedBy") String updatedBy,
 			@Parameter(description = "Id of University")
 			@RequestParam("univerId") Long univerId) throws JsonMappingException, JsonProcessingException {
@@ -196,7 +211,7 @@ public class StudentController {
 		//Save Student
 		List<Student> students = new ArrayList<Student>();
 		//Get URL image
-		String fileName = this.fileStorageService.storeFile(image) + " " + code;
+		String fileName = this.fileStorageService.storeFile(image, code);
 //		String fileDowloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
 //				.path("/downloadFile/")
 //				.path(fileName)
@@ -271,7 +286,6 @@ public class StudentController {
 			@RequestParam("GPA") Double GPA,
 			@RequestParam("workingStatus") StatusAc workingStatus,
 			@RequestParam("note") String note,
-			@RequestParam("createdBy") String createdBy,
 			@RequestParam("updatedBy") String updatedBy,
 			@Parameter(description = "Id of University")
 			@RequestParam("univerId") Long univerId) throws JsonMappingException, JsonProcessingException {
@@ -364,7 +378,7 @@ public class StudentController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@GetMapping( value = "/student/pagination")
+	@GetMapping( value = "/pagination")
 	public ResultRespon paginationStudent(
 			@Parameter(description = "Number of page", required = false)
 			@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,

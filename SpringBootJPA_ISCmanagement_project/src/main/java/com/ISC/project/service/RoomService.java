@@ -6,7 +6,10 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ISC.project.dao.RoomRepository;
 import com.ISC.project.model.Lecturer;
@@ -36,5 +39,22 @@ public class RoomService {
 	
 	public void delete(long id) {
 		roomRepository.deleteById(id);
+	}
+	
+	public List<String> checkCodeRoom(String codeRoom){
+		return roomRepository.checkCodeRoom(codeRoom);
+	}
+	
+	public Page<Room> findRoom(Pageable pageable){
+		return roomRepository.findRoom(pageable);
+	}
+	
+	public List<Room> searchRoom(String keyWord){
+		return roomRepository.searchRoom(keyWord);
+	}
+	
+
+	public List<String> checkCodeRoomUpdate(@RequestParam("newCodeRoom") String newCodeRoom){
+		return roomRepository.checkCodeRoomUpdate(newCodeRoom);
 	}
 }

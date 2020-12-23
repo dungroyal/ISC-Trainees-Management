@@ -80,8 +80,8 @@ public class Student {
 	private String noteStu;
 
 	//mapping to school
-	@ManyToOne( fetch = FetchType.LAZY)
-	@JsonBackReference
+	@ManyToOne()
+//	@JsonBackReference
 	//	@JoinColumn(name = "university_id")
 	private University university;
 	public University getUniversity() {
@@ -254,12 +254,11 @@ public class Student {
 		this.id = id;
 	}
 
-	public Student(String createdBy, String updatedBy, String codeStu, String firstName, String lastName, String addressStu, String phoneStu, String emailStu,
+	public Student(String createdBy,String codeStu, String firstName, String lastName, String addressStu, String phoneStu, String emailStu,
 			TypeStudent typeStu, Double gpa, StatusAc workingStatus, String image, String noteStu,
 			University university) {
 		super();
 		this.createdBy = createdBy;
-		this.updatedBy = updatedBy;
 		this.codeStu = codeStu;
 		this.firstName = firstName;
 		this.lastName = lastName;

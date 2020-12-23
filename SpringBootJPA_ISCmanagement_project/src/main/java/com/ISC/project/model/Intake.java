@@ -11,7 +11,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -21,49 +20,51 @@ import javax.persistence.TemporalType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "intakes")
 public class Intake {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
+	
 	@Column(name = "createdBy")
 	private String createdBy;
-
+	
 	@Column(name = "updatedBy")
 	private String updatedBy;
-
+	
 	@CreatedDate
 	@Column(name = "createdDate")
 	private LocalDateTime createdDate;
-
+	
 	@LastModifiedDate
 	@Column(name = "updatedDate")
 	private LocalDateTime updatedDate;
-
+	
 	@Column(nullable = false, length = 50, unique = true)
 	private String codeIntake;
-
+	
 	@Column(nullable = false, length = 200)
 	private String nameIntake;
-
+	
 	@Temporal(TemporalType.DATE)
 	@Column(nullable = false)
 	private Date startDay;
-
+	
 	@Temporal(TemporalType.DATE)
 	@Column(nullable = false)
 	private Date endDay;
-
+	
 	@Column(length = 150)
 	private StatusIntake statusIntake;
 
-	// mapping to major
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "major_id")
-	private Major major;
-
+	//mapping to major
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Major major;
+	
 	// mapping to intakeSubject
 	@OneToMany(mappedBy = "intake")
 	private List<IntakeSubject> intakeSubject = new ArrayList<>();
@@ -71,6 +72,14 @@ public class Intake {
 	// mapping to intakeStudent
 	@OneToMany(mappedBy = "intake")
 	private List<IntakeStudent> intakeStudent = new ArrayList<>();
+	
+	public Major getMajor() {
+		return major;
+	}
+
+	public void setMajor(Major major) {
+		this.major = major;
+	}
 
 	public String getCodeIntake() {
 		return codeIntake;
@@ -103,6 +112,8 @@ public class Intake {
 	public void setEndDay(Date endDay) {
 		this.endDay = endDay;
 	}
+
+	
 
 	public StatusIntake getStatusIntake() {
 		return statusIntake;
@@ -152,8 +163,10 @@ public class Intake {
 		this.updatedDate = updatedDate;
 	}
 
-	public Intake(Long id, String createdBy, String updatedBy, LocalDateTime createdDate, LocalDateTime updatedDate,
-			String codeIntake, String nameIntake, Date startDay, Date endDay, StatusIntake statusIntake) {
+	
+
+	public Intake(Long id, String createdBy, String updatedBy, LocalDateTime createdDate, LocalDateTime updatedDate, String codeIntake,
+			String nameIntake, Date startDay, Date endDay, StatusIntake statusIntake) {
 		super();
 		this.id = id;
 		this.createdBy = createdBy;
@@ -175,5 +188,5 @@ public class Intake {
 		super();
 		this.id = id;
 	}
-
+	
 }
