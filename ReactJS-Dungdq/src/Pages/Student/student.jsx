@@ -1,11 +1,10 @@
 import React, { useState, Fragment, useEffect } from "react";
-
+import $ from 'jquery';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { Button, Modal } from "react-bootstrap";
 import MultiSelect from "react-multi-select-component";
-import { DropdownList } from 'react-widgets'
 import Select from 'react-select';
 import Input from "../../Controls/input";
 import studentService from "../../Services/studentService";
@@ -14,15 +13,17 @@ import companyService from "../../Services/companyService";
 import intakeService from "../../Services/intakeService";
 import api from "../../Services/api";
 
-// import MultiSelectCheckboxTypeStu from "../../Controls/selectBoxTypeStu";
-// import MultiSelectCheckboxWorkingStatus from "../../Controls/selectBoxWorkingStatus";
-// import MultiSelectCheckboxUniversity from "../../Controls/selectBoxUniversity";
-
-
 import "./student.css";
 import "./reviewImageUpload";
 import studentCompanyService from "../../Services/studentCompanyService";
 import studentIntakeService from "../../Services/studentIntakeService";
+
+
+// Importing toastify module 
+import {toast} from 'react-toastify';  
+// Import toastify css file 
+import 'react-toastify/dist/ReactToastify.css';  
+toast.configure()
 
 const Student = (props) => {
   //Test
@@ -50,11 +51,8 @@ const Student = (props) => {
     { label: "Graduate", value: "Graduate", disabled: false },
     { label: "Reserve", value: "Reserve", disabled: false },
   ];
-  const [selectedTypeStu, setSelectedTypeStu] = useState([]);
-  // handle onChange event of the dropdown
-  const handleChangeTypeStu = (e) => {
-    setSelectedTypeStu(Array.isArray(e) ? e.map((x) => x.value) : []);
-  };
+  const [selectedTypeStu, setSelectedTypeStu] = useState({ label: "Studying", value: "Studying", disabled: false });
+
   // Custom Select OneMultiSelect Type Student
   for (var i = 0; i < optionsTypeStu.length; i++) {
     if (selectedTypeStu.length >= 1) {
@@ -63,7 +61,7 @@ const Student = (props) => {
   }
 
   // Option For MultiCheckBox University
-  const [selectedUniver, setSelectedUniver] = useState([]);
+  const [selectedUniver, setSelectedUniver] = useState();
   const [univers, setUniver] = useState([]);
 
   // Option For MultiCheckBox Company
@@ -76,14 +74,11 @@ const Student = (props) => {
 
   //Option For MultiCheckBox Working Status
   const optionsWorkingStatus = [
-    { label: "Active", value: "Active", disabled: false },
-    { label: "Inactive", value: "Inactive", disabled: false },
+    { label: "Active", value: "Active", disabled: false},
+    { label: "Inactive", value: "Inactive", disabled: false},
   ];
-  const [selectedWorkingStatus, setSelectedWorkingStatus] = useState([]);
-  // handle onChange event of the dropdown
-  const handleChangeWorkingStatus = (e) => {
-    setSelectedWorkingStatus(Array.isArray(e) ? e.map((x) => x.value) : []);
-  };
+  const [selectedWorkingStatus, setSelectedWorkingStatus] = useState({ label: "Inactive", value: "Inactive", disabled: false});
+
   // Custom Select OneMultiSelect Type Student
   for (var i = 0; i < optionsWorkingStatus.length; i++) {
     if (selectedWorkingStatus.length >= 1) {
@@ -99,6 +94,8 @@ const Student = (props) => {
   //[] Student Intake ID
   const [studentIntakeId, setStudentIntakeId] = useState([]);
   const [showIntakes, setshowIntakes] = useState([]);
+
+  const [modalUpdate, setModalUpdate] = useState(false);
   // Formik
   const formik = useFormik({
     initialValues: {
@@ -136,13 +133,8 @@ const Student = (props) => {
     }),
     onSubmit: (values) => {
       handleFormSubmit(values);
-      console.log(values);
     },
-  });
-  // console.log(students[students.length - 1].id);
-
-
-
+  }); 
 
   // Load Data
   const loadData = () => {
@@ -150,6 +142,7 @@ const Student = (props) => {
       if (res.status === 0) {
         setStudent(res.data);
       }
+      console.log(selectedIntake);
     });
 
     //Get all company
@@ -170,6 +163,7 @@ const Student = (props) => {
       if (res.status === 0) {
         setIntakes(res.data);
         setshowIntakes(res.data);
+        console.log(res.data);
       }
     });
     // Get Intake Id by Student Id
@@ -197,6 +191,7 @@ const Student = (props) => {
     loadData();
   }, []);
 
+
   //Update Student State
   const [studentId, setStudentId] = useState(0);
   //Check Form Update And Add Student
@@ -205,6 +200,7 @@ const Student = (props) => {
     setStudentId(dataId);
     // setModalShow(true);
     if (dataId > 0) {
+      setModalUpdate(true);
       //check form Update Student
       studentService.get(dataId).then((res) => {
         formik.setValues(res.data[0]);
@@ -212,25 +208,16 @@ const Student = (props) => {
         setModalShow(true);
       });
     } else {
-      //check form Add Student
-      // studentService.get;
+      setModalUpdate(false);
       formik.resetForm();
       setModalShow(true);
     }
   };
+
   //Add new Student
   const handleFormSubmit = () => {
     //Check for Adding or upadating
     if (studentId === 0) {
-      //File
-      // let currentFile = selectedFiles[0];
-      // setCurrentFile(currentFile);
-
-      // studentService.add(data).then((res) => {
-      //   formik.setValues(res.data);
-      //   loadData();
-      //   handleModalClose();
-      // });
       studentService
         .add1(
           formik.values.firstName,
@@ -239,15 +226,17 @@ const Student = (props) => {
           formik.values.addressStu,
           formik.values.phoneStu,
           formik.values.emailStu,
-          selectedTypeStu[0],
+          selectedTypeStu.value,
           formik.values.gpa,
-          selectedWorkingStatus[0],
+          selectedWorkingStatus.value,
           formik.values.noteStu,
           formik.values.image,
           formik.values.createdBy,
-          selectedUniver[0].value
+          selectedUniver.value
         )
         .then((stu) => {
+          console.log(stu);
+          toast.success('Add new student success');
           const companyId = [];
           const intakeId = [];
           //Get [] company Id
@@ -564,7 +553,11 @@ const Student = (props) => {
         size="xl"
       >
         <Modal.Header closeButton>
-          <Modal.Title>New Student</Modal.Title>
+              {modalUpdate ? (
+                <Modal.Title>Update Student</Modal.Title>
+              ) : (
+                <Modal.Title>New Student</Modal.Title>
+              )}
         </Modal.Header>
         <form onSubmit={formik.handleSubmit} enctype="multipart/form-data">
           <Modal.Body>
@@ -572,47 +565,103 @@ const Student = (props) => {
               <div className="col-sm-12 col-lg-2">
                 <div className="avatar-upload-jsk py-2">
                   <div className="avatar-edit">
-                    <input type="file" name="avatar" id="imageUpload" accept=".png, .jpg, .jpeg" />
+                    <input 
+                      type="file" 
+                      name="image" 
+                      id="imageUpload"
+                      onChange={(event)=>{
+                        formik.setFieldValue("image",event.currentTarget.files[0]);
+                        if (event.currentTarget.files && event.currentTarget.files[0]) {
+                            var reader = new FileReader();
+                            reader.onload = function(e) {
+                                $('#imagePreview').css('background-image', 'url('+e.target.result +')');
+                                $('#imagePreview').hide();
+                                $('#imagePreview').fadeIn(650);
+                            }
+                            reader.readAsDataURL(event.currentTarget.files[0]);
+                        }
+                      }}
+                    />
                   </div>
                   <div className="avatar-preview-jsk">
                     <label htmlFor="imageUpload" className="imageUpload"> <i className="bx bxs-cloud-upload" /></label>
-                    <div id="imagePreview" style={{backgroundImage: 'url("assets/images/avata-playhoder.jpg")'}} />
+                    {modalUpdate ? (
+                     <div id="imagePreview" style={{backgroundImage: 'url("'+api.url.image + formik.values.image +'")'}} />
+                    ) : (
+                     <div id="imagePreview" style={{backgroundImage: 'url("assets/images/avata-playhoder.jpg")'}} />
+                    )}
                   </div>
                 </div>
               </div>
               <div className="col-sm-12 col-lg-10">
                 <div className="row">
 
-            {/* <Multi Select Checkbox Intake /> */}
-              <div className="col-6">
-              <div class="form-group">
-                <label htmlFor="multicheckIntake"> Khóa học </label>
-                  <MultiSelect
-                    id="multicheckIntake"
-                    options={intakes.map((e) => ({
-                      label: e.nameIntake,
-                      value: e.id,
-                      // disabled: selectedIntake.length >= 1 ? true : false,
-                    }))}
-                    value={selectedIntake}
-                    onChange={setSelectedIntake}
-                    labelledBy={"Select Company"}
-                    hasSelectAll={false}
-                    shouldToggleOnHover={true}
-                  />
-              </div>
-            </div>
-            
-            <Input
-                id="image1"
-                type="file"
-                rows="1"
-                frmField={formik.getFieldProps("image")}
-                err={formik.touched.image && formik.errors.image}
-                errMessage={formik.errors.image}
-                value={formik.values.image}
-                onChange={formik.handleChange}
-              />
+                  <div className="col-6">
+                    <div class="form-group">
+                      <label htmlFor="multicheckIntake"> Khóa học </label>
+                      <Select
+                          id="multicheckIntake"
+                          placeholder="Chọn khóa học..."
+                          onChange={(val)=> {setSelectedIntake(val)}}
+                          value={selectedIntake}
+                          closeMenuOnSelect={true}
+                          options={intakes.map((e) => ({
+                            label: e.nameIntake,
+                            value: e.id,
+                            statusIntake: e.statusIntake,
+                          }))}
+                          isOptionDisabled={(option) => option.statusIntake !== 'Doing'}
+                        />
+                      </div>
+                    </div>
+
+                    {modalUpdate ? (
+                      <div className="col-6">
+                        <div class="form-group">
+                          <label htmlFor="setSelectedWorkingStatus"> Trạng thái việc làm</label>
+                          <Select
+                              id="setSelectedWorkingStatus"
+                              placeholder="Chọn trạng thái làm việc..."
+                              onChange={(val)=> {setSelectedWorkingStatus(val)}}
+                              value={selectedWorkingStatus}
+                              closeMenuOnSelect={true}
+                              options={optionsWorkingStatus}
+                            />
+                        </div>
+                      </div>
+                    ) : ("")}
+                    
+
+                    <div className="col-6">
+                      <div class="form-group">
+                        <label htmlFor="selectedTypeStu"> Trạng thái học viên</label>
+                        <Select
+                            id="selectedTypeStu"
+                            placeholder="Chọn trạng  thái học viên..."
+                            onChange={(val)=> {setSelectedTypeStu(val)}}
+                            value={selectedTypeStu}
+                            closeMenuOnSelect={true}
+                            options={optionsTypeStu}
+                          />
+                      </div>
+                    </div>
+
+                    <div className="col-6">
+                      <div class="form-group">
+                        <label htmlFor="selectedUniver"> Trường</label>
+                        <Select
+                            id="selectedUniver"
+                            placeholder="Chọn trường..."
+                            onChange={(val)=> {setSelectedUniver(val)}}
+                            value={selectedUniver}
+                            closeMenuOnSelect={true}
+                            options={univers.map((e) => ({
+                              label: e.nameUni,
+                              value: e.id
+                            }))}
+                          />
+                      </div>
+                    </div>
 
             <Input
               typeInput="1"
@@ -697,48 +746,9 @@ const Student = (props) => {
               onChange={formik.handleChange}
             />
 
-            {/* <Multi Select Checkbox TypeStu /> */}
-            <div className="col-sm-6">
-              <div className="form-group">
-                <label htmlFor="multicheckUniver">Trạng thái</label>
-                  <MultiSelect
-                    id="multicheckTypeStu"
-                    options={optionsTypeStu}
-                    value={optionsTypeStu.filter((obj) =>
-                      selectedTypeStu.includes(obj.value)
-                    )} // set selected values
-                    onChange={handleChangeTypeStu}
-                    labelledBy={"Select Type Student"}
-                    hasSelectAll={false}
-                    shouldToggleOnHover={true}
-                    // {...formik.getFieldProps("typeStudent")}
-                  />
-                </div>
-            </div>
-            {/* <Multi Select Checkbox TypeStu /> */}
+           
 
 
-            {/* <Multi Select Checkbox University /> */}
-            <div className="col-sm-6">
-              <div className="form-group">
-                <label htmlFor="multicheckUniver">Trường</label>
-                  <MultiSelect
-                    id="multicheckUniver"
-                    options={univers.map((e) => ({
-                      label: e.nameUni,
-                      value: e.id,
-                      disabled: selectedUniver.length >= 1 ? true : false,
-                    }))}
-                    value={selectedUniver}
-                    onChange={setSelectedUniver}
-                    labelledBy={"Select University"}
-                    hasSelectAll={false}
-                    shouldToggleOnHover={true}
-                    // {...formik.getFieldProps("university")}
-                  />
-              </div>
-            </div>
-            {/* <Multi Select Checkbox University /> */}
             <Input
               typeInput="1"
               column="6"
@@ -754,7 +764,7 @@ const Student = (props) => {
             />
             <Input
               typeInput="1"
-              column="12"
+              column="6"
               rows="2"
               id="txtStuNote"
               type="text"
@@ -765,6 +775,29 @@ const Student = (props) => {
               value={formik.values.note}
               onChange={formik.handleChange}
             />
+
+                {modalUpdate ? (
+                  <Fragment>
+                  <Input
+                    typeInput="1"
+                    column="6"
+                    rows="1"
+                    readOnly
+                    type="text"
+                    label="Người tạo"
+                    value = {formik.values.createdBy}
+                  />
+                  <Input
+                    typeInput="1"
+                    column="6"
+                    rows="1"
+                    readOnly
+                    type="text"
+                    label="Ngày tạo"
+                    value = {formik.values.createdDate}
+                  />
+                    </Fragment>
+                    ) : ("")}
               
               </div>
             </div>

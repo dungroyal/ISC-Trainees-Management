@@ -10,7 +10,7 @@ const DefaultLayout = () => {
             <Header/>
             <Sidebar/>
             <Body/>
-            <Footer/>
+            {/* <Footer/> */}
         </Fragment>
      );
 }

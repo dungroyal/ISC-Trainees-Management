@@ -10,6 +10,8 @@ import {BrowserRouter} from "react-router-dom";
 import "./plugin/css/custom.css";
 import "./plugin/css/style.css";
 import "./plugin/js/app";
+
+
 ReactDOM.render(
     <BrowserRouter>
       <App />
