@@ -5,6 +5,8 @@ import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { Button, Modal } from "react-bootstrap";
 import MultiSelect from "react-multi-select-component";
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import Select from 'react-select';
 import Input from "../../Controls/input";
 import studentService from "../../Services/studentService";
@@ -193,6 +195,48 @@ const Student = (props) => {
       formik.resetForm();
       setModalShow(true);
     }
+  };
+
+  const confirmDeleteStudent = (e, studentId) => {
+    if (e) e.preventDefault();
+    confirmAlert({
+      title: 'Confirm to submit',
+      message: 'Bạn có muốn xóa sinh viên này?',
+      buttons: [
+        {
+          label: 'Đồng ý',
+          onClick: () => handleDeleteStudent(studentId)
+        },
+        {
+          label: 'Hủy bỏ'
+        }
+      ]
+    });
+  };
+
+  //Delete new Student
+  const handleDeleteStudent = (studentId) => {
+    studentIntakeService.get(studentId).then((res) => {
+      const listIntaked = res.data;
+      for (let d = 0; d <= listIntaked.length; d++) {
+        if(d < listIntaked.length){
+          studentIntakeService.remove(studentId,listIntaked[d].id.intakeId).then((res) => {
+            if (res.status === 1) {
+              console.error("Delete Student Intake error : " +res.status);
+            }
+          });
+        }else{
+          studentService.remove(studentId).then((res) => {
+            if (res.status === 0) {
+              toast.success("Delete Student Success");
+              loadData();
+            } else {
+              toast.error(res.message);
+            }
+          });
+        }
+      }
+    });
   };
 
   //Add new Student
@@ -539,7 +583,7 @@ const Student = (props) => {
                               </a>
                               <a
                                 href="#"
-                                // onClick={(e) => deleteRow(e, major.id)}
+                                onClick={(e) => confirmDeleteStudent(e, student.id)}
                               >
                                 <i className="fas fa-trash-alt text-danger"></i>
                               </a>

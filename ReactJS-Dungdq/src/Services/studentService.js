@@ -1,8 +1,8 @@
 import api from './api';
 
-const getAll = () => {return api.get(api.url.listStudent).then(res => res.data);
-}
+const getAll = () => {return api.get(api.url.listStudent).then(res => res.data);}
 const get = (id) => api.get(`${api.url.getOneStudent}?id=${id}`).then(res => res.data);
+const remove = (id) => api.delete(`${api.url.deleteStudent}?id=${id}`).then(res => res.data);
 const add = (data) => api.post(api.url.addStudent, data).then(res => res.data);
 const add1 = (firstName,
     lastName, code, address, phoneNumber, email, typeStudent, GPA,
@@ -81,7 +81,7 @@ const updateNoImages = (id, firstName,
 }
 
 const studentService = {
-    getAll, add, get, add1, updateHasImages, updateNoImages
+    getAll, add, get, add1, updateHasImages, updateNoImages,remove
 };
 
 export default studentService;
