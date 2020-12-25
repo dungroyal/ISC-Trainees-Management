@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -52,7 +54,7 @@ public class UniversityController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping("/listUniversity")
+	@GetMapping(value = "/listUniversity", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon listUniversity() {
 		return new ResultRespon(0, "Success", this.universityService.listAlluniversity());
 	}
@@ -66,8 +68,10 @@ public class UniversityController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping("/getUniversity")
-	public ResultRespon getUniversity(@RequestParam("id") long id) {
+	@GetMapping(value = "/getUniversity", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	public ResultRespon getUniversity(
+			@Parameter(required = true, description = "University ID")
+			@RequestParam("id") long id) {
 		List<University> univer = new ArrayList<>();
 		univer.add(universityService.findById(id)
 				.orElseThrow(() -> new ResourseNotFoundException("not found university with id: " + id)));
@@ -107,7 +111,7 @@ public class UniversityController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PutMapping(value = "/editUniversity")
+	@PutMapping(value = "/editUniversity", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon editUniversity(@RequestBody University university, @RequestParam("id") long id) {
 		List<University> univer = new ArrayList<>();
 		University olduniversity = universityService.findById(id)
@@ -153,7 +157,7 @@ public class UniversityController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@DeleteMapping(value = "/deleteUniversity")
+	@DeleteMapping(value = "/deleteUniversity", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon deleteUniversity(@RequestParam("id") long id) {
 		universityService.findById(id)
 				.orElseThrow(() -> new ResourseNotFoundException("not found university with id: " + id));

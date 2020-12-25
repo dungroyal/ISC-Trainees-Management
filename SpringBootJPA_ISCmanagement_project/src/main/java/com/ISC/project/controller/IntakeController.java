@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,7 +53,7 @@ public class IntakeController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/listIntake")
+	@GetMapping(value = "/listIntake", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon listIntake() {
 		return new ResultRespon(0, "Success", this.intakeService.listAllCourse());
 	}
@@ -66,9 +67,10 @@ public class IntakeController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/getIntake")
+	@GetMapping(value = "/getIntake", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon getIntake(
-			@Parameter(description = "The intake's id is required", required = true) @RequestParam("id") long id) {
+			@Parameter(description = "The intake's id is required", required = true) 
+			@RequestParam("id") long id) {
 		List<Intake> intake = new ArrayList<>();
 		intake.add(intakeService.findById(id).orElseThrow(() -> new ResourseNotFoundException("Not found intake")));
 		return new ResultRespon(0, "Success", intake);
@@ -83,8 +85,12 @@ public class IntakeController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PostMapping(value = "/newIntake")
-	public ResultRespon addIntake(@RequestBody Intake intake, @RequestParam("majorId") Long majorId) {
+	@PostMapping(value = "/newIntake" , consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	public ResultRespon addIntake(
+			@Parameter(required = true)
+			@RequestBody Intake intake,
+			@Parameter(required = true, description = "Major ID")
+			@RequestParam("majorId") Long majorId) {
 		Major major = this.majorService.findById(majorId)
 				.orElseThrow(() -> new ResourceNotFoundException("Not Found Major"));
 		List<Intake> intakeList = new ArrayList<>();
@@ -107,8 +113,14 @@ public class IntakeController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PutMapping(value = "/editIntake")
-	public ResultRespon editIntake(@RequestBody Intake intake, @RequestParam("id") long id, @RequestParam("majorId") Long majorId) {
+	@PutMapping(value = "/editIntake", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	public ResultRespon editIntake(
+			@Parameter(required = true)
+			@RequestBody Intake intake, 
+			@Parameter(required = true, description = "Intake ID")
+			@RequestParam("id") long id, 
+			@Parameter(required = true, description = "Major ID")
+			@RequestParam("majorId") Long majorId) {
 		Major major = this.majorService.findById(majorId)
 				.orElseThrow(() -> new ResourceNotFoundException("Not Found Major"));
 		List<Intake> intakeList = new ArrayList<>();
@@ -127,7 +139,7 @@ public class IntakeController {
 			this.intakeService.save(intakeList.get(0));
 			return new ResultRespon(0, "Update Intake Success", intakeList);
 		} else {
-			if (this.intakeService.checkCodeIntake(intake.getCodeIntake()).isEmpty()) {
+			if (!this.intakeService.checkCodeIntake(intake.getCodeIntake()).isEmpty()) {
 				oldIntake.setCodeIntake(intake.getCodeIntake());
 				oldIntake.setUpdatedBy(intake.getUpdatedBy());
 				oldIntake.setUpdatedDate(LocalDateTime.now());
@@ -154,7 +166,7 @@ public class IntakeController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@DeleteMapping("/deleteIntake")
+	@DeleteMapping( value = "/deleteIntake", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon deleteIntake(
 			@Parameter(description = "The intake's id is required", required = true) @RequestParam("id") long id) {
 		Intake intake = this.intakeService.findById(id)
@@ -175,11 +187,11 @@ public class IntakeController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/pagination")
+	@GetMapping(value = "/pagination", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon paginationIntake(
 			@Parameter(description = "Number of page", required = false) @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@Parameter(description = "Items in page", required = false) @RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
-			@Parameter(description = "Sort by filed of Intems", required = false) @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
+			@Parameter(description = "Sort by filed of Items", required = false) @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
 		Sort sortable = null;
 		if (sort.equals("ASC")) {
 			sortable = Sort.by("nameIntake").ascending();
@@ -202,7 +214,7 @@ public class IntakeController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/searchIntake")
+	@GetMapping(value = "/searchIntake", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon searchIntake(
 			@Parameter(description = "Enter the keywords you want to search", required = false) @RequestParam("keyWord") String keyWord) {
 		if (this.intakeService.searchIntake(keyWord).isEmpty()) {

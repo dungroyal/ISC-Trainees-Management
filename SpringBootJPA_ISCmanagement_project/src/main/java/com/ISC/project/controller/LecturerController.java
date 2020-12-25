@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,7 +56,7 @@ public class LecturerController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/listLecturer")
+	@GetMapping(value = "/listLecturer", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon listLecturer() {
 		return new ResultRespon(0, "Success", this.lecturerService.listAllLecture());
 	}
@@ -87,7 +88,7 @@ public class LecturerController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PostMapping(value = "/newLecturer", consumes = "multipart/form-data")
+	@PostMapping(value = "/newLecturer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
 	public ResultRespon addLecturer(@RequestParam("createdBy") String createdBy,
 			@RequestParam("updatedBy") String updatedBy,
 			@Parameter(description = "Lecturer Code is required!", required = true) @RequestParam("codeLec") String codeLec,
@@ -136,7 +137,7 @@ public class LecturerController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PutMapping(value = "/editLecturerImg", consumes = "multipart/form-data")
+	@PutMapping(value = "/editLecturerImg", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
 	public ResultRespon editLecturerNewImage(@RequestParam("id") Long id, @RequestParam("createdBy") String createdBy,
 			@RequestParam("updatedBy") String updatedBy,
 			@Parameter(description = "Lecturer Code is required!", required = true) @RequestParam("codeLec") String codeLec,
@@ -205,7 +206,7 @@ public class LecturerController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PutMapping(value = "/editLecturerNotImg")
+	@PutMapping(value = "/editLecturerNotImg", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
 	public ResultRespon editLecturerNewImage(@RequestParam("id") Long id, @RequestParam("createdBy") String createdBy,
 			@RequestParam("updatedBy") String updatedBy,
 			@Parameter(description = "Lecturer Code is required!", required = true) @RequestParam("codeLec") String codeLec,
@@ -266,7 +267,7 @@ public class LecturerController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@DeleteMapping("/deleteLecturer")
+	@DeleteMapping(value = "/deleteLecturer", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon deleteLecturer(
 			@Parameter(description = "The lecturer's id is required", required = true) @RequestParam("id") long id) {
 		Lecturer lecturer = this.lecturerService.findById(id)
@@ -287,7 +288,7 @@ public class LecturerController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/pagination")
+	@GetMapping(value = "/pagination",consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon paginationLecturer(
 			@Parameter(description = "Number of page", required = false) @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@Parameter(description = "Items in page", required = false) @RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
@@ -314,7 +315,7 @@ public class LecturerController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/searchLecturer")
+	@GetMapping(value = "/searchLecturer", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon searchLecturer(
 			@Parameter(description = "Enter the keywords you want to search", required = false) @RequestParam("keyWord") String keyWord) {
 		if (this.lecturerService.searchLecturer(keyWord).isEmpty()) {

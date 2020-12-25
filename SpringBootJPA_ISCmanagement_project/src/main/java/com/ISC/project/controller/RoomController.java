@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,7 +55,7 @@ public class RoomController {
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
 	//get all Room
-	@GetMapping("/listRoom")
+	@GetMapping(value = "/listRoom", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon listRoom() {
 		return new ResultRespon(0,"Get list room success",this.roomService.listAllRoom());
 	}
@@ -90,7 +91,7 @@ public class RoomController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@PostMapping("/newRoom")
+	@PostMapping(value = "/newRoom", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon addRoom(@RequestBody Room room) {
 		if(this.roomService.checkCodeRoom(room.getCodeRoom()).isEmpty()) {
 			List<Room> newRoom = new ArrayList<>();
@@ -115,8 +116,12 @@ public class RoomController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@PutMapping("/editRoom")
-	public ResultRespon editRoom(@RequestBody Room room, @Parameter(description = "The room id is required", required = true)  @RequestParam("id") long id) {
+	@PutMapping(value = "/editRoom", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	public ResultRespon editRoom(
+			@Parameter(required = true)
+			@RequestBody Room room, 
+			@Parameter(description = "The room id is required", required = true) 
+			@RequestParam("id") long id) {
 		List<Room> newRoom = new ArrayList<>();
 		Room oldRoom = roomService.findById(id).orElseThrow(()->new ResourseNotFoundException("Not found room with id: " + id));
 		if(!this.roomService.checkCodeRoom(room.getCodeRoom()).isEmpty()) {
@@ -163,7 +168,7 @@ public class RoomController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@DeleteMapping("/deleteRoom")
+	@DeleteMapping(value = "/deleteRoom", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon deleteRoom(@Parameter(description = "The room id is required", required = true) @RequestParam("id") long id) {
 		roomService.findById(id).orElseThrow(()->new ResourseNotFoundException("Not found room with id: " + id));
 		this.roomService.delete(id);
@@ -182,7 +187,7 @@ public class RoomController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@GetMapping("/pagination") 
+	@GetMapping(value = "/pagination", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json") 
 	public ResultRespon paginationRoom(
 			@RequestParam(name="page", required = false, defaultValue = "1") Integer page,
 			@RequestParam(name="size", required = false, defaultValue = "1") Integer size,
@@ -214,7 +219,7 @@ public class RoomController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})	
-	@GetMapping("/searchRoom") 
+	@GetMapping(value = "/searchRoom", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json") 
 	public ResultRespon searchRoom(@Parameter(description = "Search keyword id is required", required = true) @RequestParam("keyWord") String keyWord) {
 		if(this.roomService.searchRoom(keyWord).isEmpty()) {
 			throw new ResourseNotFoundException("Not found room witd keyword: "+keyWord);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,7 +56,7 @@ public class StudentCompanyController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@GetMapping("/listStudentCompany")
+	@GetMapping(value = "/listStudentCompany", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon listStudentCompany() {
 		return new ResultRespon(0,"Success",this.studentCompanyService.listAllStudentCompany());
 	}
@@ -72,7 +73,7 @@ public class StudentCompanyController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@GetMapping("/getStudentCompany")
+	@GetMapping(value = "/getStudentCompany", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon getStudentCompany(@Parameter(description = "Student ID is required!", required = true) @RequestParam("studentId") Long studentId) {
 		if(studentCompanyService.getStudentCompany(studentId).isEmpty()) {
 			throw new ResourseNotFoundException("Not found");
@@ -93,7 +94,7 @@ public class StudentCompanyController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@PostMapping("/addStudentCompany")
+	@PostMapping(value = "/addStudentCompany", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon addStudentCompany(@Parameter(description = "Student ID is required!", required = true) @RequestParam("studentId") Long studentId,@Parameter(description = "Company ID is required!", required = true) @RequestParam("companyId") Long [] companyId) {
 		List<StudentCompany> studentCompanies = new ArrayList<StudentCompany>();
 		Student student = this.studentService.findById(studentId).orElseThrow(()-> new ResourseNotFoundException("Not found student"));
@@ -119,7 +120,7 @@ public class StudentCompanyController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@PutMapping("/updateStudentCompany")
+	@PutMapping(value = "/updateStudentCompany", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon updateStudentCompany(
 			@Parameter(description = "Student ID is required!", required = true) @RequestParam("studentId") Long studentId, 
 			@Parameter(description = "Company ID is required!", required = true) @RequestParam("companyId") Long [] companyId, 
@@ -153,7 +154,7 @@ public class StudentCompanyController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@DeleteMapping("/deleteStudentCompany")
+	@DeleteMapping(value = "/deleteStudentCompany", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon deleteStudentCompany(
 			@Parameter(description = "Student ID is required!", required = true) @RequestParam("studentId") Long studentId,
 			@Parameter(description = "Company ID is required!", required = true) @RequestParam("companyId") Long companyId) {

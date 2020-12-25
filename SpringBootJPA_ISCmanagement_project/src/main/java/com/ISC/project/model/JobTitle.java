@@ -1,85 +1,44 @@
 package com.ISC.project.model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+
 @Entity
-@Table(name = "majors")
-public class Major  {
+@Table(name = "jobTitles")
+public class JobTitle {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@Column(name = "createdBy")
 	private String createdBy;
-	
+
 	@Column(name = "updatedBy")
 	private String updatedBy;
-	
+
 	@CreatedDate
 	@Column(name = "createdDate")
 	private LocalDateTime createdDate;
-	
+
 	@LastModifiedDate
 	@Column(name = "updatedDate")
 	private LocalDateTime updatedDate;
 	
-	@Column(nullable = false, length = 50, unique = true)
-	private String codeMajor;
+	@Column(name = "name",nullable = false, length = 100, unique = true)
+	private String nameJob;
 	
-	@Column(nullable = false, length = 50)
-	private String nameMajor;
-	
-	@Column(nullable = false, length = 2000)
-	private String descriptionMajor;
-	
-	//mapping to intake
-	@OneToMany(mappedBy = "major")
-	private List<Intake> intakes = new ArrayList<>();
-	
-	public List<Intake> getIntakes() {
-		return intakes;
-	}
-
-	public void setIntakes(List<Intake> intakes) {
-		this.intakes = intakes;
-	}
-
-	public String getCodeMajor() {
-		return codeMajor;
-	}
-
-	public void setCodeMajor(String codeMajor) {
-		this.codeMajor = codeMajor;
-	}
-
-	public String getNameMajor() {
-		return nameMajor;
-	}
-
-	public void setNameMajor(String nameMajor) {
-		this.nameMajor = nameMajor;
-	}
-
-	public String getDescriptionMajor() {
-		return descriptionMajor;
-	}
-
-	public void setDescriptionMajor(String descriptionMajor) {
-		this.descriptionMajor = descriptionMajor;
-	}
+	@Column(nullable = false)
+	private StatusAc jobStatus;
 
 	public Long getId() {
 		return id;
@@ -121,29 +80,53 @@ public class Major  {
 		this.updatedDate = updatedDate;
 	}
 
-	public Major(Long id, String createdBy, String updatedBy, LocalDateTime createdDate, LocalDateTime updatedDate, String codeMajor,
-			String nameMajor, String descriptionMajor) {
+	public String getNameJob() {
+		return nameJob;
+	}
+
+	public void setNameJob(String nameJob) {
+		this.nameJob = nameJob;
+	}
+
+	public StatusAc getJobStatus() {
+		return jobStatus;
+	}
+
+	public void setJobStatus(StatusAc jobStatus) {
+		this.jobStatus = jobStatus;
+	}
+
+	public JobTitle(Long id, String createdBy, String updatedBy, LocalDateTime createdDate, LocalDateTime updatedDate,
+			String nameJob, StatusAc jobStatus) {
 		super();
 		this.id = id;
 		this.createdBy = createdBy;
 		this.updatedBy = updatedBy;
 		this.createdDate = createdDate;
 		this.updatedDate = updatedDate;
-		this.codeMajor = codeMajor;
-		this.nameMajor = nameMajor;
-		this.descriptionMajor = descriptionMajor;
+		this.nameJob = nameJob;
+		this.jobStatus = jobStatus;
 	}
 
-	public Major(Long id) {
+	public JobTitle(String createdBy, String updatedBy, LocalDateTime createdDate, LocalDateTime updatedDate,
+			String nameJob, StatusAc jobStatus) {
+		super();
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+		this.createdDate = createdDate;
+		this.updatedDate = updatedDate;
+		this.nameJob = nameJob;
+		this.jobStatus = jobStatus;
+	}
+
+	public JobTitle(Long id, String createdBy, String updatedBy, String nameJob, StatusAc jobStatus) {
 		super();
 		this.id = id;
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+		this.nameJob = nameJob;
+		this.jobStatus = jobStatus;
 	}
-
-	public Major() {
-		super();
-	}
-
-		
 	
- 
+	
 }

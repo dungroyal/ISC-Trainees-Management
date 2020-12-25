@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,7 +56,7 @@ public class IntakeSubjectController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@GetMapping("/listIntakeSub")
+	@GetMapping(value = "/listIntakeSub", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon listIntakeSubject() {
 		return new ResultRespon(0,"Success",this.intakeSubjectService.listAllmajorSubject());
 	}
@@ -72,7 +73,7 @@ public class IntakeSubjectController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@GetMapping("/getIntakeSub")
+	@GetMapping(value = "/getIntakeSub", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon getIntakeSubject(@Parameter(description = "Intake ID is required!", required = true) @RequestParam("intakeId") Long intakeId) {
 		if(intakeSubjectService.getSubjectOfIntake(intakeId).isEmpty()) {
 			throw new ResourseNotFoundException("Not found");
@@ -93,7 +94,7 @@ public class IntakeSubjectController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@PostMapping("/postIntakeSub")
+	@PostMapping(value = "/postIntakeSub", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon addIntakeSubject(@Parameter(description = "Intake ID is required!", required = true) @RequestParam("intakeId") Long intakeId,@Parameter(description = "Subject ID is required!", required = true) @RequestParam("subjectId") Long [] subjectId) {
 		List<IntakeSubject> intakeSubjects = new ArrayList<IntakeSubject>();
 		Intake intake = this.intakeService.findById(intakeId).orElseThrow(()-> new ResourseNotFoundException("Not found intake"));
@@ -119,7 +120,7 @@ public class IntakeSubjectController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@PutMapping("/editIntakeSub")
+	@PutMapping(value = "/editIntakeSub", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon updateIntakeSubject(
 			@Parameter(description = "Intake ID is required!", required = true) @RequestParam("intakeId") Long intakeId, 
 			@Parameter(description = "Subject ID is required!", required = true) @RequestParam("subjectId") Long [] subjectId, 
@@ -153,7 +154,7 @@ public class IntakeSubjectController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@DeleteMapping("/deleteIntakeSub")
+	@DeleteMapping(value = "/deleteIntakeSub", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon deleteIntakeSubject(
 			@Parameter(description = "Intake ID is required!", required = true) @RequestParam("intakeId") Long intakeId,
 			@Parameter(description = "Subject ID is required!", required = true) @RequestParam("subjectId") Long subjectId) {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,7 +56,7 @@ public class StudentIntakeController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@GetMapping(value = "/allStudentIntake")
+	@GetMapping(value = "/allStudentIntake", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon allStudentIntake() {
 		return new ResultRespon(0, "Success", this.intakeStudentService.listAllCourseStudent());
 	}
@@ -92,7 +93,7 @@ public class StudentIntakeController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@PostMapping(value = "/postIntakeOfStu")
+	@PostMapping(value = "/postIntakeOfStu", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon addIntakeOfStu(
 			@Parameter(description = ("Id student"), required = true)
 			@RequestParam("studentId") Long studentId, 
@@ -123,7 +124,7 @@ public class StudentIntakeController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@PutMapping(value = "/updateIntakeOfStu")
+	@PutMapping(value = "/updateIntakeOfStu", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon updateIntakeOfStu(
 			@Parameter(description = ("List new Intake ID"), required = true)
 			@RequestParam("newIntakeId") List<Long> newIntakeId, 
@@ -147,7 +148,7 @@ public class StudentIntakeController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@PutMapping(value = "/updateIntakeOfStuArray")
+	@PutMapping(value = "/updateIntakeOfStuArray", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon updateIntakeOfStuArray(
 			@Parameter(description = ("Student ID"), required = true)
 			@RequestParam("studentId") Long studentId,
@@ -189,7 +190,7 @@ public class StudentIntakeController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@DeleteMapping(value = "/deleteIntakeOfStu") 
+	@DeleteMapping(value = "/deleteIntakeOfStu", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json") 
 	public ResultRespon deleteIntakeOfStu(
 			@Parameter(description = ("Student ID"), required = true)
 			@RequestParam("studentId") Long studentId,

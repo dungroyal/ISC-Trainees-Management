@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +49,7 @@ public class MajorController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/listMajor")
+	@GetMapping(value = "/listMajor", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon listMajor() {
 		return new ResultRespon(0, "Success", this.majorService.listAllMajor());
 	}
@@ -63,9 +64,10 @@ public class MajorController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
 
-	@GetMapping(value = "/getMajor")
+	@GetMapping(value = "/getMajor", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon getMajor(
-			@Parameter(description = "The major's id is required", required = true) @RequestParam("id") long id) {
+			@Parameter(description = "The major's id is required", required = true) 
+			@RequestParam("id") long id) {
 		List<Major> major = new ArrayList<Major>();
 		major.add(majorService.findById(id).orElseThrow(() -> new ResourseNotFoundException("Not found major")));
 		return new ResultRespon(0, "Success", major);
@@ -80,8 +82,10 @@ public class MajorController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PostMapping(value = "/newMajor")
-	public ResultRespon addMajor(@RequestBody Major major) {
+	@PostMapping(value = "/newMajor", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	public ResultRespon addMajor(
+			@Parameter(required = true)
+			@RequestBody Major major) {
 		List<Major> majorList = new ArrayList<Major>();
 		major.setCreatedDate(LocalDateTime.now());
 		if (this.majorService.checkCodeMajor(major.getCodeMajor()).isEmpty()) {
@@ -101,7 +105,7 @@ public class MajorController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PutMapping(value = "/editMajor")
+	@PutMapping(value = "/editMajor", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon editMajor(@RequestBody Major major, @RequestParam("id") long id) {
 		List<Major> majorList = new ArrayList<>();
 		Major oldMajor = majorService.findById(id).orElseThrow(() -> new ResourseNotFoundException("Not found major"));
@@ -139,9 +143,10 @@ public class MajorController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@DeleteMapping("/deleteMajor")
+	@DeleteMapping(value = "/deleteMajor", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon deleteMajor(
-			@Parameter(description = "The major's id is required", required = true) @RequestParam("id") long id) {
+			@Parameter(description = "The major's id is required", required = true) 
+			@RequestParam("id") long id) {
 		Major major = this.majorService.findById(id)
 				.orElseThrow(() -> new ResourseNotFoundException("Not Found Major"));
 		try {
@@ -160,7 +165,7 @@ public class MajorController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/pagination")
+	@GetMapping(value = "/pagination", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon paginationMajor(
 			@Parameter(description = "Number of page", required = false) @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@Parameter(description = "Items in page", required = false) @RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
@@ -187,7 +192,7 @@ public class MajorController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/searchMajor")
+	@GetMapping(value = "/searchMajor", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon searchMajor(
 			@Parameter(description = "Enter the keywords you want to search", required = false) @RequestParam("keyWord") String keyWord) {
 		if (this.majorService.searchMajor(keyWord).isEmpty()) {

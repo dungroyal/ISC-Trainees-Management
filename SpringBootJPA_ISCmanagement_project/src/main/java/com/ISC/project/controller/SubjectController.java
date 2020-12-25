@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +49,7 @@ public class SubjectController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/listSubject")
+	@GetMapping(value = "/listSubject", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon listSubject() {
 		return new ResultRespon(0, "Success", this.subjectService.listAllSubject());
 	}
@@ -63,7 +64,7 @@ public class SubjectController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
 
-	@GetMapping(value = "/getSubject")
+	@GetMapping(value = "/getSubject", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon getSubject(
 			@Parameter(description = "The subject's id is required", required = true) @RequestParam("id") long id) {
 		List<Subject> subject = new ArrayList<Subject>();
@@ -80,8 +81,10 @@ public class SubjectController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PostMapping(value = "/newSubject")
-	public ResultRespon addSubject(@RequestBody Subject subject) {
+	@PostMapping(value = "/newSubject", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	public ResultRespon addSubject(
+			@Parameter(required = true)
+			@RequestBody Subject subject) {
 		List<Subject> subjectList = new ArrayList<Subject>();
 		subject.setCreatedDate(LocalDateTime.now());
 		if (this.subjectService.checkCodeSubject(subject.getCodeSub()).isEmpty()) {
@@ -101,7 +104,7 @@ public class SubjectController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PutMapping(value = "/editSubject")
+	@PutMapping(value = "/editSubject", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon editSubject(@RequestBody Subject subject, @RequestParam("id") long id) {
 		List<Subject> subjectList = new ArrayList<Subject>();
 		Subject oldSubject = subjectService.findById(id)
@@ -167,7 +170,7 @@ public class SubjectController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/pagination")
+	@GetMapping(value = "/pagination", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon paginationSubject(
 			@Parameter(description = "Number of page", required = false) @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@Parameter(description = "Items in page", required = false) @RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
@@ -194,7 +197,7 @@ public class SubjectController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/searchSubject")
+	@GetMapping(value = "/searchSubject", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon searchSubject(
 			@Parameter(description = "Enter the keywords you want to search", required = false) @RequestParam("keyWord") String keyWord) {
 		if (this.subjectService.searchSubject(keyWord).isEmpty()) {
