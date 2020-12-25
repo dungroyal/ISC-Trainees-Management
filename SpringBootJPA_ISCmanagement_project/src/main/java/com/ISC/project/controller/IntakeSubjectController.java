@@ -56,7 +56,7 @@ public class IntakeSubjectController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@GetMapping(value = "/listIntakeSub", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/listIntakeSub")
 	public ResultRespon listIntakeSubject() {
 		return new ResultRespon(0,"Success",this.intakeSubjectService.listAllmajorSubject());
 	}
@@ -154,7 +154,7 @@ public class IntakeSubjectController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@DeleteMapping(value = "/deleteIntakeSub", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@DeleteMapping(value = "/deleteIntakeSub")
 	public ResultRespon deleteIntakeSubject(
 			@Parameter(description = "Intake ID is required!", required = true) @RequestParam("intakeId") Long intakeId,
 			@Parameter(description = "Subject ID is required!", required = true) @RequestParam("subjectId") Long subjectId) {

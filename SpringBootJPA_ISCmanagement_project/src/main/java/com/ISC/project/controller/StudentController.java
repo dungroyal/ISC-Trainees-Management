@@ -73,7 +73,7 @@ public class StudentController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@GetMapping(value = "/allStudent", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/allStudent")
 	public ResultRespon allStudent() {
 		String fileDowloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
 		.path("/downloadFile/")
@@ -95,7 +95,7 @@ public class StudentController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@GetMapping(value = "/oneStudent", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/oneStudent")
 	public ResultRespon getStudent(
 			// DOC for id of student
 			@Parameter(description = "The student's id is required", required = true)

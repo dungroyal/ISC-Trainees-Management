@@ -54,7 +54,7 @@ public class UniversityController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/listUniversity", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/listUniversity")
 	public ResultRespon listUniversity() {
 		return new ResultRespon(0, "Success", this.universityService.listAlluniversity());
 	}
@@ -68,7 +68,7 @@ public class UniversityController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/getUniversity", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/getUniversity")
 	public ResultRespon getUniversity(
 			@Parameter(required = true, description = "University ID")
 			@RequestParam("id") long id) {
@@ -157,7 +157,7 @@ public class UniversityController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@DeleteMapping(value = "/deleteUniversity", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@DeleteMapping(value = "/deleteUniversity")
 	public ResultRespon deleteUniversity(@RequestParam("id") long id) {
 		universityService.findById(id)
 				.orElseThrow(() -> new ResourseNotFoundException("not found university with id: " + id));

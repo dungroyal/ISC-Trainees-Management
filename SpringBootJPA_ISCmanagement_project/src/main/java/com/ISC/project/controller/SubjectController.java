@@ -49,7 +49,7 @@ public class SubjectController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/listSubject", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/listSubject")
 	public ResultRespon listSubject() {
 		return new ResultRespon(0, "Success", this.subjectService.listAllSubject());
 	}
@@ -64,7 +64,7 @@ public class SubjectController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
 
-	@GetMapping(value = "/getSubject", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/getSubject")
 	public ResultRespon getSubject(
 			@Parameter(description = "The subject's id is required", required = true) @RequestParam("id") long id) {
 		List<Subject> subject = new ArrayList<Subject>();
@@ -170,7 +170,7 @@ public class SubjectController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/pagination", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/pagination")
 	public ResultRespon paginationSubject(
 			@Parameter(description = "Number of page", required = false) @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@Parameter(description = "Items in page", required = false) @RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
@@ -197,7 +197,7 @@ public class SubjectController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/searchSubject", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/searchSubject")
 	public ResultRespon searchSubject(
 			@Parameter(description = "Enter the keywords you want to search", required = false) @RequestParam("keyWord") String keyWord) {
 		if (this.subjectService.searchSubject(keyWord).isEmpty()) {

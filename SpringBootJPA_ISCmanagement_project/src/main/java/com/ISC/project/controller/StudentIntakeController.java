@@ -56,7 +56,7 @@ public class StudentIntakeController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@GetMapping(value = "/allStudentIntake", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/allStudentIntake")
 	public ResultRespon allStudentIntake() {
 		return new ResultRespon(0, "Success", this.intakeStudentService.listAllCourseStudent());
 	}
@@ -190,7 +190,7 @@ public class StudentIntakeController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@DeleteMapping(value = "/deleteIntakeOfStu", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json") 
+	@DeleteMapping(value = "/deleteIntakeOfStu") 
 	public ResultRespon deleteIntakeOfStu(
 			@Parameter(description = ("Student ID"), required = true)
 			@RequestParam("studentId") Long studentId,

@@ -56,7 +56,7 @@ public class StudentCompanyController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@GetMapping(value = "/listStudentCompany", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/listStudentCompany")
 	public ResultRespon listStudentCompany() {
 		return new ResultRespon(0,"Success",this.studentCompanyService.listAllStudentCompany());
 	}
@@ -73,7 +73,7 @@ public class StudentCompanyController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@GetMapping(value = "/getStudentCompany", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/getStudentCompany")
 	public ResultRespon getStudentCompany(@Parameter(description = "Student ID is required!", required = true) @RequestParam("studentId") Long studentId) {
 		if(studentCompanyService.getStudentCompany(studentId).isEmpty()) {
 			throw new ResourseNotFoundException("Not found");
@@ -154,7 +154,7 @@ public class StudentCompanyController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@DeleteMapping(value = "/deleteStudentCompany", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@DeleteMapping(value = "/deleteStudentCompany")
 	public ResultRespon deleteStudentCompany(
 			@Parameter(description = "Student ID is required!", required = true) @RequestParam("studentId") Long studentId,
 			@Parameter(description = "Company ID is required!", required = true) @RequestParam("companyId") Long companyId) {

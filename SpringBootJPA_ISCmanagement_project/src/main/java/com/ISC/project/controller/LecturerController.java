@@ -56,7 +56,7 @@ public class LecturerController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/listLecturer", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/listLecturer")
 	public ResultRespon listLecturer() {
 		return new ResultRespon(0, "Success", this.lecturerService.listAllLecture());
 	}
@@ -267,7 +267,7 @@ public class LecturerController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@DeleteMapping(value = "/deleteLecturer", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@DeleteMapping(value = "/deleteLecturer")
 	public ResultRespon deleteLecturer(
 			@Parameter(description = "The lecturer's id is required", required = true) @RequestParam("id") long id) {
 		Lecturer lecturer = this.lecturerService.findById(id)
@@ -288,7 +288,7 @@ public class LecturerController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/pagination",consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/pagination")
 	public ResultRespon paginationLecturer(
 			@Parameter(description = "Number of page", required = false) @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@Parameter(description = "Items in page", required = false) @RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
@@ -315,7 +315,7 @@ public class LecturerController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/searchLecturer", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/searchLecturer")
 	public ResultRespon searchLecturer(
 			@Parameter(description = "Enter the keywords you want to search", required = false) @RequestParam("keyWord") String keyWord) {
 		if (this.lecturerService.searchLecturer(keyWord).isEmpty()) {

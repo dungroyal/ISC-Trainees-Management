@@ -69,7 +69,7 @@ public class CompanyController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/getCompany", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/getCompany")
 	public ResultRespon getCompany(
 			@Parameter(required = true, description = "Company Id")
 			@RequestParam("id") long id) {
@@ -81,7 +81,7 @@ public class CompanyController {
 
 	// post company
 	// DOC for add new company
-	@Operation(summary = "Add new company", description = "Add new company from the database")
+	@Operation(summary = "Add new company")
 	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Company.class))), responseCode = "200", description = "Add companies success")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
 			@ApiResponse(responseCode = "404", description = "Not found"),
@@ -162,7 +162,7 @@ public class CompanyController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@DeleteMapping(value = "/deleteCompany", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@DeleteMapping(value = "/deleteCompany")
 	public ResultRespon deleteCompany(@RequestParam("id") Long id) {
 		// companyService.findById(id).orElseThrow(() -> new
 		// ResourseNotFoundException("not found company with id: "+ id));
@@ -191,7 +191,7 @@ public class CompanyController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/searchCompany", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/searchCompany")
 	public ResultRespon searchCompany(@RequestParam("keyWord") String keyWord) {
 		if (this.companyService.searchCompany(keyWord).isEmpty()) {
 			throw new ResourseNotFoundException("Not found company by keyword " + keyWord);
@@ -209,7 +209,7 @@ public class CompanyController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/pagination", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/pagination")
 	public ResultRespon paginationUniversity(
 			@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
