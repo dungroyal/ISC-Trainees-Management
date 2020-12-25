@@ -30,11 +30,11 @@ const add1 = (firstName,
     }).then(res => res.data);
 }
 
-const updateImg = (firstName,
+const updateHasImages = (id, firstName,
     lastName, code, address, phoneNumber, email, typeStudent, GPA,
-    workingStatus, note, image,createdBy, univerId) => {
+    workingStatus, note, image, updatedBy, univerId) => {
     let formData = new FormData();
-
+    formData.append("id", id);
     formData.append("firstName", firstName);
     formData.append("lastName", lastName);
     formData.append("code", code);
@@ -46,17 +46,42 @@ const updateImg = (firstName,
     formData.append("workingStatus", workingStatus);
     formData.append("note", note);
     formData.append("image", image);
-    formData.append("createdBy", createdBy);
+    formData.append("updatedBy", updatedBy);
     formData.append("univerId", univerId);
-    return api.post(api.url.addStudent,formData, {
+    return api.put(api.url.updateStudentHasImg,formData, {
         headers: {
             "Content-Type": "multipart/form-data",
           },
     }).then(res => res.data);
 }
-const studentService = {
-    getAll, add, get, add1,updateImg
-};
 
+const updateNoImages = (id, firstName,
+    lastName, code, address, phoneNumber, email, typeStudent, GPA,
+    workingStatus, note, updatedBy, univerId) => {
+
+    let formData = new FormData();
+    formData.append("id", id);
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("code", code);
+    formData.append("address", address);
+    formData.append("phoneNumber", phoneNumber);
+    formData.append("email", email);
+    formData.append("typeStudent", typeStudent);
+    formData.append("GPA", GPA);
+    formData.append("workingStatus", workingStatus);
+    formData.append("note", note);
+    formData.append("updatedBy", updatedBy);
+    formData.append("univerId", univerId);
+    return api.put(api.url.updateStudentNoImg,formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+          },
+    }).then(res => res.data);
+}
+
+const studentService = {
+    getAll, add, get, add1, updateHasImages, updateNoImages
+};
 
 export default studentService;

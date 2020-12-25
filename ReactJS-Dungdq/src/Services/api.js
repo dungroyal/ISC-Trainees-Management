@@ -8,7 +8,8 @@ const url = {
     listStudent: "/student/allStudent",
     addStudent: "/student/newStudent",
     getOneStudent: "/student/oneStudent",
-    updateStuImg: "/student/updateStudentImg",
+    updateStudentHasImg: "/student/updateStudentImg",
+    updateStudentNoImg: "/student/updateStudentNotImg",
     //University
     listUniversity: "/university/listUniversity",
     getOneUniversity: "/university/getUniversity",
@@ -18,6 +19,13 @@ const url = {
     //Intake
     listIntake: "/intake/listIntake",
     getOnIntake:"/intake/getIntake",
+
+     //Student - Intake
+     listStudentIntake: "/student-intake/allStudentIntake",
+     getOneStudentIntake:"/student-intake/getIntakeOfStu",
+     addStudentIntake:"/student-intake/postIntakeOfStu",
+     updateIntakeOfStuArray:"/student-intake/updateIntakeOfStuArray",
+     updateIntakeOfStu:"/student-intake/updateIntakeOfStu"
 }
 const instance = axios.create({
     baseURL : url.baseURL,
@@ -41,6 +49,8 @@ const instance = axios.create({
     //Stu_Intake
     addStudentIntake: url.addStudentIntake,
     getOneStudentIntake: url.getOneStudentIntake,
+    updateIntakeOfStuArray: url.updateIntakeOfStuArray,
+    updateIntakeOfStu: url.updateIntakeOfStu,
     headers: {
         "Content-Type" :"multipart/form-data",
         "Accept": "application/json"

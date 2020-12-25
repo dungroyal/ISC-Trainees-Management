@@ -14,7 +14,6 @@ import intakeService from "../../Services/intakeService";
 import api from "../../Services/api";
 
 import "./student.css";
-import "./reviewImageUpload";
 import studentCompanyService from "../../Services/studentCompanyService";
 import studentIntakeService from "../../Services/studentIntakeService";
 
@@ -27,7 +26,7 @@ toast.configure()
 
 const Student = (props) => {
   //Test
-  const test = [{ intakeId: null }];
+  const test = [];
   const test2 = [];
   // Upload Filet
   const [selectedFiles, setSelectedFiles] = useState(undefined);
@@ -96,6 +95,7 @@ const Student = (props) => {
   const [showIntakes, setshowIntakes] = useState([]);
 
   const [modalUpdate, setModalUpdate] = useState(false);
+  
   // Formik
   const formik = useFormik({
     initialValues: {
@@ -107,6 +107,7 @@ const Student = (props) => {
       phoneStu: "",
       addressStu: "",
       createdBy: "Admin",
+      updatedBy:"Admin",
       noteStu: "",
       image: "",
       typeStudent: "",
@@ -128,7 +129,6 @@ const Student = (props) => {
       gpa: Yup.string().required("Required"),
       phoneStu: Yup.string().required("Required").min(2, "Up to 200 characters"),
       addressStu: Yup.string().required("Required").min(2, "Up to 255 characters"),
-      createdBy: Yup.string().min(2, "Up to 200 characters"),
       noteStu: Yup.string().min(2, "Up to 2000 characters"),
     }),
     onSubmit: (values) => {
@@ -142,7 +142,6 @@ const Student = (props) => {
       if (res.status === 0) {
         setStudent(res.data);
       }
-      console.log(selectedIntake);
     });
 
     //Get all company
@@ -158,7 +157,7 @@ const Student = (props) => {
         setUniver(res.data);
       }
     });
-    //Get all intake
+    // Get all intake
     intakeService.getAll().then((res) => {
       if (res.status === 0) {
         setIntakes(res.data);
@@ -166,24 +165,6 @@ const Student = (props) => {
         console.log(res.data);
       }
     });
-    // Get Intake Id by Student Id
-
-    for (var i = 0; i < students.length; i++) {
-      studentIntakeService.get(students[i].id).then((res) => {
-        setStudentIntakeId(res.data);
-        test.push(res.data);
-        // console.log("aaa");
-        // console.log(studentIntakeId);
-        // studentIntakeId.map((e) => {
-        //   console.log(e.id.intakeId);
-        //   console.log(e.id.studentId);
-        // });
-      });
-    }
-    // showIntakes.map((e) => {
-    //   console.log(e.id);
-    //   console.log(e.nameIntake);
-    // });
   };
 
   //Didmount load data major
@@ -216,7 +197,6 @@ const Student = (props) => {
 
   //Add new Student
   const handleFormSubmit = () => {
-    //Check for Adding or upadating
     if (studentId === 0) {
       studentService
         .add1(
@@ -235,26 +215,12 @@ const Student = (props) => {
           selectedUniver.value
         )
         .then((stu) => {
-          console.log(stu);
           toast.success('Add new student success');
-          const companyId = [];
-          const intakeId = [];
-          //Get [] company Id
-          for (var i = 0; i < selectedCompany.length; i++) {
-            companyId.push(selectedCompany[i].value);
-          }
-          //Get [] intake Id
-          for (var i = 0; i < selectedIntake.length; i++) {
-            intakeId.push(selectedIntake[i].value);
-          }
-          studentCompanyService
-            .add(students[students.length - 1].id + 1, companyId)
-            .then((stuCom) => {
-              loadData();
-            });
+          const studentId = stu.data[0].id;
+          const intakeId = selectedIntake.value;
 
           studentIntakeService
-            .add(students[students.length - 1].id + 1, intakeId)
+            .add(studentId, intakeId)
             .then((stuIntake) => {
               loadData();
             });
@@ -263,34 +229,80 @@ const Student = (props) => {
           handleModalClose();
         });
     } else {
-      studentService
-        .updateImg(
+      if (typeof (formik.values.image) === "string") {
+        studentService
+        .updateNoImages(
+          studentId,
           formik.values.firstName,
           formik.values.lastName,
           formik.values.codeStu,
           formik.values.addressStu,
           formik.values.phoneStu,
           formik.values.emailStu,
-          selectedTypeStu[0],
+          selectedTypeStu.value,
           formik.values.gpa,
-          selectedWorkingStatus[0],
+          selectedWorkingStatus.value,
           formik.values.noteStu,
-          formik.values.image,
-          formik.values.createdBy,
-          selectedUniver[0].value,
-          studentId
+          "Admin",
+          selectedUniver.value
         )
         .then((res) => {
-          if (res.status === 0) {
-            //Show success message
-            // toast.info("Update Success");
-            loadData();
-            handleModalClose();
-          } else {
-            //Show error
-            // toast.error("Update Error");
-          }
+          const studentId = res.data[0].id;
+            studentIntakeService.get(studentId).then((res) => {
+            const arrayIntaked = Object.keys(res.data).map(function(k){return res.data[k].id.intakeId}).join(",");
+            const arrayNewIntake =  Object.keys(selectedIntake).map(function(k){return selectedIntake[k].value}).join(",");
+              studentIntakeService.updateIntakeOfStuArray(arrayNewIntake,studentId,arrayIntaked).then((res) => {
+                if (res.status === 0) {
+                  toast.success("Update Success");
+                  console.info("Update Student-Intake success");
+                  loadData();
+                  handleModalClose();
+                } else {
+                  toast.error("Update Student-Intake error :(");
+                }
+              });
+          });
+        }).catch((error) => {
+          console.error(error);
         });
+      }else{
+        studentService
+        .updateHasImages(
+          studentId,
+          formik.values.firstName,
+          formik.values.lastName,
+          formik.values.codeStu,
+          formik.values.addressStu,
+          formik.values.phoneStu,
+          formik.values.emailStu,
+          selectedTypeStu.value,
+          formik.values.gpa,
+          selectedWorkingStatus.value,
+          formik.values.noteStu,
+          formik.values.image,
+          "Admin",
+          selectedUniver.value
+        )
+        .then((res) => {
+          const studentId = res.data[0].id;
+            studentIntakeService.get(studentId).then((res) => {
+            const arrayIntaked = Object.keys(res.data).map(function(k){return res.data[k].id.intakeId}).join(",");
+            const arrayNewIntake =  Object.keys(selectedIntake).map(function(k){return selectedIntake[k].value}).join(",");
+              studentIntakeService.updateIntakeOfStuArray(arrayNewIntake,studentId,arrayIntaked).then((res) => {
+                if (res.status === 0) {
+                  toast.success("Update Success");
+                  console.info("Update Student-Intake success");
+                  loadData();
+                  handleModalClose();
+                } else {
+                  toast.error("Update Student-Intake error :(");
+                }
+              });
+          });
+        }).catch((error) => {
+          console.error(error);
+        });
+      }
     }
     loadData();
     handleModalClose();
@@ -599,7 +611,23 @@ const Student = (props) => {
                   <div className="col-6">
                     <div class="form-group">
                       <label htmlFor="multicheckIntake"> Khóa học </label>
-                      <Select
+                      {modalUpdate ? (
+                        <Select
+                        id="multicheckIntake"
+                        isMulti
+                        placeholder="Chọn khóa học..."
+                        onChange={(val)=> {setSelectedIntake(val)}}
+                        value={selectedIntake}
+                        closeMenuOnSelect={true}
+                        options={intakes.map((e) => ({
+                          label: e.nameIntake,
+                          value: e.id,
+                          statusIntake: e.statusIntake,
+                        }))}
+                        isOptionDisabled={(option) => option.statusIntake !== 'Doing'}
+                      />
+                      ) : (
+                        <Select
                           id="multicheckIntake"
                           placeholder="Chọn khóa học..."
                           onChange={(val)=> {setSelectedIntake(val)}}
@@ -612,10 +640,12 @@ const Student = (props) => {
                           }))}
                           isOptionDisabled={(option) => option.statusIntake !== 'Doing'}
                         />
+                      )}
+                  
                       </div>
                     </div>
 
-                    {modalUpdate ? (
+                    {/* {modalUpdate ? (
                       <div className="col-6">
                         <div class="form-group">
                           <label htmlFor="setSelectedWorkingStatus"> Trạng thái việc làm</label>
@@ -629,8 +659,7 @@ const Student = (props) => {
                             />
                         </div>
                       </div>
-                    ) : ("")}
-                    
+                    ) : ("")} */}
 
                     <div className="col-6">
                       <div class="form-group">
@@ -746,9 +775,6 @@ const Student = (props) => {
               onChange={formik.handleChange}
             />
 
-           
-
-
             <Input
               typeInput="1"
               column="6"
@@ -776,7 +802,7 @@ const Student = (props) => {
               onChange={formik.handleChange}
             />
 
-                {modalUpdate ? (
+                {/* {modalUpdate ? (
                   <Fragment>
                   <Input
                     typeInput="1"
@@ -797,7 +823,7 @@ const Student = (props) => {
                     value = {formik.values.createdDate}
                   />
                     </Fragment>
-                    ) : ("")}
+                    ) : ("")} */}
               
               </div>
             </div>

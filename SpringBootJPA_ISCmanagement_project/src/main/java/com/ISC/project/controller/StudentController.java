@@ -49,7 +49,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@CrossOrigin(maxAge = 3600)
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/api/student")
 @Tag(name = "Student", description = "CRUD for Student")
@@ -270,7 +270,7 @@ public class StudentController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@PutMapping(value = "/updateStudentNotImg")
+	@PutMapping(value = "/updateStudentNotImg", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
 	public ResultRespon upateStudentNewImage (
 			@RequestParam("id") Long id,
 			@RequestParam("firstName") String firstName,
