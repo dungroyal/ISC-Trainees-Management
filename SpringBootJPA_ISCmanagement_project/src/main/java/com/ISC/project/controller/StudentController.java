@@ -383,7 +383,7 @@ public class StudentController {
 			@Parameter(description = "Number of page", required = false)
 			@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@Parameter(description = "Items in page", required = false)
-			@RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
+			@RequestParam(name = "size", required = false, defaultValue = "2") Integer size,
 			@Parameter(description = "Sort by filed of Intems", required = false)
 			@RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
 		Sort sortable = null;

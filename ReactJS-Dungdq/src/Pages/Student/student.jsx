@@ -7,6 +7,7 @@ import { Button, Modal } from "react-bootstrap";
 import MultiSelect from "react-multi-select-component";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import queryString from 'query-string';
 import Select from 'react-select';
 import Input from "../../Controls/input";
 import studentService from "../../Services/studentService";
@@ -24,6 +25,7 @@ import studentIntakeService from "../../Services/studentIntakeService";
 import {toast} from 'react-toastify';  
 // Import toastify css file 
 import 'react-toastify/dist/ReactToastify.css';  
+import Pagination from './pagination';
 toast.configure()
 
 const Student = (props) => {
@@ -87,11 +89,7 @@ const Student = (props) => {
     }
   }
 
-  // Student
-  const [students, setStudent] = useState([]);
-  const [modalShow, setModalShow] = useState(false);
-  const handleModalClose = () => setModalShow(false);
-
+  
   //[] Student Intake ID
   const [studentIntakeId, setStudentIntakeId] = useState([]);
   const [showIntakes, setshowIntakes] = useState([]);
@@ -138,11 +136,45 @@ const Student = (props) => {
     },
   }); 
 
+  // Student
+  const [students, setStudent] = useState([]);
+  const [modalShow, setModalShow] = useState(false);
+  const handleModalClose = () => setModalShow(false);
+  const [pagination, setPagination] = useState({
+    page:0,
+    size:4,
+    totalRows: 1
+  });
+
+  const [filters, setFilters] = useState({
+    page: 0,
+    size: 4,
+  });
+  
+  const handlePageChange = (newPage) => {
+    console.log("filters: ",filters);
+    setFilters({
+      ...filters,
+      page: newPage,
+    })
+  };
+
   // Load Data
   const loadData = () => {
-    studentService.getAll().then((res) => {
+    const paramsFilters = queryString.stringify(filters);
+    studentService.paginationStudent(paramsFilters).then((res) => {
+      const totalRows = res.data[0].totalElements;
+      const totalPage = res.data[0].totalPages;
+      const size = res.data[0].size;
+      const pageCurrent = res.data[0].pageable.pageNumber;
       if (res.status === 0) {
-        setStudent(res.data);
+        setStudent(res.data[0].content);
+        setPagination({
+          page: pageCurrent,
+          size: size,
+          totalRows: totalRows,
+        })
+        console.log("pagination: ",pagination);
       }
     });
 
@@ -164,7 +196,6 @@ const Student = (props) => {
       if (res.status === 0) {
         setIntakes(res.data);
         setshowIntakes(res.data);
-        console.log(res.data);
       }
     });
   };
@@ -172,7 +203,7 @@ const Student = (props) => {
   //Didmount load data major
   useEffect(() => {
     loadData();
-  }, []);
+  }, [filters]);
 
 
   //Update Student State
@@ -375,229 +406,88 @@ const Student = (props) => {
           </div>
         </div>
         {/* <!-- end page title --> */}
-
+        {/* Table */}
         <div className="row">
-          <div className="col-12">
-            <div className="card">
-              <div className="card-body">
-                <div className="row mb-2">
-                  <div className="col-sm-4">
-                    <div className="search-box mr-2 mb-2 d-inline-block">
-                      <div className="position-relative">
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="Tìm kiếm..."
-                        />
-                        <i className="bx bx-search-alt search-icon"></i>
+            <div className="col-12">
+              <div className="card">
+                <div className="card-body">
+                  <div className="row mb-2">
+                    <div className="col-sm-4">
+                      <div className="search-box mr-2 mb-2 d-inline-block">
+                        <div className="position-relative">
+                          <input type="text" className="form-control" placeholder="Search..." />
+                          <i className="bx bx-search-alt search-icon" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-sm-8">
+                      <div className="text-sm-right">
+                        <button type="button" onClick={() => handleModalShow(null, 0)} className="btn btn-success btn-rounded mb-2 mr-2">
+                          <i className="bx bxs-add-to-queue"/> Add New Student</button>
                       </div>
                     </div>
                   </div>
-                  <div className="col-sm-8">
-                    <div className="text-sm-right">
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        data-toggle="modal"
-                        onClick={() => handleModalShow(null, 0)}
-                      >
-                        <i className="fas fa-plus"></i> Add
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="table-responsive">
-                  <table className="table table-centered table-nowrap">
-                    <thead className="thead-light">
-                      <tr>
-                        <th
-                          style={{
-                            verticalAlign: "middle",
-                            textAlign: "center",
-                          }}
-                        >
-                          {/* <div class="custom-control custom-checkbox">
-                                  <input
-                                    type="checkbox"
-                                    class="custom-control-input"
-                                    id="customCheck1"
-                                  />
-                                  <label
-                                    class="custom-control-label"
-                                    for="customCheck1"
-                                  >
-                                    &nbsp;
-                                  </label>
-                                </div> */}
-                          No.
-                        </th>
-                        <th
-                          style={{
-                            verticalAlign: "middle",
-                            textAlign: "center",
-                          }}
-                        >
-                          Student Code
-                        </th>
-                        <th
-                          style={{
-                            verticalAlign: "middle",
-                            textAlign: "center",
-                          }}
-                        >
-                          Full name
-                        </th>
-                        <th
-                          style={{
-                            verticalAlign: "middle",
-                            textAlign: "center",
-                          }}
-                        >
-                          Avatar
-                        </th>
-                        <th
-                          style={{
-                            verticalAlign: "middle",
-                            textAlign: "center",
-                          }}
-                        >
-                          Phone
-                        </th>
-                        <th
-                          style={{
-                            verticalAlign: "middle",
-                            textAlign: "center",
-                          }}
-                        >
-                          Email
-                        </th>
-                        <th
-                          style={{
-                            verticalAlign: "middle",
-                            textAlign: "center",
-                          }}
-                        >
-                          Status
-                        </th>
-                        {/* <th>Intake</th> */}
-                        <th>University</th>
-                        {/* <th>Company</th> */}
-                        <th>Edit</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {students.map((student, idx) => {
-                        return (
-                          <tr key={student.id}>
-                            <td
-                              style={{
-                                verticalAlign: "middle",
-                                textAlign: "center",
-                              }}
-                            >
-                              {idx + 1}
+                  <div className="table-responsive">
+                    <table className="table table-centered table-nowrap">
+                      <thead className="thead-light">
+                        <tr>
+                          <th style={{width: 10}}>#</th>
+                          <th>Code</th>
+                          <th>Avatar</th>
+                          <th>Full name</th>
+                          <th>Phone</th>
+                          <th>Email</th>
+                          {/* <th>Intake</th> */}
+                          <th>University</th>
+                          <th>Status</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {students.map((student, idx) => {
+                          return (
+                          <tr>
+                            <td>{idx + 1}</td>
+                            <td><a href="javascript: void(0);" className="text-body font-weight-bold">{student.codeStu}</a> </td>
+                            <td style={{width: 100}}>
+                              <img className="img-fluid img-thumbnai rounded mx-auto" 
+                                  src={api.url.image + student.image}
+                                  alt={"Hinh " + student.lastName} />
                             </td>
-                            <td
-                              style={{
-                                verticalAlign: "middle",
-                                textAlign: "center",
-                              }}
-                            >
-                              {student.codeStu}
+                            <td>{student.firstName} {student.lastName}</td>
+                            <td>{student.phoneStu}</td>
+                            <td>{student.emailStu}</td>
+                            {/* <td>ISC-13</td> */}
+                            <td>{student.university.nameUni}</td>
+                            <td>
+                              {(() => {
+                                switch (student.typeStu) {
+                                  case "Studying":
+                                    return <span className="badge badge-pill badge-success font-size-12">{student.typeStu}</span>;
+                                  case "Graduate":
+                                    return <span className="badge badge-pill badge-primary font-size-12">{student.typeStu}</span>;
+                                  case "Reserve":
+                                    return <span className="badge badge-pill badge-warning font-size-12">{student.typeStu}</span>;
+                                }
+                              })()}
                             </td>
-                            <td
-                              style={{
-                                verticalAlign: "middle",
-                                textAlign: "center",
-                              }}
-                            >
-                              {student.firstName + " " + student.lastName}
-                            </td>
-                            <td
-                              style={{
-                                verticalAlign: "middle",
-                                textAlign: "center",
-                              }}
-                            >
-                              <img
-                                style={{
-                                  width: "100px",
-                                  height: "100px",
-                                }}
-                                src={api.url.image + student.image}
-                                alt={"Hinh " + student.lastName}
-                              />
-                            </td>
-                            <td
-                              style={{
-                                verticalAlign: "middle",
-                                textAlign: "center",
-                              }}
-                            >
-                              {student.phoneStu}
-                            </td>
-                            <td
-                              style={{
-                                verticalAlign: "middle",
-                                textAlign: "center",
-                              }}
-                            >
-                              {student.emailStu}
-                            </td>
-                            <td
-                              style={{
-                                verticalAlign: "middle",
-                                textAlign: "center",
-                              }}
-                            >
-                              <span className="badge badge-pill badge-soft-success font-size-12">
-                                {student.typeStu}
-                              </span>
-                            </td>
-                            {/* <td>
-                                  {test.map((e) => {
-                                    return <p>{e.intakeId}</p>;
-                                  })}
-                                </td> */}
-                            <td
-                              style={{
-                                verticalAlign: "middle",
-                                textAlign: "center",
-                              }}
-                            >
-                              {student.university.nameUni}
-                            </td>
-                            {/* <td></td> */}
-                            <td
-                              style={{
-                                verticalAlign: "middle",
-                                textAlign: "center",
-                              }}
-                            >
-                              <a
-                                href="#"
-                                onClick={(e) => handleModalShow(e, student.id)}
-                              >
-                                <i className="fas fa-edit text-primary mr-3"></i>
-                              </a>
-                              <a
-                                href="#"
-                                onClick={(e) => confirmDeleteStudent(e, student.id)}
-                              >
-                                <i className="fas fa-trash-alt text-danger"></i>
-                              </a>
+                            <td>
+                              <a href="javascript:void(0);" onClick={(e) => handleModalShow(e, student.id)} className="mr-3 text-primary"><i className="fas fa-user-edit font-size-15" /></a>
+                              <a href="javascript:void(0);" onClick={(e) => confirmDeleteStudent(e, student.id)} className="text-danger"><i className="far fa-trash-alt font-size-15" /></a>
                             </td>
                           </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                  <Pagination pagination={pagination} onPageChange={handlePageChange}/>
+                   
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        {/* Table */}
       </div>
       
       {/* Modal  */}

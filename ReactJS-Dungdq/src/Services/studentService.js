@@ -1,6 +1,7 @@
 import api from './api';
 
 const getAll = () => {return api.get(api.url.listStudent).then(res => res.data);}
+const paginationStudent = (paramsFilters) => api.get(`${api.url.paginationStudent}?${paramsFilters}`).then(res => res.data);
 const get = (id) => api.get(`${api.url.getOneStudent}?id=${id}`).then(res => res.data);
 const remove = (id) => api.delete(`${api.url.deleteStudent}?id=${id}`).then(res => res.data);
 const add = (data) => api.post(api.url.addStudent, data).then(res => res.data);
@@ -81,7 +82,7 @@ const updateNoImages = (id, firstName,
 }
 
 const studentService = {
-    getAll, add, get, add1, updateHasImages, updateNoImages,remove
+    getAll, add, get, add1, updateHasImages, updateNoImages, remove, paginationStudent
 };
 
 export default studentService;
