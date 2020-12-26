@@ -2,62 +2,59 @@ import { Fragment } from "react";
 import React, { useState, useEffect } from "react";
 import intakeService from "../../Services/intakeService";
 import { Button, Form, Modal, Col, Row } from "react-bootstrap";
-
-import Input from "../../Containers/Input";
+import Input from "../../Controls/input";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import majorService from "../../Services/majorService";
+import Select from "react-select";
 
-const Intke = () => {
+// Intake
+const Intake = () => {
   const [intake, setIntake] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const handleModalClose = () => setModalShow(false);
-  const [intakeId, setIntakeId] = useState(0);
 
-  const loadData = () => {
-    intakeService.getAll().then((res) => {
-      if (res.status === 0) {
-        setIntake(res.data);
-      }
-    });
-  };
+  const optionIntakeStatus = [
+    { label: "Chưa kích hoat", value: "None", disabled: false },
+    { label: "Đang học", value: "Doing", disabled: false },
+    { label: "Đã hoàn thành", value: "Done", disabled: false },
+  ];
 
-  const handleFormSubmit = (data) => {
-    if (intakeId === 0) {
-      intakeService.add(data).then((res) => {
-        if (res.status === 0) {
-          loadData();
-          handleModalClose();
-        } else {
-        }
-      });
-    } else {
-      intakeService.update(intakeId, data).then((res) => {
-        if (res.status === 0) {
-          loadData();
-          handleModalClose();
-          console.log(data);
-        } else {
-        }
-      });
+  const [selectStatusIntake, setSelectStatusIntake] = useState({
+    label: "Chưa kích hoat",
+    value: "None",
+    disabled: false,
+  });
+
+  // Custom select Intake Status
+  for (var i = 0; i < optionIntakeStatus.length; i++) {
+    if (selectStatusIntake.length >= 1) {
+      optionIntakeStatus[i].disabled = true;
     }
-  };
+  }
 
+  // Major
+  const [major, setMajor] = useState([]);
+  const [selectMajor, setSelectMajor] = useState();
+
+  // Formik
   const formik = useFormik({
     initialValues: {
       codeIntake: "",
       nameIntake: "",
       startDay: "",
       endDay: "",
-      statusIntake: "",
-      createdBy: "",
+      statusIntake: selectStatusIntake.value,
+      // statusIntake: "",
+      createdBy: "Admin",
       createdDate: "",
       updatedBy: "",
       updatedDate: "",
-      majorId: "",
+      selectMajor: "",
     },
 
     validationSchema: Yup.object({
-      majorId: Yup.string().required("Major is required"),
+      // selectMajor: Yup.string().required("Major is required"),
       codeIntake: Yup.string()
         .required("Intake code is required")
         .max(50, "Intake code must be lester than 50 characters"),
@@ -71,9 +68,29 @@ const Intke = () => {
     onSubmit: (values) => {
       console.log(values);
       handleFormSubmit(values);
+      console.log(selectMajor.value);
     },
   });
 
+  // Load data
+  const loadData = () => {
+    // console.log(selectStatusIntake.value);
+    // get all intake
+    intakeService.getAll().then((res) => {
+      if (res.status === 0) {
+        setIntake(res.data);
+      }
+    });
+    // get all major
+    majorService.getAll().then((res) => {
+      if (res.status === 0) {
+        setMajor(res.data);
+      }
+    });
+  };
+
+  // Update Intake
+  const [intakeId, setIntakeId] = useState(0);
   const handleModalShow = (e, dataId) => {
     if (e) e.preventDefault();
     setIntakeId(dataId);
@@ -83,8 +100,53 @@ const Intke = () => {
         setModalShow(true);
       });
     } else {
+      // setModalUpdate(false);
       formik.resetForm();
       setModalShow(true);
+    }
+  };
+  // Add new intake
+  // const handleFormSubmit = (data) => {
+  //   if (intakeId === 0) {
+  //     intakeService.add(data, selectMajor.value).then((res) => {
+  //       // const intakeId = res.data[0].id;
+  //       console.log(res.data);
+  //       // formik.setValues(res);
+  //       loadData();
+  //       handleModalClose();
+  //     });
+  //   } else {
+  //     console.log(intakeId);
+  //     intakeService.update(intakeId, selectMajor.value, data).then((res) => {
+  //       if (res.status === 0) {
+  //         loadData();
+  //         handleModalClose();
+  //         console.log(data);
+  //       } else {
+  //       }
+  //     });
+  //   }
+  // };
+
+  const handleFormSubmit = (data) => {
+    if (intakeId === 0) {
+      console.log(data);
+      intakeService.add(data, selectMajor.value).then((res) => {
+        if (res.status === 0) {
+          loadData();
+          handleModalClose();
+        } else {
+        }
+      });
+    } else {
+      intakeService.update(intakeId, selectMajor.value, data).then((res) => {
+        if (res.status === 0) {
+          loadData();
+          handleModalClose();
+          console.log(data);
+        } else {
+        }
+      });
     }
   };
 
@@ -183,7 +245,7 @@ const Intke = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {intake.map((item, idx) => {
+                    {intake.map((item) => {
                       return (
                         <tr key={item.id}>
                           <td>
@@ -215,19 +277,10 @@ const Intke = () => {
                           <td>{item.updatedBy}</td>
                           <td>{item.updatedDate}</td>
                           <td>
-                            {/* <a
-                                      href="javascript:void(0);"
-                                      className="mr-3 text-success"
-                                      data-toggle="modal"
-                                      data-target=".viewStudentModal"
-                                    >
-                                      <i className="far fa-eye font-size-18" />
-                                    </a> */}
                             <a
                               href="#"
                               className="mr-3 text-primary"
                               data-toggle="modal"
-                              //   data-target=".editStudentModal"
                               onClick={(e) => handleModalShow(e, item.id)}
                             >
                               <i className="fas fa-user-edit font-size-18" />
@@ -296,369 +349,145 @@ const Intke = () => {
         keyboard={false}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Add New Intake</Modal.Title>
+          {/* {modalUpdate ? (
+            <Modal.Title>Cập nhật khóa học</Modal.Title>
+          ) : {
+            <Modal.Title>Thêm khóa học</Modal.Title>
+          }} */}
+          <Modal.Title>Thêm khóa học</Modal.Title>
         </Modal.Header>
         <form onSubmit={formik.handleSubmit}>
           <Modal.Body>
-            <div className="row">
-              <div className="col-6">
-                <Input
-                  id="codeIntake"
-                  type="text"
-                  label="Mã khóa học"
-                  frmField={formik.getFieldProps("codeIntake")}
-                  err={formik.touched.codeIntake && formik.errors.codeIntake}
-                  errMessage={formik.errors.codeIntake}
-                />
-              </div>
+            <div className="row px-4">
+              <Input
+                column="6"
+                typeInput="1"
+                rows="1"
+                id="codeIntake"
+                type="text"
+                label="Mã khóa học"
+                frmField={formik.getFieldProps("codeIntake")}
+                err={formik.touched.codeIntake && formik.errors.codeIntake}
+                errMessage={formik.errors.codeIntake}
+              />
 
               <div className="col-6">
-                <Input
-                  id="nameIntake"
-                  type="text"
-                  label="Tên khóa học"
-                  frmField={formik.getFieldProps("nameIntake")}
-                  err={formik.touched.nameIntake && formik.errors.nameIntake}
-                  errMessage={formik.errors.nameIntake}
-                />
-              </div>
-              <div className="col-6">
-                <Input
-                  id="startDay"
-                  type="date"
-                  label="Ngày bắt đầu"
-                  frmField={formik.getFieldProps("startDay")}
-                  err={formik.touched.startDay && formik.errors.startDay}
-                  errMessage={formik.errors.startDay}
-                />
-              </div>
-              <div className="col-6">
-                <Input
-                  id="endDay"
-                  type="date"
-                  label="Ngày kết thúc"
-                  frmField={formik.getFieldProps("endDay")}
-                  err={formik.touched.endDay && formik.errors.endDay}
-                  errMessage={formik.errors.endDay}
-                />
-              </div>
-
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label>Trạng thái</label>
-                  <select class="custom-select">
-                    <option selected value="0">
-                      Chưa kích hoạt
-                    </option>
-                    <option value="1">Đang hoạt động</option>
-                    <option value="2">Đã hoàn thành</option>
-                  </select>
+                <div className="form-group">
+                  <label htmlFor="selectedMajor"> Chuyên ngành</label>
+                  <Select
+                    id="selectedMajor"
+                    placeholder="Chọn chuyên ngành..."
+                    // err={
+                    //   formik.touched.selectMajor && formik.errors.selectMajor
+                    // }
+                    // errMessage={formik.errors.selectMajor}
+                    onChange={(val) => {
+                      setSelectMajor(val);
+                    }}
+                    value={selectMajor}
+                    closeMenuOnSelect={true}
+                    options={major.map((e) => ({
+                      label: e.nameMajor,
+                      value: e.id,
+                    }))}
+                  />
                 </div>
               </div>
+
+              <Input
+                column="6"
+                typeInput="1"
+                rows="1"
+                id="nameIntake"
+                type="text"
+                label="Tên khóa học"
+                frmField={formik.getFieldProps("nameIntake")}
+                err={formik.touched.nameIntake && formik.errors.nameIntake}
+                errMessage={formik.errors.nameIntake}
+              />
+
+              <div className="col-md-6">
+                <div className="form-group">
+                  <label htmlFor="setSelectStatusIntake">Trạng thái</label>
+                  <Select
+                    id="setSelectStatusIntake"
+                    placeholder="Chọn trạng thái khóa học..."
+                    onChange={(val) => {
+                      setSelectStatusIntake(val);
+                      console.log(val);
+                    }}
+                    value={selectStatusIntake}
+                    closeMenuOnSelect={true}
+                    // options={optionIntakeStatus.map((item) => ({
+                    //   label: item.label,
+                    //   value: item.value,
+                    // }))}
+                    options={optionIntakeStatus}
+                  />
+                </div>
+              </div>
+
+              <Input
+                column="6"
+                typeInput="1"
+                rows="1"
+                id="startDay"
+                type="date"
+                label="Ngày bắt đầu"
+                frmField={formik.getFieldProps("startDay")}
+                err={formik.touched.startDay && formik.errors.startDay}
+                errMessage={formik.errors.startDay}
+              />
+
+              <Input
+                column="6"
+                typeInput="1"
+                rows="1"
+                id="endDay"
+                type="date"
+                label="Ngày kết thúc"
+                frmField={formik.getFieldProps("endDay")}
+                err={formik.touched.endDay && formik.errors.endDay}
+                errMessage={formik.errors.endDay}
+              />
+
+              {/* <Input
+                column="6"
+                typeInput="1"
+                rows="1"
+                id="createdBy"
+                type="text"
+                label="Người tạo"
+                frmField={formik.getFieldProps("createdBy")}
+                err={formik.touched.createdBy && formik.errors.createdBy}
+                errMessage={formik.errors.createdBy}
+              />
+
+              <Input
+                column="6"
+                typeInput="1"
+                rows="1"
+                id="updatedBy"
+                type="text"
+                label="Người cập nhật"
+                frmField={formik.getFieldProps("updatedBy")}
+                err={formik.touched.updatedBy && formik.errors.updatedBy}
+                errMessage={formik.errors.updatedBy}
+              /> */}
             </div>
-
-            {/* <Input
-              id="codeIntake"
-              type="text"
-              label="Mã khóa học"
-              frmField={formik.getFieldProps("codeIntake")}
-              err={formik.touched.codeIntake && formik.errors.codeIntake}
-              errMessage={formik.errors.codeIntake}
-            />
-            <Input
-              id="nameIntake"
-              type="text"
-              label="Tên khóa học"
-              frmField={formik.getFieldProps("nameIntake")}
-              err={formik.touched.nameIntake && formik.errors.nameIntake}
-              errMessage={formik.errors.nameIntake}
-            />
-            <Input
-              id="startDay"
-              type="date"
-              label="Ngày bắt đầu"
-              frmField={formik.getFieldProps("startDay")}
-              err={formik.touched.startDay && formik.errors.startDay}
-              errMessage={formik.errors.startDay}
-            />
-            <Input
-              id="endDay"
-              type="date"
-              label="Ngày kết thúc"
-              frmField={formik.getFieldProps("endDay")}
-              err={formik.touched.endDay && formik.errors.endDay}
-              errMessage={formik.errors.endDay}
-            />
-            <Input
-              id="statusIntake"
-              type="text"
-              label="Trạng thái"
-              frmField={formik.getFieldProps("statusIntake")}
-              err={formik.touched.statusIntake && formik.errors.statusIntake}
-              errMessage={formik.errors.statusIntake}
-            />
-
-            <Form.Group
-              controlId="statusIntake"
-              frmField={formik.getFieldProps("statusIntake")}
-              err={formik.touched.statusIntake && formik.errors.statusIntake}
-              errMessage={formik.errors.statusIntake}
-            >
-              <Form.Row>
-                <Form.Label>Trạng thái</Form.Label>
-                <Form.Control as="select">
-                  <option selected value={0}>
-                    Chưa kích hoạt
-                  </option>
-                  <option value={1}>Đang hoạt động</option>
-                  <option value={2}>Đã hoàn thành</option>
-                </Form.Control>
-              </Form.Row>
-            </Form.Group>
-
-            <select
-              controlId="statusIntake"
-              frmField={formik.getFieldProps("statusIntake")}
-              err={formik.touched.statusIntake && formik.errors.statusIntake}
-              errMessage={formik.errors.statusIntake}
-            >
-              <option selected value={0}>
-                Chưa kích hoạt
-              </option>
-              <option value={1}>Đang hoạt động</option>
-              <option value={2}>Đã hoàn thành</option>
-            </select>
-
-            <Input
-              id="createdBy"
-              type="text"
-              label="Người tạo"
-              frmField={formik.getFieldProps("createdBy")}
-              err={formik.touched.createdBy && formik.errors.createdBy}
-              errMessage={formik.errors.createdBy}
-            />
-
-            <Input
-              id="updatedBy"
-              type="text"
-              label="Người cập nhật"
-              frmField={formik.getFieldProps("updatedBy")}
-              err={formik.touched.updatedBy && formik.errors.updatedBy}
-              errMessage={formik.errors.updatedBy}
-            /> */}
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleModalClose}>
-              Close
+              Đóng
             </Button>
             <Button variant="primary" type="submit">
-              Save
+              Lưu
             </Button>
           </Modal.Footer>
         </form>
       </Modal>
-
-      {/* Modal add */}
-      {/* <div
-        className="modal fade addStudentModal"
-        tabIndex={-1}
-        role="dialog"
-        aria-hidden="true"
-        onHide={handleModalClose}
-        show={modalShow}
-        onHide={handleModalClose}
-        backdropClassName="static"
-        keyboard={false}
-      >
-        <div
-          className="modal-dialog modal-xl modal-dialog-centered"
-          role="document"
-        >
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                Thêm mới khóa học
-              </h5>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-            <div className="modal-body px-4">
-              <div className="row">
-                <div className="col-sm-12 col-lg-2">
-                  <div className="avatar-upload-jsk py-2">
-                    <div className="avatar-edit">
-                      <input
-                        type="file"
-                        name="avatar"
-                        id="imageUpload"
-                        accept=".png, .jpg, .jpeg"
-                      />
-                    </div>
-                    <div className="avatar-preview-jsk">
-                      <label htmlFor="imageUpload" className="imageUpload">
-                        {" "}
-                        <i className="bx bxs-cloud-upload" />
-                      </label>
-                      <div
-                        id="imagePreview"
-                        style={{
-                          backgroundImage:
-                            'url("assets/images/avata-playhoder.jpg")',
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="col-sm-12 col-lg-10"
-                  onSubmit={formik.handleSubmit}
-                >
-                  <div className="row">
-                    <div className="col-md-6">
-                      <div className="form-group">
-                        <label>Mã khóa học</label>
-                        <input
-                          id="codeIntake"
-                          type="text"
-                          className="form-control"
-                          frmField={formik.getFieldProps("codeIntake")}
-                          err={
-                            formik.touched.codeIntake &&
-                            formik.errors.codeIntake
-                          }
-                          errMessage={formik.errors.codeIntake}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-md-6">
-                      <div className="form-group">
-                        <label>Tên khóa học</label>
-                        <input
-                          id="nameIntake"
-                          type="text"
-                          className="form-control"
-                          frmField={formik.getFieldProps("nameIntake")}
-                          err={
-                            formik.touched.nameIntake &&
-                            formik.errors.nameIntake
-                          }
-                          errMessage={formik.errors.nameIntake}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-md-6">
-                      <div className="form-group">
-                        <label>Ngày bắt đầu</label>
-                        <input
-                          id="startDay"
-                          type="date"
-                          className="form-control"
-                          frmField={formik.getFieldProps("startDay")}
-                          err={
-                            formik.touched.startDay && formik.errors.startDay
-                          }
-                          errMessage={formik.errors.startDay}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-md-6">
-                      <div className="form-group">
-                        <label>Ngày kết thúc</label>
-                        <input
-                          id="endDay"
-                          type="date"
-                          className="form-control"
-                          frmField={formik.getFieldProps("endDay")}
-                          err={formik.touched.endDay && formik.errors.endDay}
-                          errMessage={formik.errors.endDay}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-md-6">
-                      <div className="form-group">
-                        <label>Trường</label>
-                        <select
-                          className="custom-select"
-                          id="statusIntake"
-                          frmField={formik.getFieldProps("statusIntake")}
-                          err={
-                            formik.touched.statusIntake &&
-                            formik.errors.statusIntake
-                          }
-                          errMessage={formik.errors.statusIntake}
-                        >
-                          <option selected>Trạng thái</option>
-                          <option value={0}>Chưa kích hoạt</option>
-                          <option value={1}>Đang hoạt động</option>
-                          <option value={2}>Đã hoàn thành</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="col-md-6">
-                      <div className="form-group">
-                        <label>Người tạo</label>
-                        <input
-                          id="createdBy"
-                          type="text"
-                          className="form-control"
-                          frmField={formik.getFieldProps("createdBy")}
-                          err={
-                            formik.touched.createdBy && formik.errors.createdBy
-                          }
-                          errMessage={formik.errors.createdBy}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-md-6">
-                      <div className="form-group">
-                        <label>Người cập nhật</label>
-                        <input
-                          id="updatedBy"
-                          type="text"
-                          className="form-control"
-                          frmField={formik.getFieldProps("updatedBy")}
-                          err={
-                            formik.touched.updatedBy && formik.errors.updatedBy
-                          }
-                          errMessage={formik.errors.updatedBy}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                //   data-dismiss="modal"
-                onClick={handleModalClose}
-              >
-                Đóng
-              </button>
-              <button type="button submit" className="btn btn-success">
-                Thêm mới
-              </button>
-            </div>
-          </div>
-        </div>
-      </div> */}
-      {/* End modal add */}
     </Fragment>
   );
 };
 
-export default Intke;
+export default Intake;

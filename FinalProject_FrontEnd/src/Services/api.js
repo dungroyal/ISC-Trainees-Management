@@ -8,6 +8,13 @@ const url = {
   newIntake: "/intake/newIntake",
   editIntake: "/intake/editIntake",
   deleteIntake: "/intake/deleteIntake",
+
+  //subject
+  listMajor: "/major/listMajor",
+  getMajor: "/major/getMajor",
+  newMajor: "/major/newMajor",
+  editMajor: "/major/editMajor",
+  deleteMajor: "/major/deleteMajor",
 };
 const instance = axios.create({
   baseURL: url.baseURL,

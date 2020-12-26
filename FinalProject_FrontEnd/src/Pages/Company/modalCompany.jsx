@@ -1,16 +1,15 @@
 // import {Modal,Button} from "react-bootstrap"
 // import React, {useState} from "react";
-// import Input from "../../Containers/Input";
+// import Input from "../../Controls/input";
 // import {useFormik} from "formik";
 // import * as Yup from "yup";
 
 // const ModalCompany = ({toggle}) => {
 
 //     const [showModal, setShow] = useState(toggle);
-    
+
 //     const handleClose = () => setShow(false);
-    
-   
+
 // const formik =  useFormik({
 //     initialValues: {
 //       name: ""
