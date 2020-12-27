@@ -141,7 +141,7 @@ const Student = (props) => {
   const [students, setStudent] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const handleModalClose = () => setModalShow(false);
-  
+
   const [pagination, setPagination] = useState({
     page:0,
     size:4,
@@ -234,14 +234,28 @@ const Student = (props) => {
   const handleModalShow = (e, dataId) => {
     if (e) e.preventDefault();
     setStudentId(dataId);
-    // setModalShow(true);
     if (dataId > 0) {
       setModalUpdate(true);
       //check form Update Student
       studentService.get(dataId).then((res) => {
-        formik.setValues(res.data[0]);
-        console.log(res.data[0]);
+        const studentById = res.data[0];
+        console.log(studentById);
+        formik.setValues(studentById);
+        setSelectedUniver({value: studentById.university.id,label: studentById.university.nameUni});
+        setSelectedWorkingStatus({ label: studentById.workingStatus, value: studentById.workingStatus, disabled: false})
+        setSelectedTypeStu({ label: studentById.typeStu, value: studentById.typeStu, disabled: false})
         setModalShow(true);
+      }).then((res)=>{
+        studentIntakeService.get(studentId).then((res) => {
+          const intaked = res.data;
+         const listIntaked = intaked.map(intake => {
+          //   studentIntakeService.get(sweetItem.id.intakeId).then((res) => {
+          //   let getNameIntake = res.data[0].nameIntake;
+          //  })
+          return {value: intake.id.intakeId, label: intake.id.intakeId}
+        })
+        setSelectedIntake(listIntaked);
+        })
       });
     } else {
       setModalUpdate(false);
@@ -564,7 +578,7 @@ const Student = (props) => {
                     {modalUpdate ? (
                      <div id="imagePreview" style={{backgroundImage: 'url("'+api.url.image + formik.values.image +'")'}} />
                     ) : (
-                     <div id="imagePreview" style={{backgroundImage: 'url("assets/images/avata-playhoder.jpg")'}} />
+                     <div id="imagePreview" style={{backgroundImage: 'url("https://timvieclam.xyz/images/avata-playhoder.jpg")'}} />
                     )}
                   </div>
                 </div>
@@ -574,7 +588,7 @@ const Student = (props) => {
 
                   <div className="col-6">
                     <div class="form-group">
-                      <label htmlFor="multicheckIntake"> Khóa học </label>
+                      <label htmlFor="multicheckIntake"> Intake<sup>*</sup> </label>
                       {modalUpdate ? (
                         <Select
                         id="multicheckIntake"
@@ -608,40 +622,10 @@ const Student = (props) => {
                   
                       </div>
                     </div>
-
-                    {/* {modalUpdate ? (
-                      <div className="col-6">
-                        <div class="form-group">
-                          <label htmlFor="setSelectedWorkingStatus"> Trạng thái việc làm</label>
-                          <Select
-                              id="setSelectedWorkingStatus"
-                              placeholder="Chọn trạng thái làm việc..."
-                              onChange={(val)=> {setSelectedWorkingStatus(val)}}
-                              value={selectedWorkingStatus}
-                              closeMenuOnSelect={true}
-                              options={optionsWorkingStatus}
-                            />
-                        </div>
-                      </div>
-                    ) : ("")} */}
-
+                    
                     <div className="col-6">
                       <div class="form-group">
-                        <label htmlFor="selectedTypeStu"> Trạng thái học viên</label>
-                        <Select
-                            id="selectedTypeStu"
-                            placeholder="Chọn trạng  thái học viên..."
-                            onChange={(val)=> {setSelectedTypeStu(val)}}
-                            value={selectedTypeStu}
-                            closeMenuOnSelect={true}
-                            options={optionsTypeStu}
-                          />
-                      </div>
-                    </div>
-
-                    <div className="col-6">
-                      <div class="form-group">
-                        <label htmlFor="selectedUniver"> Trường</label>
+                        <label htmlFor="selectedUniver"> University<sup>*</sup></label>
                         <Select
                             id="selectedUniver"
                             placeholder="Chọn trường..."
@@ -656,6 +640,38 @@ const Student = (props) => {
                       </div>
                     </div>
 
+                    {modalUpdate ? (
+                      <div className="col-3">
+                        <div class="form-group">
+                          <label htmlFor="setSelectedWorkingStatus"> Working status</label>
+                          <Select
+                              id="setSelectedWorkingStatus"
+                              placeholder="Chọn trạng thái làm việc..."
+                              onChange={(val)=> {setSelectedWorkingStatus(val)}}
+                              value={selectedWorkingStatus}
+                              closeMenuOnSelect={true}
+                              options={optionsWorkingStatus}
+                            />
+                        </div>
+                      </div>
+                    ) : ("")}
+
+
+                    <div className={`col-${modalUpdate ? (3):(6)}`}>
+                      <div class="form-group">
+                        <label htmlFor="selectedTypeStu"> Learing status<sup>*</sup></label>
+                        <Select
+                            id="selectedTypeStu"
+                            placeholder="Chọn trạng  thái học viên..."
+                            onChange={(val)=> {setSelectedTypeStu(val)}}
+                            value={selectedTypeStu}
+                            closeMenuOnSelect={true}
+                            options={optionsTypeStu}
+                          />
+                      </div>
+                    </div>
+
+
             <Input
               typeInput="1"
               column="6"
@@ -663,7 +679,7 @@ const Student = (props) => {
               id="codeStu"
               name="codeStu"
               type="text"
-              label="Mã sinh viên"
+              label="Student code *"
               frmField={formik.getFieldProps("codeStu")}
               err={formik.touched.codeStu && formik.errors.codeStu}
               errMessage={formik.errors.codeStu}
@@ -677,7 +693,7 @@ const Student = (props) => {
               rows="1"
               id="txtStuFirstName"
               type="text"
-              label="Họ và tên lót"
+              label="First name *"
               frmField={formik.getFieldProps("firstName")}
               err={formik.touched.firstName && formik.errors.firstName}
               errMessage={formik.errors.firstName}
@@ -691,7 +707,7 @@ const Student = (props) => {
               rows="1"
               id="txtStuLastName"
               type="text"
-              label="Tên"
+              label="Last name *"
               frmField={formik.getFieldProps("lastName")}
               err={formik.touched.lastName && formik.errors.lastName}
               errMessage={formik.errors.lastName}
@@ -705,7 +721,7 @@ const Student = (props) => {
               rows="1"
               id="txtStuEmail"
               type="email"
-              label="Email"
+              label="Email *"
               frmField={formik.getFieldProps("emailStu")}
               err={formik.touched.emailStu && formik.errors.emailStu}
               errMessage={formik.errors.emailStu}
@@ -718,7 +734,7 @@ const Student = (props) => {
               rows="1"
               id="txtStuPhone"
               type="text"
-              label="Số điện thoại"
+              label="Phone number"
               frmField={formik.getFieldProps("phoneStu")}
               err={formik.touched.phoneStu && formik.errors.phoneStu}
               errMessage={formik.errors.phoneStu}
@@ -731,7 +747,7 @@ const Student = (props) => {
               rows="1"
               id="txtStuAddress"
               type="text"
-              label="Địa chỉ"
+              label="Address"
               frmField={formik.getFieldProps("addressStu")}
               err={formik.touched.addressStu && formik.errors.addressStu}
               errMessage={formik.errors.addressStu}
@@ -745,7 +761,7 @@ const Student = (props) => {
               rows="1"
               id="txtStuGPA"
               type="number"
-              label="Điển trung bình"
+              label="GPA *"
               frmField={formik.getFieldProps("gpa")}
               err={formik.touched.gpa && formik.errors.gpa}
               errMessage={formik.errors.gpa}
@@ -754,7 +770,7 @@ const Student = (props) => {
             />
             <Input
               typeInput="1"
-              column="6"
+              column="12"
               rows="2"
               id="txtStuNote"
               type="text"
@@ -766,7 +782,7 @@ const Student = (props) => {
               onChange={formik.handleChange}
             />
 
-                {/* {modalUpdate ? (
+                {modalUpdate ? (
                   <Fragment>
                   <Input
                     typeInput="1"
@@ -774,20 +790,24 @@ const Student = (props) => {
                     rows="1"
                     readOnly
                     type="text"
-                    label="Người tạo"
-                    value = {formik.values.createdBy}
+                    label="Created by"
+                    value = {`${formik.values.createdBy} - ${new Date(formik.values.createdDate).toLocaleDateString('vi-VI',{year: 'numeric', month: 'numeric', day: 'numeric', hour: "2-digit", minute: "2-digit"})}`}
                   />
-                  <Input
-                    typeInput="1"
-                    column="6"
-                    rows="1"
-                    readOnly
-                    type="text"
-                    label="Ngày tạo"
-                    value = {formik.values.createdDate}
-                  />
+                    {formik.values.updatedBy != null ?(
+                    <Fragment>
+                      <Input
+                      typeInput="1"
+                      column="6"
+                      rows="1"
+                      readOnly
+                      type="text"
+                      label="Update by"
+                      value = {`${formik.values.updatedBy} - ${new Date(formik.values.updatedDate).toLocaleDateString('vi-VI',{year: 'numeric', month: 'numeric', day: 'numeric', hour: "2-digit", minute: "2-digit"})}`}
+                      />
                     </Fragment>
-                    ) : ("")} */}
+                    ):("")}
+                  </Fragment>
+                ) : ("")}
               
               </div>
             </div>
