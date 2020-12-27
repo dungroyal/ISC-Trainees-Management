@@ -127,6 +127,15 @@ public class JobTitle {
 		this.nameJob = nameJob;
 		this.jobStatus = jobStatus;
 	}
+
+	public JobTitle() {
+		super();
+	}
+
+	public JobTitle(Long id) {
+		super();
+		this.id = id;
+	}
 	
 	
 }

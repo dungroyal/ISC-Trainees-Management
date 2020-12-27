@@ -154,6 +154,15 @@ public class Clazz {
 		this.pointGra = pointGra;
 		this.clazzStatus = clazzStatus;
 	}
+
+	public Clazz() {
+		super();
+	}
+
+	public Clazz(Long id) {
+		super();
+		this.id = id;
+	}
 	
 	
 }

@@ -55,7 +55,7 @@ public class CompanyController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/listCompany", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/listCompany")
 	public ResultRespon listCompany() {
 		return new ResultRespon(0, "Success", this.companyService.listAllCompany());
 	}
@@ -81,7 +81,7 @@ public class CompanyController {
 
 	// post company
 	// DOC for add new company
-	@Operation(summary = "Add new company")
+	@Operation(summary = "Add new company", description = "Add new company from the database")
 	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Company.class))), responseCode = "200", description = "Add companies success")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
 			@ApiResponse(responseCode = "404", description = "Not found"),
@@ -128,6 +128,7 @@ public class CompanyController {
 			oldcompany.setNoteCom(company.getNoteCom());
 			oldcompany.setStatusCom(company.getStatusCom());
 			oldcompany.setWebsiteCom(company.getWebsiteCom());
+			oldcompany.setCreatedBy(company.getCreatedBy());
 			oldcompany.setUpdatedBy(company.getUpdatedBy());
 			oldcompany.setUpdatedDate(LocalDateTime.now());
 			compa.add(oldcompany);
@@ -141,6 +142,7 @@ public class CompanyController {
 				oldcompany.setNoteCom(company.getNoteCom());
 				oldcompany.setStatusCom(company.getStatusCom());
 				oldcompany.setWebsiteCom(company.getWebsiteCom());
+				oldcompany.setCreatedBy(company.getCreatedBy());
 				oldcompany.setUpdatedBy(company.getUpdatedBy());
 				oldcompany.setUpdatedDate(LocalDateTime.now());
 				compa.add(oldcompany);
@@ -191,7 +193,7 @@ public class CompanyController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/searchCompany")
+	@GetMapping(value = "/searchCompany", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon searchCompany(@RequestParam("keyWord") String keyWord) {
 		if (this.companyService.searchCompany(keyWord).isEmpty()) {
 			throw new ResourseNotFoundException("Not found company by keyword " + keyWord);
@@ -209,7 +211,7 @@ public class CompanyController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/pagination")
+	@GetMapping(value = "/pagination", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon paginationUniversity(
 			@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
