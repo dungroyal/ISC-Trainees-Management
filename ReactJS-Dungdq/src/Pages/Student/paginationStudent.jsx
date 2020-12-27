@@ -58,25 +58,4 @@ function Pagination(props) {
   )
 }
 
-// <li className="page-item">
-//           {page == 0 ?(
-//             <a className="page-link disabled" href="javascript: void(0);" onClick={()=>handlePageChange(page-1)}>
-//             <i class="fas fa-chevron-right fa-flip-horizontal"></i>
-//           </a>
-//           ):(
-//             <a className="page-link" href="javascript: void(0);" onClick={()=>handlePageChange(page-1)}>
-//               <i class="fas fa-chevron-right fa-flip-horizontal"></i>
-//             </a>
-//           )}
-//         </li>
-
-
-{/* <button disabled={page==0}
-onClick={()=>handlePageChange(page-1)}
->Previous</button>
-
-<button disabled={page==totalPage-1}
-onClick={()=>handlePageChange(page+1)}
->Next</button> */}
-
 export default Pagination;

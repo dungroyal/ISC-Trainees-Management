@@ -12,6 +12,7 @@ const url = {
     updateStudentNoImg: "/student/updateStudentNotImg",
     deleteStudent: "/student/deleteStudent",
     paginationStudent: "/student/pagination",
+    searchStudent: "/student/searchStudent",
     //University
     listUniversity: "/university/listUniversity",
     getOneUniversity: "/university/getUniversity",
@@ -40,6 +41,7 @@ const instance = axios.create({
     updateStuImg: url.updateStuImg,
     deleteStudent: url.deleteStudent,
     paginationStudent: url.paginationStudent,
+    searchStudent: url.searchStudent,
     //Univer
     listUniversity: url.listUniversity,
     getOneUniversity: url.getOneUniversity,

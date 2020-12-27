@@ -25,7 +25,8 @@ import studentIntakeService from "../../Services/studentIntakeService";
 import {toast} from 'react-toastify';  
 // Import toastify css file 
 import 'react-toastify/dist/ReactToastify.css';  
-import Pagination from './pagination';
+import Pagination from './paginationStudent';
+import SearchStudent from './searchStudent';
 toast.configure()
 
 const Student = (props) => {
@@ -140,6 +141,7 @@ const Student = (props) => {
   const [students, setStudent] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const handleModalClose = () => setModalShow(false);
+  
   const [pagination, setPagination] = useState({
     page:0,
     size:4,
@@ -150,33 +152,53 @@ const Student = (props) => {
     page: 0,
     size: 4,
   });
+
+  const [searchStudent, setSearchStudent] = useState({
+    keyWord: "",
+  });
   
   const handlePageChange = (newPage) => {
-    console.log("filters: ",filters);
     setFilters({
       ...filters,
       page: newPage,
     })
   };
 
+  const handedSearchChange = (newSearch) => {
+    setSearchStudent({
+      ...searchStudent,
+      keyWord: newSearch,
+    })
+  };
+
   // Load Data
   const loadData = () => {
-    const paramsFilters = queryString.stringify(filters);
-    studentService.paginationStudent(paramsFilters).then((res) => {
-      const totalRows = res.data[0].totalElements;
-      const totalPage = res.data[0].totalPages;
-      const size = res.data[0].size;
-      const pageCurrent = res.data[0].pageable.pageNumber;
-      if (res.status === 0) {
-        setStudent(res.data[0].content);
-        setPagination({
-          page: pageCurrent,
-          size: size,
-          totalRows: totalRows,
-        })
-        console.log("pagination: ",pagination);
-      }
-    });
+    if (searchStudent.keyWord.searchTerm == "" || searchStudent.keyWord == "") {
+      const paramsFilters = queryString.stringify(filters);
+      studentService.paginationStudent(paramsFilters).then((res) => {
+        const totalRows = res.data[0].totalElements;
+        const totalPage = res.data[0].totalPages;
+        const size = res.data[0].size;
+        const pageCurrent = res.data[0].pageable.pageNumber;
+        if (res.status === 0) {
+          setStudent(res.data[0].content);
+          setPagination({
+            page: pageCurrent,
+            size: size,
+            totalRows: totalRows,
+          })
+        }
+      });
+    }else{
+      const keyword = searchStudent.keyWord.searchTerm;
+      studentService.searchStudent(searchStudent.keyWord.searchTerm).then((res) => {
+        if (res.status === 0) {
+          setStudent(res.data);
+        }else{
+          setStudent(res.data);
+        }
+      });
+    }
 
     //Get all company
     companyService.getAll().then((res) => {
@@ -203,7 +225,7 @@ const Student = (props) => {
   //Didmount load data major
   useEffect(() => {
     loadData();
-  }, [filters]);
+  }, [filters,searchStudent]);
 
 
   //Update Student State
@@ -415,7 +437,7 @@ const Student = (props) => {
                     <div className="col-sm-4">
                       <div className="search-box mr-2 mb-2 d-inline-block">
                         <div className="position-relative">
-                          <input type="text" className="form-control" placeholder="Search..." />
+                          <SearchStudent onSubmit={handedSearchChange}/>
                           <i className="bx bx-search-alt search-icon" />
                         </div>
                       </div>
@@ -444,45 +466,53 @@ const Student = (props) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {students.map((student, idx) => {
-                          return (
-                          <tr>
-                            <td>{idx + 1}</td>
-                            <td><a href="javascript: void(0);" className="text-body font-weight-bold">{student.codeStu}</a> </td>
-                            <td style={{width: 100}}>
-                              <img className="img-fluid img-thumbnai rounded mx-auto" 
-                                  src={api.url.image + student.image}
-                                  alt={"Hinh " + student.lastName} />
-                            </td>
-                            <td>{student.firstName} {student.lastName}</td>
-                            <td>{student.phoneStu}</td>
-                            <td>{student.emailStu}</td>
-                            {/* <td>ISC-13</td> */}
-                            <td>{student.university.nameUni}</td>
-                            <td>
-                              {(() => {
-                                switch (student.typeStu) {
-                                  case "Studying":
-                                    return <span className="badge badge-pill badge-success font-size-12">{student.typeStu}</span>;
-                                  case "Graduate":
-                                    return <span className="badge badge-pill badge-primary font-size-12">{student.typeStu}</span>;
-                                  case "Reserve":
-                                    return <span className="badge badge-pill badge-warning font-size-12">{student.typeStu}</span>;
-                                }
-                              })()}
-                            </td>
-                            <td>
-                              <a href="javascript:void(0);" onClick={(e) => handleModalShow(e, student.id)} className="mr-3 text-primary"><i className="fas fa-user-edit font-size-15" /></a>
-                              <a href="javascript:void(0);" onClick={(e) => confirmDeleteStudent(e, student.id)} className="text-danger"><i className="far fa-trash-alt font-size-15" /></a>
-                            </td>
+                        {students == null ? (
+                          <tr className="text-center">
+                            <td colspan="9">Not found student with keyword: "<strong>{searchStudent.keyWord.searchTerm}</strong>"!</td>
                           </tr>
-                          );
-                        })}
+                        ):(
+                          students.map((student, idx) => {
+                            return (
+                            <tr>
+                              <td>{idx + 1}</td>
+                              <td><a href="javascript: void(0);" className="text-body font-weight-bold">{student.codeStu}</a> </td>
+                              <td style={{width: 100}}>
+                                <img className="img-fluid img-thumbnai rounded mx-auto" 
+                                    src={api.url.image + student.image}
+                                    alt={"Hinh " + student.lastName} />
+                              </td>
+                              <td>{student.firstName} {student.lastName}</td>
+                              <td>{student.phoneStu}</td>
+                              <td>{student.emailStu}</td>
+                              {/* <td>ISC-13</td> */}
+                              <td>{student.university.nameUni}</td>
+                              <td>
+                                {(() => {
+                                  switch (student.typeStu) {
+                                    case "Studying":
+                                      return <span className="badge badge-pill badge-success font-size-12">{student.typeStu}</span>;
+                                    case "Graduate":
+                                      return <span className="badge badge-pill badge-primary font-size-12">{student.typeStu}</span>;
+                                    case "Reserve":
+                                      return <span className="badge badge-pill badge-warning font-size-12">{student.typeStu}</span>;
+                                  }
+                                })()}
+                              </td>
+                              <td>
+                                <a href="javascript:void(0);" onClick={(e) => handleModalShow(e, student.id)} className="mr-3 text-primary"><i className="fas fa-user-edit font-size-15" /></a>
+                                <a href="javascript:void(0);" onClick={(e) => confirmDeleteStudent(e, student.id)} className="text-danger"><i className="far fa-trash-alt font-size-15" /></a>
+                              </td>
+                            </tr>
+                            );
+                          })
+                        )}
+                        
                       </tbody>
                     </table>
                   </div>
+                  {searchStudent.keyWord.searchTerm == "" || searchStudent.keyWord == "" ? (
                   <Pagination pagination={pagination} onPageChange={handlePageChange}/>
-                   
+                  ) : ("")}
                 </div>
               </div>
             </div>

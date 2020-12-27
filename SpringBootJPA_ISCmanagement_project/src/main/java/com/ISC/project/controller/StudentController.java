@@ -417,7 +417,9 @@ public class StudentController {
 			@Parameter(description = "Enter the keywords you want to search", required = false)
 			@RequestParam("keyWord") String keyWord) {
 		if(this.studentService.searchStudent(keyWord).isEmpty()) {
-			throw new ResourseNotFoundException("Not Found Student");
+//			throw new ResourseNotFoundException("Not Found Student");
+//			throw new ResultRespon(0, "Search Success");
+			return new ResultRespon(1, "Not Found Student", null);
 		} else {
 			
 			System.out.println(this.studentService.searchStudent(keyWord).toString());
