@@ -16,7 +16,7 @@ public class ApiExceptionHandler{
      */
 	
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(value = HttpStatus.OK)
     public ResultRespon handleAllException(Exception ex, WebRequest request) {
         // quá trình kiểm soat lỗi diễn ra ở đây
     	if(ex.getLocalizedMessage().startsWith("could not execute statement; SQL [n/a]; constraint [UK_76a7f3cl1evph68tkgfivirbk]")) {

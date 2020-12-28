@@ -1,5 +1,5 @@
 import React, { useState, Fragment, useEffect } from "react";
-import $ from 'jquery';
+import $, { map } from 'jquery';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
@@ -92,8 +92,10 @@ const Student = (props) => {
 
   
   //[] Student Intake ID
+  const [allStudentIntake, setAllStudentIntake] = useState([]);
   const [studentIntakeId, setStudentIntakeId] = useState([]);
   const [showIntakes, setshowIntakes] = useState([]);
+  const listIntakedddddddd = [];
 
   const [modalUpdate, setModalUpdate] = useState(false);
   
@@ -126,7 +128,7 @@ const Student = (props) => {
       firstName: Yup.string()
         .required("Required")
         .min(2, "Up to 255 characters"),
-      emailStu: Yup.string().required("Required").min(2, "Up to 200 characters"),
+      emailStu: Yup.string().email().required("Required").min(2, "Up to 200 characters"),
       gpa: Yup.string().required("Required"),
       phoneStu: Yup.string().required("Required").min(2, "Up to 200 characters"),
       addressStu: Yup.string().required("Required").min(2, "Up to 255 characters"),
@@ -220,12 +222,26 @@ const Student = (props) => {
         setshowIntakes(res.data);
       }
     });
+
+     // Get all Student Intake
+     studentIntakeService.getAll().then((res) => {
+      if (res.status === 0) {
+        setAllStudentIntake(res.data);
+      }
+    });
   };
 
   //Didmount load data major
   useEffect(() => {
     loadData();
   }, [filters,searchStudent]);
+
+  const getOnStudentIntake = (studentId)=> {
+    studentIntakeService.get(studentId).then((res) => {
+      const data = res.data;
+      console.log("data: ", data);
+    })
+  }
 
 
   //Update Student State
@@ -234,8 +250,8 @@ const Student = (props) => {
   const handleModalShow = (e, dataId) => {
     if (e) e.preventDefault();
     setStudentId(dataId);
+
     if (dataId > 0) {
-      setModalUpdate(true);
       //check form Update Student
       studentService.get(dataId).then((res) => {
         const studentById = res.data[0];
@@ -245,18 +261,26 @@ const Student = (props) => {
         setSelectedWorkingStatus({ label: studentById.workingStatus, value: studentById.workingStatus, disabled: false})
         setSelectedTypeStu({ label: studentById.typeStu, value: studentById.typeStu, disabled: false})
         setModalShow(true);
-      }).then((res)=>{
-        studentIntakeService.get(studentId).then((res) => {
-          const intaked = res.data;
-         const listIntaked = intaked.map(intake => {
-          //   studentIntakeService.get(sweetItem.id.intakeId).then((res) => {
-          //   let getNameIntake = res.data[0].nameIntake;
-          //  })
-          return {value: intake.id.intakeId, label: intake.id.intakeId}
-        })
-        setSelectedIntake(listIntaked);
-        })
+
+
+        console.log("selectedIntake: ",selectedIntake);
+        console.log("All intakes: ",intakes);
+        console.log("All Student Intake: ", allStudentIntake);
+
+        setSelectedIntake([]);
+        for (let i = 0; i < allStudentIntake.length; i++) {
+          if (allStudentIntake[i].id.studentId == dataId) {
+            for (let j = 0; j < intakes.length; j++) {
+              if (intakes[j].id == allStudentIntake[i].id.intakeId) {
+                setSelectedIntake(oldArray => [...oldArray, {label:intakes[j].nameIntake , value:allStudentIntake[i].id.intakeId }]);
+              }
+            }
+            
+          }          
+        }
       });
+      
+      setModalUpdate(true);
     } else {
       setModalUpdate(false);
       formik.resetForm();
@@ -593,6 +617,7 @@ const Student = (props) => {
                         <Select
                         id="multicheckIntake"
                         isMulti
+                        defaultValue={{ label: 'ISC 13', value: 1 }}
                         placeholder="Chọn khóa học..."
                         onChange={(val)=> {setSelectedIntake(val)}}
                         value={selectedIntake}
@@ -784,6 +809,7 @@ const Student = (props) => {
 
                 {modalUpdate ? (
                   <Fragment>
+                    <input type="text" value={selectedIntake}/>
                   <Input
                     typeInput="1"
                     column="6"

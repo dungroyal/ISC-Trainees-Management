@@ -54,6 +54,7 @@ const instance = axios.create({
     //Stu_Company
     addStudentCompany: url.addStudentCompany,
     //Stu_Intake
+    listStudentIntake: url.listStudentIntake,
     addStudentIntake: url.addStudentIntake,
     getOneStudentIntake: url.getOneStudentIntake,
     updateIntakeOfStuArray: url.updateIntakeOfStuArray,
