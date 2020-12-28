@@ -7,6 +7,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import majorService from "../../Services/majorService";
 import Select from "react-select";
+import { useForm } from "react-hook-form";
 
 // Intake
 const Intake = () => {
@@ -33,10 +34,15 @@ const Intake = () => {
     }
   }
 
+  // const handleSelectedOptionChange = (selectedOption) => {
+  //   setSelectStatusIntake(selectedOption);
+  // };
+
   // Major
   const [major, setMajor] = useState([]);
   const [selectMajor, setSelectMajor] = useState();
 
+  const [modalUpdate, setModalUpdate] = useState(false);
   // Formik
   const formik = useFormik({
     initialValues: {
@@ -44,8 +50,8 @@ const Intake = () => {
       nameIntake: "",
       startDay: "",
       endDay: "",
-      statusIntake: selectStatusIntake.value,
-      // statusIntake: "",
+      // statusIntake: selectStatusIntake.value,
+      statusIntake: "",
       createdBy: "Admin",
       createdDate: "",
       updatedBy: "",
@@ -68,7 +74,6 @@ const Intake = () => {
     onSubmit: (values) => {
       console.log(values);
       handleFormSubmit(values);
-      console.log(selectMajor.value);
     },
   });
 
@@ -91,16 +96,20 @@ const Intake = () => {
 
   // Update Intake
   const [intakeId, setIntakeId] = useState(0);
+
   const handleModalShow = (e, dataId) => {
     if (e) e.preventDefault();
     setIntakeId(dataId);
+    // setModalShow(true);
     if (dataId > 0) {
+      setModalUpdate(true);
+      //check form Update Student
       intakeService.get(dataId).then((res) => {
         formik.setValues(res.data[0]);
         setModalShow(true);
       });
     } else {
-      // setModalUpdate(false);
+      setModalUpdate(false);
       formik.resetForm();
       setModalShow(true);
     }
@@ -349,12 +358,11 @@ const Intake = () => {
         keyboard={false}
       >
         <Modal.Header closeButton>
-          {/* {modalUpdate ? (
+          {modalUpdate ? (
             <Modal.Title>Cập nhật khóa học</Modal.Title>
-          ) : {
+          ) : (
             <Modal.Title>Thêm khóa học</Modal.Title>
-          }} */}
-          <Modal.Title>Thêm khóa học</Modal.Title>
+          )}
         </Modal.Header>
         <form onSubmit={formik.handleSubmit}>
           <Modal.Body>
@@ -413,15 +421,11 @@ const Intake = () => {
                     id="setSelectStatusIntake"
                     placeholder="Chọn trạng thái khóa học..."
                     onChange={(val) => {
-                      setSelectStatusIntake(val);
                       console.log(val);
+                      formik.setFieldValue("statusIntake", val.value);
                     }}
                     value={selectStatusIntake}
                     closeMenuOnSelect={true}
-                    // options={optionIntakeStatus.map((item) => ({
-                    //   label: item.label,
-                    //   value: item.value,
-                    // }))}
                     options={optionIntakeStatus}
                   />
                 </div>
