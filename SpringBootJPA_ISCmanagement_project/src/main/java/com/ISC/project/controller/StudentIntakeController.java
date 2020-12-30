@@ -93,7 +93,9 @@ public class StudentIntakeController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@PostMapping(value = "/postIntakeOfStu", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	
+	
+	@PostMapping(value = "/postIntakeOfStu")
 	public ResultRespon addIntakeOfStu(
 			@Parameter(description = ("Id student"), required = true)
 			@RequestParam("studentId") Long studentId, 
@@ -124,7 +126,7 @@ public class StudentIntakeController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@PutMapping(value = "/updateIntakeOfStu", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@PutMapping(value = "/updateIntakeOfStu")
 	public ResultRespon updateIntakeOfStu(
 			@Parameter(description = ("List new Intake ID"), required = true)
 			@RequestParam("newIntakeId") List<Long> newIntakeId, 
@@ -148,7 +150,7 @@ public class StudentIntakeController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@PutMapping(value = "/updateIntakeOfStuArray", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@PutMapping(value = "/updateIntakeOfStuArray")
 	public ResultRespon updateIntakeOfStuArray(
 			@Parameter(description = ("Student ID"), required = true)
 			@RequestParam("studentId") Long studentId,

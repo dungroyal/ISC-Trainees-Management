@@ -114,27 +114,28 @@ const Student = (props) => {
       image: "",
       typeStudent: { label: "Studying", value: "Studying" },
       workingStatus: { label: "Inactive", value: "Inactive"},
-      companies: "",
       university: "",
       intake: "",
+      updateIntake: [{label: 'fake', values: 'fake'}],
       image: "",
     },
     validationSchema: Yup.object({
       codeStu: Yup.string()
         .required("Required")
-        .min(2, "Up to 255 characters"),
+        .min(2, "Up to 255 characters").max(255,"Max 255 characters"),
       lastName: Yup.string()
         .required("Required")
-        .min(2, "Up to 200 characters"),
+        .min(2, "Up to 200 characters").max(255,"Max 255 characters"),
       firstName: Yup.string()
         .required("Required")
-        .min(2, "Up to 255 characters"),
-      emailStu: Yup.string().email().required("Required").min(2, "Up to 200 characters"),
-      gpa: Yup.string().required("Required"),
+        .min(2, "Up to 255 characters").max(255,"Max 255 characters"),
+      emailStu: Yup.string().email().required("Required").min(2, "Up to 200 characters").max(255,"Max 255 characters"),
+      gpa: Yup.number().required("Required"),
       phoneStu: Yup.string().required("Required").min(2, "Up to 200 characters"),
       addressStu: Yup.string().required("Required").min(2, "Up to 255 characters"),
-      noteStu: Yup.string().min(2, "Up to 2000 characters"),
+      noteStu: Yup.string().min(2, "Up to 2000 characters").max(2000,"Max 2000 characters"),
       intake: Yup.object().required("Required"),
+      updateIntake: Yup.array().required("Required"),
       university: Yup.object().required("Required"),
       image: Yup.mixed()
       .required("required")
@@ -273,21 +274,19 @@ const Student = (props) => {
     setStudentId(dataId);
 
     if (dataId > 0) {
-      //check form Update Student
+      setModalUpdate(true);
+      setModalShow(true);
       studentService.get(dataId).then((res) => {
         const studentById = res.data[0];
         console.log(studentById);
         formik.setValues(studentById);
-        setSelectedUniver({value: studentById.university.id,label: studentById.university.nameUni});
-        setSelectedWorkingStatus({ label: studentById.workingStatus, value: studentById.workingStatus, disabled: false})
-        setSelectedTypeStu({ label: studentById.typeStu, value: studentById.typeStu, disabled: false})
-        setModalShow(true);
-
-
-        console.log("selectedIntake: ",selectedIntake);
-        console.log("All intakes: ",intakes);
-        console.log("All Student Intake: ", allStudentIntake);
-
+        formik.setFieldValue('typeStudent',{ label: studentById.typeStu, value: studentById.typeStu})
+        formik.setFieldValue('workingStatus',{ label: studentById.workingStatus, value: studentById.workingStatus})
+        formik.setFieldValue('university',{value: studentById.university.id,label: studentById.university.nameUni})
+        formik.setFieldValue('intake',{label:'fake', values: 'fake'})
+        formik.setFieldValue('updateIntake',[{label:'fake', values: 'fake'}])
+        formik.setFieldValue('oldImage',studentById.image)
+        formik.setFieldValue('image', {name: "fake_image", size: 1, type: "image/png"})
         setSelectedIntake([]);
         for (let i = 0; i < allStudentIntake.length; i++) {
           if (allStudentIntake[i].id.studentId == dataId) {
@@ -300,7 +299,6 @@ const Student = (props) => {
           }          
         }
       });
-      setModalUpdate(true);
     } else {
       setModalUpdate(false);
       formik.resetForm();
@@ -366,24 +364,24 @@ const Student = (props) => {
           formik.values.workingStatus.value,
           formik.values.noteStu,
           formik.values.image,
-          formik.values.createdBy,
+          "Admin",
           formik.values.university.value,
         )
         .then((stu) => {
-          console.log("stu: ",stu);
           if (stu.status === 0) {
-            toast.success('Add new student success');
             const studentId = stu.data[0].id;
             const intakeId = formik.values.intake.value;
-            
             studentIntakeService
               .add(studentId, intakeId)
-              .then((stuIntake) => {
-                loadData();
-              });
-            formik.setValues(stu.data);
-            loadData();
-            handleModalClose();
+                .then((stuIntake) => {
+                  if (stuIntake.status === 0){
+                    toast.success('Add new student success');
+                    loadData();
+                    handleModalClose();
+                  }else{
+                    toast.error('Add student error, '+ stuIntake.message);
+                  }
+                });
           }else{
             if (stu.message == "Duplicate Email Student") {
               formik.setFieldError('emailStu',stu.message);
@@ -397,7 +395,7 @@ const Student = (props) => {
           }
         });
     } else {
-      if (typeof (formik.values.image) === "string") {
+      if (formik.values.image.name === "fake_image") {
         studentService
         .updateNoImages(
           studentId,
@@ -407,12 +405,12 @@ const Student = (props) => {
           formik.values.addressStu,
           formik.values.phoneStu,
           formik.values.emailStu,
-          selectedTypeStu.value,
+          formik.values.typeStudent.value,
           formik.values.gpa,
-          selectedWorkingStatus.value,
+          formik.values.workingStatus.value,
           formik.values.noteStu,
           "Admin",
-          selectedUniver.value
+          formik.values.university.value,
         )
         .then((res) => {
           const studentId = res.data[0].id;
@@ -443,13 +441,13 @@ const Student = (props) => {
           formik.values.addressStu,
           formik.values.phoneStu,
           formik.values.emailStu,
-          selectedTypeStu.value,
+          formik.values.typeStudent.value,
           formik.values.gpa,
-          selectedWorkingStatus.value,
+          formik.values.workingStatus.value,
           formik.values.noteStu,
           formik.values.image,
           "Admin",
-          selectedUniver.value
+          formik.values.university.value,
         )
         .then((res) => {
           const studentId = res.data[0].id;
@@ -633,7 +631,7 @@ const Student = (props) => {
                   <div className="avatar-preview-jsk mb-2">
                     <label htmlFor="imageUpload" className="imageUpload"> <i className="bx bxs-cloud-upload" /></label>
                     {modalUpdate ? (
-                     <div id="imagePreview" style={{backgroundImage: 'url("'+api.url.image + formik.values.image +'")'}} />
+                     <div id="imagePreview" style={{backgroundImage: 'url("'+api.url.image + formik.values.oldImage +'")'}} />
                     ) : (
                      <div id="imagePreview" style={{backgroundImage: 'url("https://timvieclam.xyz/images/avata-playhoder.jpg")'}} />
                     )}
@@ -656,9 +654,12 @@ const Student = (props) => {
                         <Select
                         id="multicheckIntake"
                         isMulti
-                        defaultValue={{ label: 'ISC 13', value: 1 }}
                         placeholder="Chọn khóa học..."
-                        onChange={(val)=> {setSelectedIntake(val)}}
+                        onChange={(val)=> {
+                          setSelectedIntake(val)
+                          formik.setFieldValue('updateIntake',val)
+                          console.log(val);
+                        }}
                         value={selectedIntake}
                         closeMenuOnSelect={true}
                         options={intakes.map((e) => ({
@@ -668,9 +669,9 @@ const Student = (props) => {
                         }))}
                         isOptionDisabled={(option) => option.statusIntake !== 'Doing'}
                       />
-                      {(formik.touched.intake && formik.errors.intake) ?(
+                      {(formik.touched.updateIntake && formik.errors.updateIntake) ?(
                         <small class="text-danger">
-                          {formik.errors.intake}
+                          Required
                         </small>
                       ):("")}
                       </Fragment>

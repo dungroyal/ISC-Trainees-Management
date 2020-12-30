@@ -24,12 +24,12 @@ const url = {
     getOnIntake:"/intake/getIntake",
 
      //Student - Intake
-     listStudentIntake: "/student-intake/allStudentIntake",
-     getOneStudentIntake:"/student-intake/getIntakeOfStu",
-     addStudentIntake:"/student-intake/postIntakeOfStu",
-     updateIntakeOfStuArray:"/student-intake/updateIntakeOfStuArray",
-     updateIntakeOfStu:"/student-intake/updateIntakeOfStu",
-     deleteIntakeOfStu: "/student-intake/deleteIntakeOfStu"
+    listStudentIntake: "/student-intake/allStudentIntake",
+    getOneStudentIntake:"/student-intake/getIntakeOfStu",
+    addStudentIntake:"/student-intake/postIntakeOfStu",
+    updateIntakeOfStuArray:"/student-intake/updateIntakeOfStuArray",
+    updateIntakeOfStu:"/student-intake/updateIntakeOfStu",
+    deleteIntakeOfStu: "/student-intake/deleteIntakeOfStu"
 }
 const instance = axios.create({
     baseURL : url.baseURL,
