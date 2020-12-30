@@ -55,7 +55,7 @@ public class LecturerService {
 		return this.lecturerRepository.findLecturer(pageable);
 	}
 	
-	public List<Lecturer> searchLecturer(String keyWord){
-		return this.lecturerRepository.searchLecturer(keyWord);
+	public Page<Lecturer> searchLecturer(String keyWord, Pageable pageable){
+		return this.lecturerRepository.searchLecturer(keyWord, pageable);
 	}
 }

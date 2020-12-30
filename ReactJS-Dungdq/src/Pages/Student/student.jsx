@@ -51,11 +51,11 @@ const Student = (props) => {
   };
   // Option For MultiCheckBox Type Student
   const optionsTypeStu = [
-    { label: "Studying", value: "Studying", disabled: false },
-    { label: "Graduate", value: "Graduate", disabled: false },
-    { label: "Reserve", value: "Reserve", disabled: false },
+    { label: "Studying", value: "Studying" },
+    { label: "Graduate", value: "Graduate" },
+    { label: "Reserve", value: "Reserve" },
   ];
-  const [selectedTypeStu, setSelectedTypeStu] = useState({ label: "Studying", value: "Studying", disabled: false });
+  const [selectedTypeStu, setSelectedTypeStu] = useState({ label: "Studying", value: "Studying"});
 
   // Custom Select OneMultiSelect Type Student
   for (var i = 0; i < optionsTypeStu.length; i++) {
@@ -78,10 +78,10 @@ const Student = (props) => {
 
   //Option For MultiCheckBox Working Status
   const optionsWorkingStatus = [
-    { label: "Active", value: "Active", disabled: false},
-    { label: "Inactive", value: "Inactive", disabled: false},
+    { label: "Active", value: "Active"},
+    { label: "Inactive", value: "Inactive"},
   ];
-  const [selectedWorkingStatus, setSelectedWorkingStatus] = useState({ label: "Inactive", value: "Inactive", disabled: false});
+  const [selectedWorkingStatus, setSelectedWorkingStatus] = useState({ label: "Inactive", value: "Inactive"});
 
   // Custom Select OneMultiSelect Type Student
   for (var i = 0; i < optionsWorkingStatus.length; i++) {
@@ -95,7 +95,6 @@ const Student = (props) => {
   const [allStudentIntake, setAllStudentIntake] = useState([]);
   const [studentIntakeId, setStudentIntakeId] = useState([]);
   const [showIntakes, setshowIntakes] = useState([]);
-  const listIntakedddddddd = [];
 
   const [modalUpdate, setModalUpdate] = useState(false);
   
@@ -113,10 +112,12 @@ const Student = (props) => {
       updatedBy:"Admin",
       noteStu: "",
       image: "",
-      typeStudent: "",
-      workingStatus: "",
+      typeStudent: { label: "Studying", value: "Studying" },
+      workingStatus: { label: "Inactive", value: "Inactive"},
       companies: "",
       university: "",
+      intake: "",
+      image: "",
     },
     validationSchema: Yup.object({
       codeStu: Yup.string()
@@ -133,8 +134,28 @@ const Student = (props) => {
       phoneStu: Yup.string().required("Required").min(2, "Up to 200 characters"),
       addressStu: Yup.string().required("Required").min(2, "Up to 255 characters"),
       noteStu: Yup.string().min(2, "Up to 2000 characters"),
+      intake: Yup.object().required("Required"),
+      university: Yup.object().required("Required"),
+      image: Yup.mixed()
+      .required("required")
+      .test(
+        "fileSize",
+        "too large (<2Mb)",
+        value => value && value.size <= 2000000 //2MB
+      )
+      .test(
+        "fileFormat",
+        "unsupported Format",
+        value => value && [
+          "image/jpg",
+          "image/jpeg",
+          "image/gif",
+          "image/png"
+        ].includes(value.type)
+      ),
     }),
     onSubmit: (values) => {
+      console.log("formik: ",values);
       handleFormSubmit(values);
     },
   }); 
@@ -279,7 +300,6 @@ const Student = (props) => {
           }          
         }
       });
-      
       setModalUpdate(true);
     } else {
       setModalUpdate(false);
@@ -341,27 +361,40 @@ const Student = (props) => {
           formik.values.addressStu,
           formik.values.phoneStu,
           formik.values.emailStu,
-          selectedTypeStu.value,
+          formik.values.typeStudent.value,
           formik.values.gpa,
-          selectedWorkingStatus.value,
+          formik.values.workingStatus.value,
           formik.values.noteStu,
           formik.values.image,
           formik.values.createdBy,
-          selectedUniver.value
+          formik.values.university.value,
         )
         .then((stu) => {
-          toast.success('Add new student success');
-          const studentId = stu.data[0].id;
-          const intakeId = selectedIntake.value;
-
-          studentIntakeService
-            .add(studentId, intakeId)
-            .then((stuIntake) => {
-              loadData();
-            });
-          formik.setValues(stu.data);
-          loadData();
-          handleModalClose();
+          console.log("stu: ",stu);
+          if (stu.status === 0) {
+            toast.success('Add new student success');
+            const studentId = stu.data[0].id;
+            const intakeId = formik.values.intake.value;
+            
+            studentIntakeService
+              .add(studentId, intakeId)
+              .then((stuIntake) => {
+                loadData();
+              });
+            formik.setValues(stu.data);
+            loadData();
+            handleModalClose();
+          }else{
+            if (stu.message == "Duplicate Email Student") {
+              formik.setFieldError('emailStu',stu.message);
+            }
+            if(stu.message == "Required request part 'image' is not present"){
+              formik.setFieldError('image',stu.message);
+            }
+            if(stu.message == "Duplicate Student Code"){
+              formik.setFieldError('codeStu',stu.message);
+            }
+          }
         });
     } else {
       if (typeof (formik.values.image) === "string") {
@@ -440,7 +473,6 @@ const Student = (props) => {
       }
     }
     loadData();
-    handleModalClose();
   };
 
   return (
@@ -577,12 +609,13 @@ const Student = (props) => {
           <Modal.Body>
             <div className="row px-3">         
               <div className="col-sm-12 col-lg-2">
-                <div className="avatar-upload-jsk py-2">
+                <div className="avatar-upload-jsk py-2 text-center">
                   <div className="avatar-edit">
                     <input 
                       type="file" 
                       name="image" 
                       id="imageUpload"
+                      accept=".png, .jpg, .jpeg, .gif"
                       onChange={(event)=>{
                         formik.setFieldValue("image",event.currentTarget.files[0]);
                         if (event.currentTarget.files && event.currentTarget.files[0]) {
@@ -595,9 +628,9 @@ const Student = (props) => {
                             reader.readAsDataURL(event.currentTarget.files[0]);
                         }
                       }}
-                    />
+                    />      
                   </div>
-                  <div className="avatar-preview-jsk">
+                  <div className="avatar-preview-jsk mb-2">
                     <label htmlFor="imageUpload" className="imageUpload"> <i className="bx bxs-cloud-upload" /></label>
                     {modalUpdate ? (
                      <div id="imagePreview" style={{backgroundImage: 'url("'+api.url.image + formik.values.image +'")'}} />
@@ -605,6 +638,11 @@ const Student = (props) => {
                      <div id="imagePreview" style={{backgroundImage: 'url("https://timvieclam.xyz/images/avata-playhoder.jpg")'}} />
                     )}
                   </div>
+                  {(formik.touched.image && formik.errors.image)?(
+                    <small class="text-danger font-size-13 font-weight-bold m-auto pt-5">
+                      Avatar is {formik.errors.image}
+                  </small>
+                  ):("")}
                 </div>
               </div>
               <div className="col-sm-12 col-lg-10">
@@ -614,6 +652,7 @@ const Student = (props) => {
                     <div class="form-group">
                       <label htmlFor="multicheckIntake"> Intake<sup>*</sup> </label>
                       {modalUpdate ? (
+                        <Fragment>
                         <Select
                         id="multicheckIntake"
                         isMulti
@@ -629,12 +668,19 @@ const Student = (props) => {
                         }))}
                         isOptionDisabled={(option) => option.statusIntake !== 'Doing'}
                       />
+                      {(formik.touched.intake && formik.errors.intake) ?(
+                        <small class="text-danger">
+                          {formik.errors.intake}
+                        </small>
+                      ):("")}
+                      </Fragment>
                       ) : (
+                        <Fragment>
                         <Select
                           id="multicheckIntake"
                           placeholder="Chọn khóa học..."
-                          onChange={(val)=> {setSelectedIntake(val)}}
-                          value={selectedIntake}
+                          onChange={(val)=> { formik.setFieldValue('intake',val) }}
+                          value={formik.values.intake}
                           closeMenuOnSelect={true}
                           options={intakes.map((e) => ({
                             label: e.nameIntake,
@@ -643,6 +689,12 @@ const Student = (props) => {
                           }))}
                           isOptionDisabled={(option) => option.statusIntake !== 'Doing'}
                         />
+                        {(formik.touched.intake && formik.errors.intake) ?(
+                          <small class="text-danger">
+                            {formik.errors.intake}
+                          </small>
+                        ):("")}
+                      </Fragment>
                       )}
                   
                       </div>
@@ -654,14 +706,19 @@ const Student = (props) => {
                         <Select
                             id="selectedUniver"
                             placeholder="Chọn trường..."
-                            onChange={(val)=> {setSelectedUniver(val)}}
-                            value={selectedUniver}
+                            onChange={(val)=> { formik.setFieldValue('university',val) }}
+                            value={formik.values.university}
                             closeMenuOnSelect={true}
                             options={univers.map((e) => ({
                               label: e.nameUni,
                               value: e.id
                             }))}
                           />
+                          {(formik.touched.university && formik.errors.university) ?(
+                            <small class="text-danger">
+                              {formik.errors.university}
+                            </small>
+                          ):("")}
                       </div>
                     </div>
 
@@ -672,10 +729,10 @@ const Student = (props) => {
                           <Select
                               id="setSelectedWorkingStatus"
                               placeholder="Chọn trạng thái làm việc..."
-                              onChange={(val)=> {setSelectedWorkingStatus(val)}}
-                              value={selectedWorkingStatus}
-                              closeMenuOnSelect={true}
+                              onChange={(val)=> { formik.setFieldValue('workingStatus',val) }}
+                              value={formik.values.workingStatus}
                               options={optionsWorkingStatus}
+                              closeMenuOnSelect={true}
                             />
                         </div>
                       </div>
@@ -688,9 +745,12 @@ const Student = (props) => {
                         <Select
                             id="selectedTypeStu"
                             placeholder="Chọn trạng  thái học viên..."
-                            onChange={(val)=> {setSelectedTypeStu(val)}}
-                            value={selectedTypeStu}
+                            onChange={(val)=> { formik.setFieldValue('typeStudent',val) }}
+                            frmField={formik.getFieldProps("typeStudent")}
+                            value={formik.values.typeStudent}
                             closeMenuOnSelect={true}
+                            err={formik.touched.typeStudent && formik.errors.typeStudent}
+                            errMessage={formik.errors.typeStudent}
                             options={optionsTypeStu}
                           />
                       </div>
@@ -809,7 +869,6 @@ const Student = (props) => {
 
                 {modalUpdate ? (
                   <Fragment>
-                    <input type="text" value={selectedIntake}/>
                   <Input
                     typeInput="1"
                     column="6"

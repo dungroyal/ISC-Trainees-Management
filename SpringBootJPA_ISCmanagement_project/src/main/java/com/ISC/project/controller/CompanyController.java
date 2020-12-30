@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -53,7 +55,7 @@ public class CompanyController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping("/listCompany")
+	@GetMapping(value = "/listCompany")
 	public ResultRespon listCompany() {
 		return new ResultRespon(0, "Success", this.companyService.listAllCompany());
 	}
@@ -67,8 +69,10 @@ public class CompanyController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping("/getCompany")
-	public ResultRespon getCompany(@RequestParam("id") long id) {
+	@GetMapping(value = "/getCompany")
+	public ResultRespon getCompany(
+			@Parameter(required = true, description = "Company Id")
+			@RequestParam("id") long id) {
 		List<Company> compa = new ArrayList<>();
 		compa.add(companyService.findById(id)
 				.orElseThrow(() -> new ResourseNotFoundException("not found company with id: " + id)));
@@ -84,8 +88,10 @@ public class CompanyController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PostMapping(value = "/newCompany")
-	public ResultRespon addCompany(@RequestBody Company company) {
+	@PostMapping(value = "/newCompany", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	public ResultRespon addCompany(
+			@Parameter(required = true)
+			@RequestBody Company company) {
 		List<Company> compa = new ArrayList<Company>();
 		compa.add(company);
 		compa.get(0).setCreatedDate(LocalDateTime.now());
@@ -106,8 +112,12 @@ public class CompanyController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PutMapping(value = "/editCompany")
-	public ResultRespon editCompany(@RequestBody Company company, @RequestParam("id") long id) {
+	@PutMapping(value = "/editCompany", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	public ResultRespon editCompany(
+			@Parameter(required = true)
+			@RequestBody Company company,
+			@Parameter(required = true, description = "Company ID")
+			@RequestParam("id") long id) {
 		List<Company> compa = new ArrayList<Company>();
 		Company oldcompany = companyService.findById(id)
 				.orElseThrow(() -> new ResourseNotFoundException("not found company with id: " + id));
@@ -118,6 +128,7 @@ public class CompanyController {
 			oldcompany.setNoteCom(company.getNoteCom());
 			oldcompany.setStatusCom(company.getStatusCom());
 			oldcompany.setWebsiteCom(company.getWebsiteCom());
+			oldcompany.setCreatedBy(company.getCreatedBy());
 			oldcompany.setUpdatedBy(company.getUpdatedBy());
 			oldcompany.setUpdatedDate(LocalDateTime.now());
 			compa.add(oldcompany);
@@ -131,6 +142,7 @@ public class CompanyController {
 				oldcompany.setNoteCom(company.getNoteCom());
 				oldcompany.setStatusCom(company.getStatusCom());
 				oldcompany.setWebsiteCom(company.getWebsiteCom());
+				oldcompany.setCreatedBy(company.getCreatedBy());
 				oldcompany.setUpdatedBy(company.getUpdatedBy());
 				oldcompany.setUpdatedDate(LocalDateTime.now());
 				compa.add(oldcompany);
@@ -199,7 +211,7 @@ public class CompanyController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping("/pagination")
+	@GetMapping(value = "/pagination")
 	public ResultRespon paginationUniversity(
 			@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = "1") Integer size,

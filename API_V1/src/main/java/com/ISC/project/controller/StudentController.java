@@ -49,7 +49,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@CrossOrigin(maxAge = 3600)
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/api/student")
 @Tag(name = "Student", description = "CRUD for Student")
@@ -270,7 +270,7 @@ public class StudentController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@PutMapping(value = "/updateStudentNotImg")
+	@PutMapping(value = "/updateStudentNotImg", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
 	public ResultRespon upateStudentNewImage (
 			@RequestParam("id") Long id,
 			@RequestParam("firstName") String firstName,
@@ -383,7 +383,7 @@ public class StudentController {
 			@Parameter(description = "Number of page", required = false)
 			@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@Parameter(description = "Items in page", required = false)
-			@RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
+			@RequestParam(name = "size", required = false, defaultValue = "2") Integer size,
 			@Parameter(description = "Sort by filed of Intems", required = false)
 			@RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
 		Sort sortable = null;
@@ -417,7 +417,9 @@ public class StudentController {
 			@Parameter(description = "Enter the keywords you want to search", required = false)
 			@RequestParam("keyWord") String keyWord) {
 		if(this.studentService.searchStudent(keyWord).isEmpty()) {
-			throw new ResourseNotFoundException("Not Found Student");
+//			throw new ResourseNotFoundException("Not Found Student");
+//			throw new ResultRespon(0, "Search Success");
+			return new ResultRespon(1, "Not Found Student", null);
 		} else {
 			
 			System.out.println(this.studentService.searchStudent(keyWord).toString());

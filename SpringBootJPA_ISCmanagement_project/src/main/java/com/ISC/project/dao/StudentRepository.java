@@ -34,5 +34,5 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
 	//Search Student
 	@Query("select stu from Student stu where concat(stu.lastName, stu.firstName, stu.codeStu, stu.addressStu, stu.phoneStu, "
 			+ " stu.emailStu, stu.gpa) like %?1%")
-	public List<Student> searchStudent( String keyWord);
+	public Page<Student> searchStudent( String keyWord, Pageable pageable);
 }

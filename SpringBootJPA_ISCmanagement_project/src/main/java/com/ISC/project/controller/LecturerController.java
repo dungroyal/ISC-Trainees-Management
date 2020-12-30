@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -87,7 +88,7 @@ public class LecturerController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PostMapping(value = "/newLecturer", consumes = "multipart/form-data")
+	@PostMapping(value = "/newLecturer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
 	public ResultRespon addLecturer(@RequestParam("createdBy") String createdBy,
 			@RequestParam("updatedBy") String updatedBy,
 			@Parameter(description = "Lecturer Code is required!", required = true) @RequestParam("codeLec") String codeLec,
@@ -136,7 +137,7 @@ public class LecturerController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PutMapping(value = "/editLecturerImg", consumes = "multipart/form-data")
+	@PutMapping(value = "/editLecturerImg", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
 	public ResultRespon editLecturerNewImage(@RequestParam("id") Long id, @RequestParam("createdBy") String createdBy,
 			@RequestParam("updatedBy") String updatedBy,
 			@Parameter(description = "Lecturer Code is required!", required = true) @RequestParam("codeLec") String codeLec,
@@ -205,7 +206,7 @@ public class LecturerController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PutMapping(value = "/editLecturerNotImg")
+	@PutMapping(value = "/editLecturerNotImg", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
 	public ResultRespon editLecturerNewImage(@RequestParam("id") Long id, @RequestParam("createdBy") String createdBy,
 			@RequestParam("updatedBy") String updatedBy,
 			@Parameter(description = "Lecturer Code is required!", required = true) @RequestParam("codeLec") String codeLec,
@@ -266,7 +267,7 @@ public class LecturerController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@DeleteMapping("/deleteLecturer")
+	@DeleteMapping(value = "/deleteLecturer")
 	public ResultRespon deleteLecturer(
 			@Parameter(description = "The lecturer's id is required", required = true) @RequestParam("id") long id) {
 		Lecturer lecturer = this.lecturerService.findById(id)
@@ -289,9 +290,14 @@ public class LecturerController {
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
 	@GetMapping(value = "/pagination")
 	public ResultRespon paginationLecturer(
-			@Parameter(description = "Number of page", required = false) @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
-			@Parameter(description = "Items in page", required = false) @RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
-			@Parameter(description = "Sort by filed of Intems", required = false) @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
+			@Parameter(description = "Number of page", required = false) 
+			@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+			@Parameter(description = "Items in page", required = false) 
+			@RequestParam(name = "size", required = false, defaultValue = "5") Integer size,
+			@Parameter(description = "Sort by filed of Intems", required = false) 
+			@RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort,
+			@Parameter(description = "Search Lecturer", required = false)
+			@RequestParam(name = "search", defaultValue = "", required = false) String keyword) {
 		Sort sortable = null;
 		if (sort.equals("ASC")) {
 			sortable = Sort.by("lastName").ascending();
@@ -299,29 +305,35 @@ public class LecturerController {
 		if (sort.equals("DESC")) {
 			sortable = Sort.by("lastName").descending();
 		}
-		Pageable pageable = PageRequest.of(page, size, sortable);
-		Page<Lecturer> lecturer = lecturerService.findLecturer(pageable);
 		List<Page<Lecturer>> lecturers = new ArrayList<Page<Lecturer>>();
-		lecturers.add(lecturer);
+		Pageable pageable = PageRequest.of(page, size, sortable);
+		Pageable pageableSearch = PageRequest.of(page, size, sortable);
+		if(!keyword.equals("")) {
+			Page<Lecturer> lecturerSearch = lecturerService.searchLecturer(keyword, pageableSearch);
+			lecturers.add(lecturerSearch);
+		}else {
+			Page<Lecturer> lecturer = lecturerService.findLecturer(pageable);	
+			lecturers.add(lecturer);
+		}
 		return new ResultRespon(0, "Success", lecturers);
 	}
 
 	// Search lecturer by keyword
-	@Operation(summary = "Search lecturer", description = "Search lecturer")
-	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Lecturer.class))), responseCode = "200", description = "Success")
-	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
-			@ApiResponse(responseCode = "404", description = "Not found"),
-			@ApiResponse(responseCode = "401", description = "Authorization Required"),
-			@ApiResponse(responseCode = "403", description = "Forbidden"),
-			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/searchLecturer")
-	public ResultRespon searchLecturer(
-			@Parameter(description = "Enter the keywords you want to search", required = false) @RequestParam("keyWord") String keyWord) {
-		if (this.lecturerService.searchLecturer(keyWord).isEmpty()) {
-			throw new ResourceNotFoundException("Not found lecturer by keyword " + keyWord);
-		} else {
-			System.out.println(this.lecturerService.searchLecturer(keyWord).toString());
-			return new ResultRespon(0, "Success", this.lecturerService.searchLecturer(keyWord));
-		}
-	}
+	//	@Operation(summary = "Search lecturer", description = "Search lecturer")
+	//	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Lecturer.class))), responseCode = "200", description = "Success")
+	//	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
+	//			@ApiResponse(responseCode = "404", description = "Not found"),
+	//			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+	//			@ApiResponse(responseCode = "403", description = "Forbidden"),
+	//			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
+	//	@GetMapping(value = "/searchLecturer")
+	//	public ResultRespon searchLecturer(
+	//			@Parameter(description = "Enter the keywords you want to search", required = false) @RequestParam("keyWord") String keyWord) {
+	//		if (this.lecturerService.searchLecturer(keyWord).isEmpty()) {
+	//			throw new ResourceNotFoundException("Not found lecturer by keyword " + keyWord);
+	//		} else {
+	//			System.out.println(this.lecturerService.searchLecturer(keyWord).toString());
+	//			return new ResultRespon(0, "Success", this.lecturerService.searchLecturer(keyWord));
+	//		}
+	//	}
 }

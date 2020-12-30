@@ -21,5 +21,5 @@ public interface SubjectRepository extends JpaRepository<Subject, Long>{
 
 	//Search Major
 	@Query("select subject from Subject subject where concat(subject.createdBy, subject.updatedBy, subject.createdDate, subject.updatedDate, subject.codeSub, subject.nameSub, subject.creditSub, subject.passCore, subject.statusSub, subject.noteSub) like %?1%")
-	public List<Subject> searchSubject(String keyWord);
+	public Page<Subject> searchSubject(String keyWord, Pageable pageable);
 }

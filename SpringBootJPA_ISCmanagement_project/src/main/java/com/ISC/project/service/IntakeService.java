@@ -48,7 +48,7 @@ public class IntakeService {
 		return this.intakeRepository.findIntake(pageable);
 	}
 	
-	public List<Intake> searchIntake(String keyWord){
-		return this.intakeRepository.searchIntake(keyWord);
+	public Page<Intake> searchIntake(String keyWord, Pageable pageable){
+		return this.intakeRepository.searchIntake(keyWord, pageable);
 	}
 }

@@ -22,5 +22,5 @@ public interface RoomRepository extends JpaRepository<Room, Long>{
 	public Page<Room> findRoom(Pageable pageable);
 	
 	@Query("select ro from Room ro where concat(ro.codeRoom, ro.nameRoom, ro.noteRoom) like %?1%")
-	public List<Room> searchRoom(String keyWord);
+	public Page<Room> searchRoom(String keyWord, Pageable pageable);
 }

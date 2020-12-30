@@ -21,5 +21,5 @@ public interface MajorRepository extends JpaRepository<Major, Long>{
 	
 	//Search Major
 	@Query("select major from Major major where concat(major.createdBy, major.updatedBy, major.createdDate, major.updatedDate, major.codeMajor, major.nameMajor, major.descriptionMajor) like %?1%")
-	public List<Major> searchMajor(String keyWord);
+	public Page<Major> searchMajor(String keyWord, Pageable pageable);
 }

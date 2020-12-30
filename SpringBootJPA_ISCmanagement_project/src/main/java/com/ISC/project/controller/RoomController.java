@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ISC.project.exception.ResourseNotFoundException;
+import com.ISC.project.model.JobTitle;
 import com.ISC.project.model.Room;
 import com.ISC.project.payload.ResultRespon;
 import com.ISC.project.service.RoomService;
@@ -54,7 +56,7 @@ public class RoomController {
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
 	//get all Room
-	@GetMapping("/listRoom")
+	@GetMapping(value = "/listRoom")
 	public ResultRespon listRoom() {
 		return new ResultRespon(0,"Get list room success",this.roomService.listAllRoom());
 	}
@@ -90,7 +92,7 @@ public class RoomController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@PostMapping("/newRoom")
+	@PostMapping(value = "/newRoom")
 	public ResultRespon addRoom(@RequestBody Room room) {
 		if(this.roomService.checkCodeRoom(room.getCodeRoom()).isEmpty()) {
 			List<Room> newRoom = new ArrayList<>();
@@ -115,8 +117,12 @@ public class RoomController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@PutMapping("/editRoom")
-	public ResultRespon editRoom(@RequestBody Room room, @Parameter(description = "The room id is required", required = true)  @RequestParam("id") long id) {
+	@PutMapping(value = "/editRoom", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	public ResultRespon editRoom(
+			@Parameter(required = true)
+			@RequestBody Room room, 
+			@Parameter(description = "The room id is required", required = true) 
+			@RequestParam("id") long id) {
 		List<Room> newRoom = new ArrayList<>();
 		Room oldRoom = roomService.findById(id).orElseThrow(()->new ResourseNotFoundException("Not found room with id: " + id));
 		if(!this.roomService.checkCodeRoom(room.getCodeRoom()).isEmpty()) {
@@ -163,7 +169,7 @@ public class RoomController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@DeleteMapping("/deleteRoom")
+	@DeleteMapping(value = "/deleteRoom")
 	public ResultRespon deleteRoom(@Parameter(description = "The room id is required", required = true) @RequestParam("id") long id) {
 		roomService.findById(id).orElseThrow(()->new ResourseNotFoundException("Not found room with id: " + id));
 		this.roomService.delete(id);
@@ -182,11 +188,12 @@ public class RoomController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@GetMapping("/pagination") 
+	@GetMapping(value = "/pagination") 
 	public ResultRespon paginationRoom(
 			@RequestParam(name="page", required = false, defaultValue = "1") Integer page,
 			@RequestParam(name="size", required = false, defaultValue = "1") Integer size,
-			@RequestParam(name="sort", required = false, defaultValue = "ASC") String sort) {
+			@RequestParam(name="sort", required = false, defaultValue = "ASC") String sort,
+			@RequestParam(name="key", required = false, defaultValue = "") String key) {
 		Sort sortable = null;
 		if(sort.equals("ASC")) {
 			sortable = Sort.by("nameRoom").ascending();
@@ -195,31 +202,37 @@ public class RoomController {
 			sortable = Sort.by("nameRoom").descending();
 		}
 		
+		Pageable pageableSearch = PageRequest.of(page, size, sortable);
 		Pageable pageable = PageRequest.of(page, size, sortable);
-		Page<Room> room = roomService.findRoom(pageable);
 		List<Page<Room>> rooms = new ArrayList<>();
-		rooms.add(room);
+		if(!key.equals("")) {
+			Page<Room> roomSea = roomService.searchRoom(key, pageableSearch);
+			rooms.add(roomSea);
+		}else {
+			Page<Room> room = roomService.findRoom(pageable);
+			rooms.add(room);
+		}
 		return new ResultRespon(0, "Success", rooms);
 	}
 	
 	// Search Room
 	// DOC for search Room
-	@Operation(summary = "Search Room with keyword", description = "Search Room with keyword")
-	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Room.class))),
-	responseCode = "200", description = "Search room success")
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Success"),
-			@ApiResponse(responseCode = "404", description = "Not found"),
-			@ApiResponse(responseCode = "401", description = "Authorization Required"),
-			@ApiResponse(responseCode = "403", description = "Forbidden"),
-			@ApiResponse(responseCode = "500", description = "Internal Error Server")
-	})	
-	@GetMapping("/searchRoom") 
-	public ResultRespon searchRoom(@Parameter(description = "Search keyword id is required", required = true) @RequestParam("keyWord") String keyWord) {
-		if(this.roomService.searchRoom(keyWord).isEmpty()) {
-			throw new ResourseNotFoundException("Not found room witd keyword: "+keyWord);
-		}else {
-			return new ResultRespon(0, "Search success", this.roomService.searchRoom(keyWord));
-		}
-	}
+//	@Operation(summary = "Search Room with keyword", description = "Search Room with keyword")
+//	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Room.class))),
+//	responseCode = "200", description = "Search room success")
+//	@ApiResponses(value = {
+//			@ApiResponse(responseCode = "200", description = "Success"),
+//			@ApiResponse(responseCode = "404", description = "Not found"),
+//			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+//			@ApiResponse(responseCode = "403", description = "Forbidden"),
+//			@ApiResponse(responseCode = "500", description = "Internal Error Server")
+//	})	
+//	@GetMapping(value = "/searchRoom", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json") 
+//	public ResultRespon searchRoom(@Parameter(description = "Search keyword id is required", required = true) @RequestParam("keyWord") String keyWord) {
+//		if(this.roomService.searchRoom(keyWord).isEmpty()) {
+//			throw new ResourseNotFoundException("Not found room witd keyword: "+keyWord);
+//		}else {
+//			return new ResultRespon(0, "Search success", this.roomService.searchRoom(keyWord));
+//		}
+//	}
 }

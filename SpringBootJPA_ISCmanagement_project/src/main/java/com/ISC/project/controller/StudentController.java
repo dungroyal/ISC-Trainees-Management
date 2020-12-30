@@ -1,4 +1,4 @@
-package com.ISC.project.controller;
+ package com.ISC.project.controller;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(maxAge = 3600)
 @RestController
 @RequestMapping(value = "/api/student")
 @Tag(name = "Student", description = "CRUD for Student")
@@ -270,7 +270,7 @@ public class StudentController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@PutMapping(value = "/updateStudentNotImg", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
+	@PutMapping(value = "/updateStudentNotImg")
 	public ResultRespon upateStudentNewImage (
 			@RequestParam("id") Long id,
 			@RequestParam("firstName") String firstName,
@@ -383,47 +383,61 @@ public class StudentController {
 			@Parameter(description = "Number of page", required = false)
 			@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@Parameter(description = "Items in page", required = false)
-			@RequestParam(name = "size", required = false, defaultValue = "2") Integer size,
+			@RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
 			@Parameter(description = "Sort by filed of Intems", required = false)
-			@RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
+			@RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort,
+			@Parameter(description = "Sort by status", required = false)
+			@RequestParam(name = "typeStudent", required = false, defaultValue = "n") String typeStu,
+			@Parameter(description = "Search", required = false)
+			@RequestParam(name = "search", required = false, defaultValue = "") String keyword) {
+		
 		Sort sortable = null;
-		if (sort.equals("ASC")) {
+		if (sort.equals("ASC") && typeStu.toLowerCase().equals("n")) {
 			sortable = Sort.by("lastName").ascending();
+		}else {
+			sortable = Sort.by("typeStu").ascending();
 		}
-		if (sort.equals("DESC")) {
+		
+		if (sort.equals("DESC") && typeStu.toLowerCase().equals("n")) {
 			sortable = Sort.by("lastName").descending();
+		}else {
+			sortable = Sort.by("typeStu").descending();
 		}
-		Pageable pageable = PageRequest.of(page, size, sortable); 
-		Page<Student> stu = studentService.findStudent(pageable);
 		List<Page<Student>> students = new ArrayList<>();
-		students.add(stu);
+		Pageable pageable = PageRequest.of(page, size, sortable); 
+		Pageable pageableSearch = PageRequest.of(page, size, sortable); 
+		if(!keyword.equals("")) {
+			Page<Student> searchStu = studentService.searchStudent(keyword, pageableSearch);
+			students.add(searchStu);
+		}else {
+			Page<Student> stu = studentService.findStudent(pageable);		
+			students.add(stu);
+		}
 		return new ResultRespon(0, "Success", students) ;
 	}
 	
 	//Search Student
 	// DOC Search
-	@Operation(summary = "Search Student", description = "Search student")
-	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class))),
-	responseCode = "200", description = "Success")
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Success"),
-			@ApiResponse(responseCode = "404", description = "Not found"),
-			@ApiResponse(responseCode = "401", description = "Authorization Required"),
-			@ApiResponse(responseCode = "403", description = "Forbidden"),
-			@ApiResponse(responseCode = "500", description = "Internal Error Server")
-	})
-	@GetMapping(value = "/searchStudent")
-	public ResultRespon searchStudent(
-			@Parameter(description = "Enter the keywords you want to search", required = false)
-			@RequestParam("keyWord") String keyWord) {
-		if(this.studentService.searchStudent(keyWord).isEmpty()) {
+//	@Operation(summary = "Search Student", description = "Search student")
+//	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class))),
+//	responseCode = "200", description = "Success")
+//	@ApiResponses(value = {
+//			@ApiResponse(responseCode = "200", description = "Success"),
+//			@ApiResponse(responseCode = "404", description = "Not found"),
+//			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+//			@ApiResponse(responseCode = "403", description = "Forbidden"),
+//			@ApiResponse(responseCode = "500", description = "Internal Error Server")
+//	})
+//	@GetMapping(value = "/searchStudent")
+//	public ResultRespon searchStudent(
+//			@Parameter(description = "Enter the keywords you want to search", required = false)
+//			@RequestParam("keyWord") String keyWord) {
+//		if(this.studentService.searchStudent(keyWord).isEmpty()) {
 //			throw new ResourseNotFoundException("Not Found Student");
-//			throw new ResultRespon(0, "Search Success");
-			return new ResultRespon(1, "Not Found Student", null);
-		} else {
-			
-			System.out.println(this.studentService.searchStudent(keyWord).toString());
-			return new ResultRespon(0, "Search Success", this.studentService.searchStudent(keyWord));
-		}
-	}
+//		} else {
+//			
+//			System.out.println(this.studentService.searchStudent(keyWord).toString());
+//			return new ResultRespon(0, "Search Success", this.studentService.searchStudent(keyWord));
+//		}
+//	}
 }

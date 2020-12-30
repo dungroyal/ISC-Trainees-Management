@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -65,7 +66,8 @@ public class MajorController {
 
 	@GetMapping(value = "/getMajor")
 	public ResultRespon getMajor(
-			@Parameter(description = "The major's id is required", required = true) @RequestParam("id") long id) {
+			@Parameter(description = "The major's id is required", required = true) 
+			@RequestParam("id") long id) {
 		List<Major> major = new ArrayList<Major>();
 		major.add(majorService.findById(id).orElseThrow(() -> new ResourseNotFoundException("Not found major")));
 		return new ResultRespon(0, "Success", major);
@@ -80,8 +82,10 @@ public class MajorController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PostMapping(value = "/newMajor")
-	public ResultRespon addMajor(@RequestBody Major major) {
+	@PostMapping(value = "/newMajor", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	public ResultRespon addMajor(
+			@Parameter(required = true)
+			@RequestBody Major major) {
 		List<Major> majorList = new ArrayList<Major>();
 		major.setCreatedDate(LocalDateTime.now());
 		if (this.majorService.checkCodeMajor(major.getCodeMajor()).isEmpty()) {
@@ -101,7 +105,7 @@ public class MajorController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PutMapping(value = "/editMajor")
+	@PutMapping(value = "/editMajor", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon editMajor(@RequestBody Major major, @RequestParam("id") long id) {
 		List<Major> majorList = new ArrayList<>();
 		Major oldMajor = majorService.findById(id).orElseThrow(() -> new ResourseNotFoundException("Not found major"));
@@ -139,9 +143,10 @@ public class MajorController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@DeleteMapping("/deleteMajor")
+	@DeleteMapping(value = "/deleteMajor", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
 	public ResultRespon deleteMajor(
-			@Parameter(description = "The major's id is required", required = true) @RequestParam("id") long id) {
+			@Parameter(description = "The major's id is required", required = true) 
+			@RequestParam("id") long id) {
 		Major major = this.majorService.findById(id)
 				.orElseThrow(() -> new ResourseNotFoundException("Not Found Major"));
 		try {
@@ -162,9 +167,14 @@ public class MajorController {
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
 	@GetMapping(value = "/pagination")
 	public ResultRespon paginationMajor(
-			@Parameter(description = "Number of page", required = false) @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
-			@Parameter(description = "Items in page", required = false) @RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
-			@Parameter(description = "Sort by filed of Intems", required = false) @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
+			@Parameter(description = "Number of page", required = false) 
+			@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+			@Parameter(description = "Items in page", required = false) 
+			@RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
+			@Parameter(description = "Sort by filed of Intems", required = false)
+			@RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort,
+			@Parameter(description = "Search Major", required = false)
+			@RequestParam(name = "search", required = false, defaultValue = "") String keyword) {
 		Sort sortable = null;
 		if (sort.equals("ASC")) {
 			sortable = Sort.by("nameMajor").ascending();
@@ -172,29 +182,35 @@ public class MajorController {
 		if (sort.equals("DESC")) {
 			sortable = Sort.by("nameMajor").descending();
 		}
-		Pageable pageable = PageRequest.of(page, size, sortable);
-		Page<Major> major = majorService.findMajor(pageable);
 		List<Page<Major>> majors = new ArrayList<Page<Major>>();
-		majors.add(major);
+		Pageable pageable = PageRequest.of(page, size, sortable);
+		Pageable pageableSearch = PageRequest.of(page, size, sortable);
+		if(!keyword.equals("")) {
+			Page<Major> majorSearch = majorService.searchMajor(keyword, pageableSearch);
+			majors.add(majorSearch);
+		}else {
+			Page<Major> major = majorService.findMajor(pageable);
+			majors.add(major);
+		}
 		return new ResultRespon(0, "Success", majors);
 	}
 
 	// Search major by keyword
-	@Operation(summary = "Search major", description = "Search major")
-	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Major.class))), responseCode = "200", description = "Success")
-	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
-			@ApiResponse(responseCode = "404", description = "Not found"),
-			@ApiResponse(responseCode = "401", description = "Authorization Required"),
-			@ApiResponse(responseCode = "403", description = "Forbidden"),
-			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/searchMajor")
-	public ResultRespon searchMajor(
-			@Parameter(description = "Enter the keywords you want to search", required = false) @RequestParam("keyWord") String keyWord) {
-		if (this.majorService.searchMajor(keyWord).isEmpty()) {
-			throw new ResourceNotFoundException("Not found major by keyword " + keyWord);
-		} else {
-			System.out.println(this.majorService.searchMajor(keyWord).toString());
-			return new ResultRespon(0, "Search Success", this.majorService.searchMajor(keyWord));
-		}
-	}
+//	@Operation(summary = "Search major", description = "Search major")
+//	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Major.class))), responseCode = "200", description = "Success")
+//	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
+//			@ApiResponse(responseCode = "404", description = "Not found"),
+//			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+//			@ApiResponse(responseCode = "403", description = "Forbidden"),
+//			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
+//	@GetMapping(value = "/searchMajor")
+//	public ResultRespon searchMajor(
+//			@Parameter(description = "Enter the keywords you want to search", required = false) @RequestParam("keyWord") String keyWord) {
+//		if (this.majorService.searchMajor(keyWord).isEmpty()) {
+//			throw new ResourceNotFoundException("Not found major by keyword " + keyWord);
+//		} else {
+//			System.out.println(this.majorService.searchMajor(keyWord).toString());
+//			return new ResultRespon(0, "Search Success", this.majorService.searchMajor(keyWord));
+//		}
+//	}
 }

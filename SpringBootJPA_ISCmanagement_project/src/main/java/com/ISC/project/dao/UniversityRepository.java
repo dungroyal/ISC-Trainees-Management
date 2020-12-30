@@ -20,7 +20,7 @@ public interface UniversityRepository extends JpaRepository<University, Long>{
 	public String getNameById(@RequestParam("id") long id);
 	
 	@Query("select uni from University uni where concat(uni.nameUni,uni.addressUni,uni.contactPerson,uni.websiteUni,uni.noteUni) like %?1%")
-	public List<University> searchUni(String keyWord);
+	public Page<University> searchUni(String keyWord, Pageable pageable);
 	
 	@Query("select uni from University uni")
 	public Page<University> findUni(Pageable pageable);

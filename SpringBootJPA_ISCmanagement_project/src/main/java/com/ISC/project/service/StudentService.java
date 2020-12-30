@@ -68,7 +68,7 @@ public class StudentService {
 	}
 	
 	//Search Student
-	public List<Student> searchStudent(String keyWord) {
-		return this.studentRepository.searchStudent(keyWord);
+	public Page<Student> searchStudent(String keyWord, Pageable pageable) {
+		return this.studentRepository.searchStudent(keyWord, pageable);
 	}
 }

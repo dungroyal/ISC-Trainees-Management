@@ -49,8 +49,8 @@ public class RoomService {
 		return roomRepository.findRoom(pageable);
 	}
 	
-	public List<Room> searchRoom(String keyWord){
-		return roomRepository.searchRoom(keyWord);
+	public Page<Room> searchRoom(String keyWord, Pageable pageable){
+		return roomRepository.searchRoom(keyWord, pageable);
 	}
 	
 

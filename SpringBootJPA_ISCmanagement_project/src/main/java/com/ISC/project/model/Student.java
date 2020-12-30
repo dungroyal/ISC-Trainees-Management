@@ -81,7 +81,7 @@ public class Student {
 
 	//mapping to school
 	@ManyToOne()
-	//	@JsonBackReference
+//	@JsonBackReference
 	//	@JoinColumn(name = "university_id")
 	private University university;
 	public University getUniversity() {
