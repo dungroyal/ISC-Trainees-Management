@@ -175,10 +175,9 @@ const Student = (props) => {
   const [filters, setFilters] = useState({
     page: 0,
     size: 4,
-  });
-
-  const [searchStudent, setSearchStudent] = useState({
-    keyWord: "",
+    sort: 'ASC',
+    typeStudent: 'n',
+    search: '',
   });
   
   const handlePageChange = (newPage) => {
@@ -189,19 +188,19 @@ const Student = (props) => {
   };
 
   const handedSearchChange = (newSearch) => {
-    setSearchStudent({
-      ...searchStudent,
-      keyWord: newSearch,
+    setFilters({
+      ...filters,
+      page: 0,
+      search: newSearch.searchTerm,
     })
   };
 
   // Load Data
   const loadData = () => {
-    if (searchStudent.keyWord.searchTerm == "" || searchStudent.keyWord == "") {
-      const paramsFilters = queryString.stringify(filters);
+    //Get Student with Filters
+    const paramsFilters = queryString.stringify(filters);
       studentService.paginationStudent(paramsFilters).then((res) => {
         const totalRows = res.data[0].totalElements;
-        const totalPage = res.data[0].totalPages;
         const size = res.data[0].size;
         const pageCurrent = res.data[0].pageable.pageNumber;
         if (res.status === 0) {
@@ -213,16 +212,6 @@ const Student = (props) => {
           })
         }
       });
-    }else{
-      const keyword = searchStudent.keyWord.searchTerm;
-      studentService.searchStudent(searchStudent.keyWord.searchTerm).then((res) => {
-        if (res.status === 0) {
-          setStudent(res.data);
-        }else{
-          setStudent(res.data);
-        }
-      });
-    }
 
     //Get all company
     companyService.getAll().then((res) => {
@@ -256,15 +245,7 @@ const Student = (props) => {
   //Didmount load data major
   useEffect(() => {
     loadData();
-  }, [filters,searchStudent]);
-
-  const getOnStudentIntake = (studentId)=> {
-    studentIntakeService.get(studentId).then((res) => {
-      const data = res.data;
-      console.log("data: ", data);
-    })
-  }
-
+  }, [filters]);
 
   //Update Student State
   const [studentId, setStudentId] = useState(0);
@@ -536,7 +517,7 @@ const Student = (props) => {
                       <tbody>
                         {students == null ? (
                           <tr className="text-center">
-                            <td colspan="9">Not found student with keyword: "<strong>{searchStudent.keyWord.searchTerm}</strong>"!</td>
+                            <td colspan="9">Not found student with keyword: "<strong>HAHHAHA</strong>"!</td>
                           </tr>
                         ):(
                           students.map((student, idx) => {
@@ -578,9 +559,7 @@ const Student = (props) => {
                       </tbody>
                     </table>
                   </div>
-                  {searchStudent.keyWord.searchTerm == "" || searchStudent.keyWord == "" ? (
                   <Pagination pagination={pagination} onPageChange={handlePageChange}/>
-                  ) : ("")}
                 </div>
               </div>
             </div>
