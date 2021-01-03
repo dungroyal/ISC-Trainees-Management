@@ -508,16 +508,15 @@ const Student = (props) => {
                           <th>Full name</th>
                           <th>Phone</th>
                           <th>Email</th>
-                          {/* <th>Intake</th> */}
                           <th>University</th>
                           <th>Status</th>
                           <th>Action</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {students == null ? (
+                        {students.length == 0 ? (
                           <tr className="text-center">
-                            <td colspan="9">Not found student with keyword: "<strong>HAHHAHA</strong>"!</td>
+                            <td colspan="9">Not found student with keyword: "<strong>{filters.search}</strong>"!</td>
                           </tr>
                         ):(
                           students.map((student, idx) => {
@@ -633,7 +632,7 @@ const Student = (props) => {
                         <Select
                         id="multicheckIntake"
                         isMulti
-                        placeholder="Chọn khóa học..."
+                        placeholder="Choose a intake..."
                         onChange={(val)=> {
                           setSelectedIntake(val)
                           formik.setFieldValue('updateIntake',val)
@@ -658,7 +657,7 @@ const Student = (props) => {
                         <Fragment>
                         <Select
                           id="multicheckIntake"
-                          placeholder="Chọn khóa học..."
+                          placeholder="Choose a intake..."
                           onChange={(val)=> { formik.setFieldValue('intake',val) }}
                           value={formik.values.intake}
                           closeMenuOnSelect={true}
@@ -685,7 +684,7 @@ const Student = (props) => {
                         <label htmlFor="selectedUniver"> University<sup>*</sup></label>
                         <Select
                             id="selectedUniver"
-                            placeholder="Chọn trường..."
+                            placeholder="Choose a university..."
                             onChange={(val)=> { formik.setFieldValue('university',val) }}
                             value={formik.values.university}
                             closeMenuOnSelect={true}
@@ -708,7 +707,7 @@ const Student = (props) => {
                           <label htmlFor="setSelectedWorkingStatus"> Working status</label>
                           <Select
                               id="setSelectedWorkingStatus"
-                              placeholder="Chọn trạng thái làm việc..."
+                              placeholder="Choose a working status..."
                               onChange={(val)=> { formik.setFieldValue('workingStatus',val) }}
                               value={formik.values.workingStatus}
                               options={optionsWorkingStatus}
@@ -724,7 +723,7 @@ const Student = (props) => {
                         <label htmlFor="selectedTypeStu"> Learing status<sup>*</sup></label>
                         <Select
                             id="selectedTypeStu"
-                            placeholder="Chọn trạng  thái học viên..."
+                            placeholder="Choose a type students..."
                             onChange={(val)=> { formik.setFieldValue('typeStudent',val) }}
                             frmField={formik.getFieldProps("typeStudent")}
                             value={formik.values.typeStudent}
