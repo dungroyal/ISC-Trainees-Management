@@ -9,8 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,8 +34,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+@CrossOrigin
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/api/subject")
 @Tag(name = "Subject", description = "CRUD for Subject")
 public class SubjectController {
 	@Autowired
@@ -51,7 +54,7 @@ public class SubjectController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@GetMapping(value = "/listSubject")
+	@GetMapping("")
 	public ResultRespon allSubject() {
 		return new ResultRespon(0, "Success", this.subjectService.listAllSubject());
 	}
@@ -67,11 +70,11 @@ public class SubjectController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@GetMapping(value = "/getSubject")
+	@GetMapping("/{id}")
 	public ResultRespon getSubject(
 			// DOC for id of Subject
 			@Parameter(description = "The Subject's id is required", required = true)
-			@RequestParam("id") Long id) {
+			@PathVariable("id") Long id) {
 		List<Subject> subjects = new ArrayList<>();
 		subjects.add(this.subjectService.findById(id).orElseThrow(() -> new ResourseNotFoundException("Not Found Subject")));
 		return new ResultRespon(0,"Success",subjects);
@@ -89,7 +92,7 @@ public class SubjectController {
 				@ApiResponse(responseCode = "403", description = "Forbidden"),
 				@ApiResponse(responseCode = "500", description = "Internal Error Server")
 		})
-		@PostMapping("/addSubject")
+		@PostMapping("")
 		public ResultRespon addSubject(@RequestBody Subject subject) {
 			if (subjectService.checkCodeSubject(subject.getCodeSub()).isEmpty()) {
 				List<Subject> newSub = new ArrayList<Subject>();
@@ -113,10 +116,11 @@ public class SubjectController {
 				@ApiResponse(responseCode = "403", description = "Forbidden"),
 				@ApiResponse(responseCode = "500", description = "Internal Error Server")
 		})
-		@PutMapping("/editSubject")
+		@PutMapping("/{id}")
 		public ResultRespon editSubject(
 				@RequestBody Subject subject, 
-				@Parameter(description = "The Subject id is required", required = true)  @RequestParam("id") Long id) {
+				@Parameter(description = "The Subject id is required", required = true)  
+				@PathVariable("id") Long id) {
 			List<Subject> newSubject = new ArrayList<>();
 			Subject oldSubject = subjectService.findById(id).orElseThrow(()->new ResourseNotFoundException("Not found Subject with id: " + id));
 			if(!this.subjectService.checkCodeSubject(subject.getCodeSub()).isEmpty()) {
@@ -163,10 +167,11 @@ public class SubjectController {
 				@ApiResponse(responseCode = "403", description = "Forbidden"),
 				@ApiResponse(responseCode = "500", description = "Internal Error Server")
 		})
-		@DeleteMapping("/deleteSubject")
+		
+		@DeleteMapping("/{id}")
 		public ResultRespon deleteSubject(
 		@Parameter(description = "The Subject id is required", required = true) 
-		@RequestParam("id") Long id) {
+		@PathVariable("id") Long id) {
 			subjectService.findById(id).orElseThrow(()->new ResourseNotFoundException("Not found Subject with id: " + id));
 			this.subjectService.delete(id);
 			return new ResultRespon(0,"Delete Subject witd id : "+id+" success");

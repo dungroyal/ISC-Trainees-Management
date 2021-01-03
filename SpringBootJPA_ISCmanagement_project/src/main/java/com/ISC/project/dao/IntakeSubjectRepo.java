@@ -13,4 +13,5 @@ public interface IntakeSubjectRepo  extends JpaRepository<IntakeSubject, Embemde
 	//Get subject of intake
 	@Query("select insub from IntakeSubject insub where insub.id.intakeId = :intakeId")
 	public List<IntakeSubject> listIntakeOfStu(@RequestParam("intakeId") Long intakeId);
+
 }
