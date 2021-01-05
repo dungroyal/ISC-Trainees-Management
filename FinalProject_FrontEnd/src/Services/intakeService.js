@@ -2,6 +2,14 @@ import api from "./api";
 const getAll = () => {
   return api.get(api.url.listIntake).then((res) => res.data);
 };
+
+const paginationIntake = (paramsFilters) =>
+  api
+    .get(`${api.url.paginationIntake} ? {parasFilters}`)
+    .then((res) => res.data);
+
+const searchIntake = (keyword) =>
+  api.get(`${api.url.searchIntake}?keyWord=${keyword}`).then((res) => res.data);
 const get = (id) =>
   api.get(`${api.url.getIntake}?id=${id}`).then((res) => res.data);
 const add = (data, majorId) =>
@@ -23,6 +31,8 @@ const intakeService = {
   update,
   remove,
   get,
+  paginationIntake,
+  searchIntake,
 };
 
 export default intakeService;

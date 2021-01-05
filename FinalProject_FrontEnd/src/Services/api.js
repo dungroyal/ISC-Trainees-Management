@@ -8,6 +8,8 @@ const url = {
   newIntake: "/intake/newIntake",
   editIntake: "/intake/editIntake",
   deleteIntake: "/intake/deleteIntake",
+  paginationIntake: "/intake/pagination",
+  searchStudent: "/student/searchIntake",
 
   //subject
   listMajor: "/major/listMajor",

@@ -7,24 +7,31 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import majorService from "../../Services/majorService";
 import Select from "react-select";
-import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import SearchIntake from "./searchIntake";
+import Pagination from "./paginationIntake";
+import queryString from "querystring";
+import { confirmAlert } from "react-confirm-alert";
+
+toast.configure();
 
 // Intake
-const Intake = () => {
-  const [intake, setIntake] = useState([]);
-  const [modalShow, setModalShow] = useState(false);
-  const handleModalClose = () => setModalShow(false);
+const Intake = (props) => {
+  //Test
+  const test = [];
+  const test2 = [];
 
+  // Option for Intake Status
   const optionIntakeStatus = [
-    { label: "Chưa kích hoat", value: "None", disabled: false },
-    { label: "Đang học", value: "Doing", disabled: false },
-    { label: "Đã hoàn thành", value: "Done", disabled: false },
+    { label: "Chưa kích hoat", value: "None" },
+    { label: "Đang học", value: "Doing" },
+    { label: "Đã hoàn thành", value: "Done" },
   ];
 
   const [selectStatusIntake, setSelectStatusIntake] = useState({
     label: "Chưa kích hoat",
     value: "None",
-    disabled: false,
   });
 
   // Custom select Intake Status
@@ -33,6 +40,39 @@ const Intake = () => {
       optionIntakeStatus[i].disabled = true;
     }
   }
+
+  const [intake, setIntake] = useState([]);
+  const [modalShow, setModalShow] = useState(false);
+  const handleModalClose = () => setModalShow(false);
+
+  const [pagination, setPagination] = useState({
+    page: 0,
+    size: 4,
+    totalRows: 1,
+  });
+
+  const [filters, setFilters] = useState({
+    page: 0,
+    size: 4,
+  });
+
+  const [searchIntake, setSearchIntake] = useState({
+    keyWord: "",
+  });
+
+  const handlePageChange = (newPage) => {
+    setFilters({
+      ...filters,
+      page: newPage,
+    });
+  };
+
+  const handedSearchChange = (newSearch) => {
+    setSearchIntake({
+      ...searchIntake,
+      keyWord: newSearch,
+    });
+  };
 
   // const handleSelectedOptionChange = (selectedOption) => {
   //   setSelectStatusIntake(selectedOption);
@@ -43,6 +83,7 @@ const Intake = () => {
   const [selectMajor, setSelectMajor] = useState();
 
   const [modalUpdate, setModalUpdate] = useState(false);
+
   // Formik
   const formik = useFormik({
     initialValues: {
@@ -50,8 +91,7 @@ const Intake = () => {
       nameIntake: "",
       startDay: "",
       endDay: "",
-      // statusIntake: selectStatusIntake.value,
-      statusIntake: "",
+      statusIntake: { label: "Chưa kích hoat", value: "None" },
       createdBy: "Admin",
       createdDate: "",
       updatedBy: "",
@@ -60,7 +100,6 @@ const Intake = () => {
     },
 
     validationSchema: Yup.object({
-      // selectMajor: Yup.string().required("Major is required"),
       codeIntake: Yup.string()
         .required("Intake code is required")
         .max(50, "Intake code must be lester than 50 characters"),
@@ -79,7 +118,35 @@ const Intake = () => {
 
   // Load data
   const loadData = () => {
-    // console.log(selectStatusIntake.value);
+    if (searchIntake.keyWord.searchTerm == "" || searchIntake.keyWord == "") {
+      const paramsFilters = queryString.stringify(filters);
+      intakeService.paginationIntake(paramsFilters).then((res) => {
+        const totalRows = res.data[0].totalElements;
+        const totalPage = res.data[0].totalPages;
+        const size = res.data[0].size;
+        const pageCurrent = res.data[0].pageable.pageNumber;
+        if (res.status === 0) {
+          setIntake(res.data[0].content);
+          setPagination({
+            page: pageCurrent,
+            size: size,
+            totalRows: totalRows,
+          });
+        }
+      });
+    } else {
+      const keyword = searchIntake.keyWord.searchTerm;
+      intakeService
+        .searchIntake(searchIntake.keyWord.searchTerm)
+        .then((res) => {
+          if (res.status === 0) {
+            setIntake(res.data);
+          } else {
+            setIntake(res.data);
+          }
+        });
+    }
+
     // get all intake
     intakeService.getAll().then((res) => {
       if (res.status === 0) {
@@ -105,7 +172,15 @@ const Intake = () => {
       setModalUpdate(true);
       //check form Update Student
       intakeService.get(dataId).then((res) => {
-        formik.setValues(res.data[0]);
+        const intakeById = res.data[0];
+        // formik.setValues(res.data[0]);
+        formik.setValues(intakeById);
+        setSelectStatusIntake({
+          label: intakeById.statusIntake,
+          value: intakeById.statusIntake,
+          disabled: false,
+        });
+
         setModalShow(true);
       });
     } else {
@@ -157,6 +232,23 @@ const Intake = () => {
         }
       });
     }
+  };
+
+  const confirmDeleteIntake = (e, intakeId) => {
+    if (e) e.preventDefault();
+    confirmAlert({
+      title: "Confirm to submit",
+      message: "Bạn có muốn xóa khóa học này ?",
+      button: [
+        {
+          label: "Đồng ý",
+          onClick: () => deleteRow(intakeId),
+        },
+        {
+          label: "Hủy bỏ",
+        },
+      ],
+    });
   };
 
   const deleteRow = (e, dataId) => {
@@ -422,9 +514,11 @@ const Intake = () => {
                     placeholder="Chọn trạng thái khóa học..."
                     onChange={(val) => {
                       console.log(val);
-                      formik.setFieldValue("statusIntake", val.value);
+                      formik.setFieldValue("statusIntake", val);
+                      setSelectStatusIntake(val);
                     }}
-                    value={selectStatusIntake}
+                    // value={selectStatusIntake}
+                    value={formik.values.statusIntake}
                     closeMenuOnSelect={true}
                     options={optionIntakeStatus}
                   />
