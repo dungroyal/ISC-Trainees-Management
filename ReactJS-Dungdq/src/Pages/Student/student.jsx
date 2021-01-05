@@ -4,7 +4,6 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { Button, Modal } from "react-bootstrap";
-import MultiSelect from "react-multi-select-component";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import queryString from 'query-string';
@@ -19,7 +18,6 @@ import api from "../../Services/api";
 import "./student.css";
 import studentCompanyService from "../../Services/studentCompanyService";
 import studentIntakeService from "../../Services/studentIntakeService";
-
 
 // Importing toastify module 
 import {toast} from 'react-toastify';  

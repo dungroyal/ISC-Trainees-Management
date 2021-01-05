@@ -8,11 +8,9 @@ const DefaultLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [image, setImage] = useState(true);
   const [toggled, setToggled] = useState(false);
-
   const handleToggleSidebar = (value) => {
     setToggled(value);
   };
-
     return ( 
         <Fragment>
             <Header/>

@@ -1,4 +1,4 @@
-import logolight from "./../plugin/images/logo-light.png";
+import logolight from "./../Plugin/images/logo-light.png";
 
 const Header = () => {
     return ( 
