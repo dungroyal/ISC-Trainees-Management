@@ -23,8 +23,8 @@ const SideBar = ({collapsed, toggled, handleToggleSidebar }) => {
               <MenuItem>Companies</MenuItem>
             </SubMenu>
             <SubMenu title="Training manage" icon={<FaList />}>
-              <MenuItem>Intakes</MenuItem>
-              <MenuItem>Majors</MenuItem>
+              <MenuItem>Intakes <Link to="/intake"/></MenuItem>
+              <MenuItem>Majors <Link to="/major"/></MenuItem>
               <MenuItem>Subjects</MenuItem>
               <MenuItem>Lecturers</MenuItem>
               <MenuItem>Rooms</MenuItem>

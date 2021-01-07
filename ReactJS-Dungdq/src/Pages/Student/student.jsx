@@ -14,18 +14,12 @@ import univerService from "../../Services/universityService";
 import companyService from "../../Services/companyService";
 import intakeService from "../../Services/intakeService";
 import api from "../../Services/api";
-
 import "./student.css";
 import studentCompanyService from "../../Services/studentCompanyService";
 import studentIntakeService from "../../Services/studentIntakeService";
-
-// Importing toastify module 
 import {toast} from 'react-toastify';  
-// Import toastify css file 
-import 'react-toastify/dist/ReactToastify.css';  
 import Pagination from './paginationStudent';
 import SearchStudent from './searchStudent';
-toast.configure()
 
 const Student = (props) => {
   //Test

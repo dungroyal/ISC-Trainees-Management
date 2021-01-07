@@ -13,17 +13,34 @@ const url = {
     deleteStudent: "/student/deleteStudent",
     paginationStudent: "/student/pagination",
     searchStudent: "/student/searchStudent",
+
     //University
     listUniversity: "/university/listUniversity",
     getOneUniversity: "/university/getUniversity",
+
     //Company
     listCompany: "/company/listCompany",
     getOneCompany: "/company/getCompany",
+
     //Intake
     listIntake: "/intake/listIntake",
-    getOnIntake:"/intake/getIntake",
+    addIntake: "/intake/newIntake",
+    getOneIntake: "/intake/getIntake",
+    updateIntake: "/intake/editIntake",
+    deleteIntake: "/intake/deleteIntake",
+    paginationIntake: "/intake/pagination",
+    searchStudent: "/student/searchIntake",
+  
+    //Major
+    listMajor: "/major/listMajor",
+    addMajor: "/major/newMajor",
+    getOneMajor: "/major/getMajor",
+    updateMajor: "/major/editMajor",
+    deleteMajor: "/major/deleteMajor",
+    paginationMajor: "/major/pagination",
+    searchMajor: "/major/searchMajor",
 
-     //Student - Intake
+    //Student - Intake
     listStudentIntake: "/student-intake/allStudentIntake",
     getOneStudentIntake:"/student-intake/getIntakeOfStu",
     addStudentIntake:"/student-intake/postIntakeOfStu",
@@ -51,6 +68,7 @@ const instance = axios.create({
     //Intake
     listIntake: url.listIntake,
     getOneIntake: url.getOnIntake,
+    addIntake: url.addIntake,
     //Stu_Company
     addStudentCompany: url.addStudentCompany,
     //Stu_Intake

@@ -17,6 +17,8 @@ import javax.persistence.TemporalType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "intakes")
 public class Intake {
@@ -57,6 +59,7 @@ public class Intake {
 
 	//mapping to major
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
     private Major major;
 	
 	public Major getMajor() {
