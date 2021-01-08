@@ -183,6 +183,7 @@ const Clazz = (props) => {
 
   useEffect(() => {
     loadData();
+    document.title = "Class - ISC Quang Trung Management";
   }, [filters]);
   return (
     <Fragment>

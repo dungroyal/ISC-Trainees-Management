@@ -1,4 +1,5 @@
-import logolight from "./../Plugin/images/logo-light.png";
+import logolight from "./../Assets/images/logo-light.png";
+import { Link } from "react-router-dom";
 
 const Header = () => {
     return ( 
@@ -7,14 +8,14 @@ const Header = () => {
         <div className="d-flex">
           {/* LOGO */}
           <div className="navbar-brand-box">
-            <a href="index.html" className="logo logo-light">
+            <Link to="/dashboard" className="logo logo-light">
               <span className="logo-sm">
                 <img src="assets/images/isc_logo_icon.png" alt="ISC Quang Trung" height={22} />
               </span>
               <span className="logo-lg">
                 <img src={logolight} alt="ISC Quang Trung" height={22} />
               </span>
-            </a>
+            </Link>
           </div>
           <button type="button" className="btn btn-sm px-3 font-size-16 header-item waves-effect" id="vertical-menu-btn">
             <i className="bx bxs-dock-left font-weight-bold" />

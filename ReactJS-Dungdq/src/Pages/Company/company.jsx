@@ -173,6 +173,7 @@ const Company = (props) => {
 
   useEffect(() => {
     loadData();
+    document.title = "Companies - ISC Quang Trung Management";
   }, [filters]);
   return (
     <Fragment>

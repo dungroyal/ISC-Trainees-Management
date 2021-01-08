@@ -21,7 +21,6 @@ const Body = () => {
 										): null
 									})}
 							</Switch>
-
 							}
 						</div>
 					</div>

@@ -237,6 +237,7 @@ const Student = (props) => {
   //Didmount load data major
   useEffect(() => {
     loadData();
+    document.title = "Students - ISC Quang Trung Management";
   }, [filters]);
 
   //Update Student State

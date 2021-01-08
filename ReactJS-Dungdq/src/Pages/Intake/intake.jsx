@@ -136,6 +136,7 @@ const Intake = (props) => {
   //Didmount load data
   useEffect(() => {
     loadData();
+    document.title = "Intakes - ISC Quang Trung Management";
   }, [filters]);
 
   // Update Intake

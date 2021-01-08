@@ -1,4 +1,5 @@
 import DefaultLayout from "./Pages/DefaultLayout";
+import Dashboard from './Pages/Dashboard/dashboard';
 import Student from "./Pages/Student/student";
 import Intake from './Pages/Intake/intake';
 import Major from './Pages/Major/major';
@@ -8,9 +9,11 @@ import Room from './Pages/Room/room';
 import Clazz from './Pages/Clazz/clazz';
 import JobTitle from './Pages/JobtTitle/jobtitle';
 import Subject from './Pages/Subject/subject';
+
 const routes = [
     { path:"/",exact: true, component: DefaultLayout},
-    { path:"/student",exact: false, component: Student},
+    { path:"/dashboard", exact: false, component: Dashboard},
+    { path:"/student", exact: false, component: Student},
     { path: "/intake", exact: false, component: Intake },
     { path: "/major", exact: false, component: Major },
     { path:"/company",exact: false, component: Company},
@@ -20,4 +23,5 @@ const routes = [
     { path:"/jobTitle",exact:false,component: JobTitle},
     { path:"/subject",exact:false,component: Subject}
 ];
+
 export default routes;

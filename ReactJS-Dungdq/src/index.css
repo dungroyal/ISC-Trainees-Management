@@ -15,3 +15,8 @@ code {
 .react-datepicker-wrapper{
   width: 100% !important;
 }
+
+.name_user{
+  margin-top: -55px;
+  margin-left: 80px;
+}

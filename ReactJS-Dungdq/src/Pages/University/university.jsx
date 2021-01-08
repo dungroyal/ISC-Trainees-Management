@@ -187,6 +187,7 @@ const University = (props) => {
 
   useEffect(() => {
     loadData();
+    document.title = "University - ISC Quang Trung Management";
   }, [filters]);
   return (
     <Fragment>

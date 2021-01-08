@@ -16,7 +16,7 @@ const SideBar = ({collapsed, toggled, handleToggleSidebar }) => {
             onToggle={handleToggleSidebar}
           >
           <Menu iconShape="circle">
-            <MenuItem icon={<FaTachometerAlt />}>Dashboard</MenuItem>
+            <MenuItem icon={<FaTachometerAlt />}>Dashboard <Link to="/dashboard"/></MenuItem>
             <SubMenu title="Student manage" icon={<FaRegLaughWink />}>
               <MenuItem>Student <Link to="/student" /> </MenuItem>
               <MenuItem>University <Link to="/university" /></MenuItem>

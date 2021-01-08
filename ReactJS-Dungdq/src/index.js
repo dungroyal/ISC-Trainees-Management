@@ -5,9 +5,9 @@ import App from './App';
 import "@fortawesome/fontawesome-free/css/all.css"
 import "bootstrap/dist/css/bootstrap.min.css";
 import {BrowserRouter} from "react-router-dom";
-import "./Plugin/css/custom.css";
-import "./Plugin/css/style.css";
-import "./Plugin/js/app";
+import "./Assets/css/custom.css";
+import "./Assets/css/style.css";
+import "./Assets/js/app";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "react-datepicker/dist/react-datepicker.css";

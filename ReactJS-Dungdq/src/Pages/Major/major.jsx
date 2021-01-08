@@ -104,6 +104,7 @@ const Major = (props) => {
   //Didmount load data
   useEffect(() => {
     loadData();
+    document.title = "Majors - ISC Quang Trung Management";
   }, [filters]);
 
   //   Update Major

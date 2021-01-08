@@ -169,6 +169,7 @@ const JobTitle = (props) => {
 
   useEffect(() => {
     loadData();
+    document.title = "Jobs - ISC Quang Trung Management";
   }, []);
 
   return (

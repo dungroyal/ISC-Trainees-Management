@@ -174,6 +174,7 @@ const Room = (props) => {
   };
   useEffect(() => {
     loadData();
+    document.title = "Rooms - ISC Quang Trung Management";
   }, [filters]);
   return (
     <Fragment>

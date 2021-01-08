@@ -175,6 +175,7 @@ const handleSearchChange = (newSearch) => {
   })
   useEffect(()=>{
     loadData();
+    document.title = "Subjects - ISC Quang Trung Management";
   },[filters,searchSubject])
 
     return ( 
