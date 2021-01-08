@@ -4579,7 +4579,7 @@ button {
 
 .pagination-rounded .page-link {
     border-radius: 30px !important;
-    margin: 0 3px;
+    margin: 0px 6px 0px 0px;
     border: none;
     width: 32px;
     height: 32px;

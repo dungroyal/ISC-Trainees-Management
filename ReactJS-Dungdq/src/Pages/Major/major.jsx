@@ -271,10 +271,10 @@ const Major = (props) => {
                         <th>Mã chuyên ngành</th>
                         <th>Tên chuyên ngành</th>
                         <th>Mô tả</th>
-                        <th>Người tạo</th>
+                        {/* <th>Người tạo</th>
                         <th>Ngày tạo</th>
                         <th>Người cập nhật</th>
-                        <th>Ngày cập nhật</th>
+                        <th>Ngày cập nhật</th> */}
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -306,10 +306,10 @@ const Major = (props) => {
                               </td> */}
                               <td>{major.nameMajor}</td>
                               <td>{major.descriptionMajor}</td>
-                              <td>{major.createdBy}</td>
+                              {/* <td>{major.createdBy}</td>
                               <td>{major.createdDate}</td>
                               <td>{major.updatedBy}</td>
-                              <td>{major.updatedDate}</td>
+                              <td>{major.updatedDate}</td> */}
 
                               <td>
                                 <a

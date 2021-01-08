@@ -19,15 +19,17 @@ const SideBar = ({collapsed, toggled, handleToggleSidebar }) => {
             <MenuItem icon={<FaTachometerAlt />}>Dashboard</MenuItem>
             <SubMenu title="Student manage" icon={<FaRegLaughWink />}>
               <MenuItem>Student <Link to="/student" /> </MenuItem>
-              <MenuItem>University</MenuItem>
-              <MenuItem>Companies</MenuItem>
+              <MenuItem>University <Link to="/university" /></MenuItem>
+              <MenuItem>Companies <Link to="/company" /></MenuItem>
+              <MenuItem>Job Title <Link to="/jobTitle" /></MenuItem>
             </SubMenu>
             <SubMenu title="Training manage" icon={<FaList />}>
               <MenuItem>Intakes <Link to="/intake"/></MenuItem>
               <MenuItem>Majors <Link to="/major"/></MenuItem>
-              <MenuItem>Subjects</MenuItem>
-              <MenuItem>Lecturers</MenuItem>
-              <MenuItem>Rooms</MenuItem>
+              <MenuItem>Subjects <Link to="/subject" /></MenuItem>
+              <MenuItem>Lecturers <Link to="/student" /></MenuItem>
+              <MenuItem>Rooms <Link to="/room" /></MenuItem>
+              <MenuItem>Class <Link to="/clazz" /></MenuItem>
             </SubMenu>
             <SubMenu title="Account manage" icon={<FaGem />}>
               <MenuItem>Account Admin</MenuItem>

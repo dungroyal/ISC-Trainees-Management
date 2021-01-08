@@ -14,14 +14,6 @@ const url = {
     paginationStudent: "/student/pagination",
     searchStudent: "/student/searchStudent",
 
-    //University
-    listUniversity: "/university/listUniversity",
-    getOneUniversity: "/university/getUniversity",
-
-    //Company
-    listCompany: "/company/listCompany",
-    getOneCompany: "/company/getCompany",
-
     //Intake
     listIntake: "/intake/listIntake",
     addIntake: "/intake/newIntake",
@@ -46,7 +38,51 @@ const url = {
     addStudentIntake:"/student-intake/postIntakeOfStu",
     updateIntakeOfStuArray:"/student-intake/updateIntakeOfStuArray",
     updateIntakeOfStu:"/student-intake/updateIntakeOfStu",
-    deleteIntakeOfStu: "/student-intake/deleteIntakeOfStu"
+    deleteIntakeOfStu: "/student-intake/deleteIntakeOfStu",
+
+    //university
+    listUniversity: "/university/listUniversity",
+    getUniversity: "/university/getUniversity",
+    newUniversity: "/university/newUniversity",
+    editUniversity: "/university/editUniversity",
+    deleteUniversity: "/university/deleteUniversity",
+    paginationUniversity: "/university/pagination",
+    
+    //company
+    listCompany: "/company/listCompany",
+    getCompany: "/company/getCompany",
+    newCompany: "/company/newCompany",
+    editCompany: "/company/editCompany",
+    deleteCompany: "/company/deleteCompany",
+    paginationCompany: "/company/pagination",
+
+    //room
+    listRoom: "/room/listRoom",
+    getRoom: "/room/getRoom",
+    newRoom: "/room/newRoom",
+    editRoom: "/room/editRoom",
+    deleteRoom: "/room/deleteRoom",
+    paginationRoom: "/room/pagination",
+
+    //clazz
+    listClazz: "/clazz/listClazz",
+    getClazz: "/clazz/getClazz",
+    newClazz: "/clazz/newClazz",
+    editClazz: "/clazz/editClazz",
+    deleteClazz: "/clazz/deleteClazz",
+    paginationClazz: "/clazz/pagination",
+
+    //Subject
+    paginationSubject : "/subject/pagination",
+    searchSubject : "/subject/searchSubject",
+
+    //jobTitle
+    listJobTitle: "/jobTitle/listJobTitle",
+    getJobTitle: "/jobTitle/getJobTitle",
+    newJobTitle: "/jobTitle/newJobTitle",
+    editJobTitle: "/jobTitle/editJobTitle",
+    deleteJobTitle: "/jobTitle/deleteJobTitle",
+    paginationJobTitle: "/jobTitle/pagination",
 }
 const instance = axios.create({
     baseURL : url.baseURL,
@@ -62,6 +98,7 @@ const instance = axios.create({
     //Univer
     listUniversity: url.listUniversity,
     getOneUniversity: url.getOneUniversity,
+    paginationUniversity: url.paginationUniversity,
     //Company
     listCompany: url.listCompany,
     getOneCompany: url.getOneCompany,
@@ -71,6 +108,9 @@ const instance = axios.create({
     addIntake: url.addIntake,
     //Stu_Company
     addStudentCompany: url.addStudentCompany,
+    //Subject
+    paginationSubject: url.paginationSubject,
+    searchSubject: url.searchSubject,
     //Stu_Intake
     listStudentIntake: url.listStudentIntake,
     addStudentIntake: url.addStudentIntake,
