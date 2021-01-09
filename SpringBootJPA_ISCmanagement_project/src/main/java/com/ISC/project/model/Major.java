@@ -47,8 +47,10 @@ public class Major  {
 	@Column(nullable = false, length = 2000)
 	private String descriptionMajor;
 	
-	//mapping to intake
+
+	//mapping to intakes
 	@OneToMany(mappedBy = "major")
+	@JsonBackReference
 	private List<Intake> intakes = new ArrayList<>();
 	
 	public List<Intake> getIntakes() {

@@ -35,7 +35,7 @@ const Intake = (props) => {
 
   // Option for Major
   const [major, setMajor] = useState([]);
-  const [selectMajor, setSelectMajor] = useState();
+  const [startDayState, setStartDayState] = useState(new Date());
   const [modalUpdate, setModalUpdate] = useState(false);
 
   const formik = useFormik({
@@ -44,22 +44,23 @@ const Intake = (props) => {
       nameIntake: "",
       startDay: "",
       endDay: "",
-      statusIntake: { label: "Chưa kích hoat", value: "None" },
+      statusIntake: { label: "None", value: "None" },
       createdBy: "Admin",
       updatedBy: "Admin",
       selectMajor: "",
     },
-    // validationSchema: Yup.object({
-    //   codeIntake: Yup.string()
-    //     .required("Intake code is required")
-    //     .max(50, "Intake code must be lester than 50 characters"),
-    //   nameIntake: Yup.string()
-    //     .required("Intake name is required")
-    //     .max(200, "Intake name must be lester than 200 characters"),
-    //   startDay: Yup.string().required("Started Date is required"),
-    //   endDay: Yup.string().required("Ended Date is required"),
-    //   selectMajor: Yup.object().required("Major is required"),
-    // }),
+    validationSchema: Yup.object({
+      codeIntake: Yup.string()
+        .required("Intake code is required")
+        .min(3)
+        .max(50, "Intake code must be lester than 50 characters"),
+      nameIntake: Yup.string()
+        .required("Intake name is required")
+        .max(200, "Intake name must be lester than 200 characters"),
+      startDay: Yup.date().required("Start Date is required").typeError('INVALID_DATE'),
+      endDay: Yup.date().required("Ended Date is required").min(new Date(startDayState),"Finish date must not be greater than the start date"),
+      selectMajor: Yup.object().required("Major is required"),
+    }),
     onSubmit: (values) => {
       console.log("formik: ", values);
       const newValue = {
@@ -67,7 +68,6 @@ const Intake = (props) => {
         startDay: new Date(values.startDay).toLocaleDateString('vi-VI',{year: 'numeric', month: 'numeric', day: 'numeric'}),
         endDay: new Date(values.endDay).toLocaleDateString('vi-VI',{year: 'numeric', month: 'numeric', day: 'numeric'}),
       }
-      console.log("newValue: ",newValue);
       handleFormSubmit(values);
     },
   });
@@ -126,7 +126,6 @@ const Intake = (props) => {
 
     //Get all major
     majorService.getAll().then((res) => {
-      console.log(res);
       if (res.status === 0) {
         setMajor(res.data);
       }
@@ -145,22 +144,21 @@ const Intake = (props) => {
   const handleModalShow = (e, dataId) => {
     if (e) e.preventDefault();
     setIntakeId(dataId);
-
     if (dataId > 0) {
       setModalUpdate(true);
       setModalShow(true);
       intakeService.get(dataId).then((res) => {
         const intakeById = res.data[0];
-        console.log(intakeById);
-        formik.setValues(intakeById);
-        formik.setFieldValue("statusIntake", {
-          label: intakeById.statusIntake,
-          value: intakeById.statusIntake,
-        });
-        formik.setFieldValue("major", {
-          value: intakeById.major.id,
-          label: intakeById.major.nameMajor,
-        });
+        formik.setFieldValue('codeIntake',intakeById.codeIntake)
+        formik.setFieldValue('nameIntake',intakeById.nameIntake)
+        formik.setFieldValue('startDay', new Date(intakeById.startDay))
+        formik.setFieldValue('endDay', new Date(intakeById.endDay))
+        formik.setFieldValue('selectMajor',{ label: intakeById.major.nameMajor, value: intakeById.major.id })
+        formik.setFieldValue('statusIntake', { label: intakeById.statusIntake, value: intakeById.statusIntake })
+        formik.setFieldValue('createdDate',intakeById.createdDate)
+        formik.setFieldValue('createdBy',intakeById.createdBy)
+        formik.setFieldValue('updatedDate',intakeById.updatedDate)
+        formik.setFieldValue('updatedBy',intakeById.updatedBy)
       });
     } else {
       setModalUpdate(false);
@@ -187,8 +185,7 @@ const Intake = (props) => {
   };
 
   //Delete new Intake
-  const handleDeleteIntake = (e, intakeId) => {
-    e.preventDefault();
+  const handleDeleteIntake = (intakeId) => {
     intakeService.remove(intakeId).then((res) => {
       if (res.status === 0) {
         toast.success("Delete Intake Success");
@@ -212,7 +209,6 @@ const Intake = (props) => {
           formik.values.selectMajor.value,
         )
         .then((res) => {
-          console.log("Add new intake: ",res);
           if (res.status === 0) {
             toast.success("Add new intake success");
             loadData();
@@ -222,17 +218,16 @@ const Intake = (props) => {
           }
         });
     } else {
-      console.log("Update intake");
       intakeService
-        .updateIntake(
+        .update(
           intakeId,
           formik.values.codeIntake,
           formik.values.nameIntake,
-          formik.values.startDay,
-          formik.values.endDay,
+          new Date(formik.values.startDay).toISOString(),
+          new Date(formik.values.endDay).toISOString(),
           formik.values.statusIntake.value,
           "Admin",
-          formik.values.majorId.value
+          formik.values.selectMajor.value,
         )
         .then((res) => {
           if (res.status === 0) {
@@ -253,7 +248,6 @@ const Intake = (props) => {
   return (
     <Fragment>
       <div className="container-fluid">
-        {/* <!-- start page title --> */}
         <div className="row">
           <div className="col-12">
             <div className="page-title-box d-flex align-items-center justify-content-between">
@@ -405,10 +399,10 @@ const Intake = (props) => {
 
               <div className="col-6">
                 <div class="form-group">
-                  <label htmlFor="selectedMajor">Chuyên ngành</label>
+                  <label htmlFor="selectedMajor">Major</label>
                   <Select
                     id="selectedMajor"
-                    placeholder="Chọn chuyên ngành..."
+                    placeholder="Select major..."
                     onChange={(val) => {
                       formik.setFieldValue("selectMajor", val);
                     }}
@@ -445,16 +439,17 @@ const Intake = (props) => {
               {modalUpdate ? (
                 <div className="col-12">
                   <div class="form-group">
-                    <label htmlFor="setSelectedIntakeStatus">Trạng thái</label>
+                    <label htmlFor="setSelectedIntakeStatus">Status intake</label>
                     <Select
                       id="setSelectedIntakeStatus"
-                      placeholder="Chọn trạng thái khóa học..."
+                      placeholder="Select status intake..."
                       onChange={(val) => {
                         formik.setFieldValue("statusIntake", val);
                       }}
                       value={formik.values.statusIntake}
                       options={optionsIntakeStatus}
                       closeMenuOnSelect={true}
+                      isOptionDisabled={(option) => option.value === 'None'}
                     />
                   </div>
                 </div>
@@ -470,6 +465,7 @@ const Intake = (props) => {
                     selectsStart
                     selected={formik.values.startDay}
                     onChange={(date) => {
+                      setStartDayState(date);
                       formik.setFieldValue("startDay", date);
                     }}
                     minDate={new Date()}
@@ -477,6 +473,11 @@ const Intake = (props) => {
                     placeholderText="Select a date start intake"
                     dateFormat="dd/MM/yyyy"
                   />
+                  {formik.touched.startDay && formik.errors.startDay ? (
+                    <small class="text-danger">{formik.errors.startDay}</small>
+                  ) : (
+                    ""
+                  )}
                   </div>
                 </div>
               </div>
@@ -489,8 +490,6 @@ const Intake = (props) => {
                     selectsEnd
                     selected={formik.values.endDay}
                     onChange={(date) => {
-                      // const newDate = new Date(date).toISOString();
-                      // console.log("newDate: ",newDate);
                       formik.setFieldValue("endDay", date);
                     }}
                     minDate={formik.values.startDay}
@@ -498,6 +497,11 @@ const Intake = (props) => {
                     placeholderText="Select a date finish intake"
                     dateFormat="dd/MM/yyyy"
                   />
+                  {formik.touched.endDay && formik.errors.endDay ? (
+                    <small class="text-danger">{formik.errors.endDay}</small>
+                  ) : (
+                    ""
+                  )}
                   </div>
                 </div>
               </div>
@@ -510,7 +514,7 @@ const Intake = (props) => {
                     rows="1"
                     readOnly
                     type="text"
-                    label="Người tạo"
+                    label="Create by"
                     value={`${formik.values.createdBy} - ${new Date(
                       formik.values.createdDate
                     ).toLocaleDateString("vi-VI", {
@@ -521,7 +525,7 @@ const Intake = (props) => {
                       minute: "2-digit",
                     })}`}
                   />
-                  {formik.values.updatedBy != null ? (
+                  {formik.values.updatedDate != null ? (
                     <Fragment>
                       <Input
                         typeInput="1"
@@ -529,9 +533,9 @@ const Intake = (props) => {
                         rows="1"
                         readOnly
                         type="text"
-                        label="Người cập nhật"
+                        label="Latest Update by"
                         value={`${formik.values.updatedBy} - ${new Date(
-                          formik.values.createdDate
+                          formik.values.updatedDate
                         ).toLocaleDateString("vi-VI", {
                           year: "numeric",
                           month: "numeric",

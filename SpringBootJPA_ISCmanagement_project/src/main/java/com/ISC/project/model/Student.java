@@ -3,7 +3,6 @@ package com.ISC.project.model;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,8 +11,6 @@ import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -81,7 +78,7 @@ public class Student {
 
 	//mapping to school
 	@ManyToOne()
-//	@JsonBackReference
+	//	@JsonBackReference
 	//	@JoinColumn(name = "university_id")
 	private University university;
 	public University getUniversity() {

@@ -166,7 +166,7 @@ public class IntakeController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@DeleteMapping( value = "/deleteIntake", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@DeleteMapping( value = "/deleteIntake")
 	public ResultRespon deleteIntake(
 			@Parameter(description = "The intake's id is required", required = true) @RequestParam("id") long id) {
 		Intake intake = this.intakeService.findById(id)
