@@ -47,8 +47,8 @@ public class CompanyService {
 		return this.companyRepository.getNameById(id);
 	}
 	
-	public List<Company> searchCompany(String keyWord){
-		return this.companyRepository.searchCom(keyWord);
+	public Page<Company> searchCompany(String keyWord,Pageable pageable){
+		return this.companyRepository.searchCom(keyWord,pageable);
 	}
 	
 	public Page<Company> findCompa(Pageable pageable){

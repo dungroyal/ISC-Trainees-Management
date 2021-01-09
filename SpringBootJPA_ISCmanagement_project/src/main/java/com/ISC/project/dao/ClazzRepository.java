@@ -17,9 +17,11 @@ public interface ClazzRepository extends JpaRepository<Clazz, Long>{
 	@Query("select nameClazz from Clazz where id = ?1")
 	public String getNameById(@RequestParam("id") long id);
 	
-	@Query("select clz from Clazz clz where concat(clz.nameClazz,clz.numOfStu,clz.pointGra) like %?1%")
-	public List<Clazz> searchClz(String keyWord);
+	@Query("select clz from Clazz clz where concat(clz.nameClazz) like %?1%")
+	public Page<Clazz> searchClz(String keyWord, Pageable pageable);
 	
+//	@Query("select clz from Clazz clz where concat(clz.nameClazz,clz.numOfStu) like %?1%")
+//	public List<Clazz> searchCll(String keyWord);
 	@Query("select clz from Clazz clz")
 	public Page<Clazz> findClz(Pageable pageable);
 }

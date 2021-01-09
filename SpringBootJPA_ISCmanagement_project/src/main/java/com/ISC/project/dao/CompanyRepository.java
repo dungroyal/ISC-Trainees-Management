@@ -18,7 +18,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long>{
 	public String getNameById(@RequestParam("id") long id);
 	
 	@Query("select com from Company com where concat(com.nameCom,com.addresCom,com.contactPerson,com.websiteCom,com.statusCom,com.noteCom) like %?1%")
-	public List<Company> searchCom(String keyWord);
+	public Page<Company> searchCom(String keyWord,Pageable pageable);
 	
 	@Query("select compa from Company compa")
 	public Page<Company> findCompa(Pageable pageable);

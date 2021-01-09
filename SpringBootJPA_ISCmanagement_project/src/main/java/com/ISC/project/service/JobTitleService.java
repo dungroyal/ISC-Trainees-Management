@@ -47,8 +47,8 @@ public class JobTitleService {
 		return this.JobTitleRepository.getNameById(id);
 	}
 	
-	public List<JobTitle> searchJob(String keyWord){
-		return this.JobTitleRepository.searchJob(keyWord);
+	public Page<JobTitle> searchJob(String keyWord,Pageable pageable){
+		return this.JobTitleRepository.searchJob(keyWord, pageable);
 	}
 	
 	public Page<JobTitle> findJob(Pageable pageable){

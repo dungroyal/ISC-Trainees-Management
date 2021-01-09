@@ -18,9 +18,9 @@ public interface JobTitleRepository extends JpaRepository<JobTitle, Long>{
 	public String getNameById(@RequestParam("id") long id);
 	
 	@Query("select job from JobTitle job where concat(job.nameJob) like %?1%")
-	public List<JobTitle> searchJob(String keyWord);
+	public Page<JobTitle> searchJob(String keyWord,Pageable pageable);
 	
-	@Query("select clz from Clazz clz")
+	@Query("select job from JobTitle job")
 	public Page<JobTitle> findJob(Pageable pageable);
 
 }

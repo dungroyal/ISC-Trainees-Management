@@ -48,7 +48,7 @@ public class MajorService {
 		return this.majorRepository.findMajor(pageable);
 	}
 	
-	public List<Major> searchMajor(String keyWord){
-		return this.majorRepository.searchMajor(keyWord);
+	public Page<Major> searchMajor(String keyWord,Pageable pageable){
+		return this.majorRepository.searchMajor(keyWord,pageable);
 	}
 }

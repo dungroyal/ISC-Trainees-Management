@@ -46,9 +46,12 @@ public class ClazzService {
 	public String getNameById(@RequestParam("id") long id) {
 		return this.clazzRepository.getNameById(id);
 	}
+//	public List<Clazz> searchCll(String key){
+//		return this.clazzRepository.searchCll(key);
+//	}
 	
-	public List<Clazz> searchClz(String keyWord){
-		return this.clazzRepository.searchClz(keyWord);
+	public Page<Clazz> searchClazz(String keyWord, Pageable pageable){
+		return this.clazzRepository.searchClz(keyWord,pageable);
 	}
 	
 	public Page<Clazz> findClz(Pageable pageable){

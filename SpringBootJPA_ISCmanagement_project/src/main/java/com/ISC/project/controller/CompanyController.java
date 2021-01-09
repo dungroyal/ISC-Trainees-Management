@@ -186,21 +186,21 @@ public class CompanyController {
 
 	// search by name
 	// DOC for search company
-	@Operation(summary = "Search company", description = "Search company from the database")
-	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Company.class))), responseCode = "200", description = "Search company success")
-	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
-			@ApiResponse(responseCode = "404", description = "Not found"),
-			@ApiResponse(responseCode = "401", description = "Authorization Required"),
-			@ApiResponse(responseCode = "403", description = "Forbidden"),
-			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/searchCompany", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
-	public ResultRespon searchCompany(@RequestParam("keyWord") String keyWord) {
-		if (this.companyService.searchCompany(keyWord).isEmpty()) {
-			throw new ResourseNotFoundException("Not found company by keyword " + keyWord);
-		} else {
-			return new ResultRespon(0, "Success", this.companyService.searchCompany(keyWord));
-		}
-	}
+//	@Operation(summary = "Search company", description = "Search company from the database")
+//	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Company.class))), responseCode = "200", description = "Search company success")
+//	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
+//			@ApiResponse(responseCode = "404", description = "Not found"),
+//			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+//			@ApiResponse(responseCode = "403", description = "Forbidden"),
+//			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
+//	@GetMapping(value = "/searchCompany", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+//	public ResultRespon searchCompany(@RequestParam("keyWord") String keyWord) {
+//		if (this.companyService.searchCompany(keyWord).isEmpty()) {
+//			throw new ResourseNotFoundException("Not found company by keyword " + keyWord);
+//		} else {
+//			return new ResultRespon(0, "Success", this.companyService.searchCompany(keyWord));
+//		}
+//	}
 
 	// Pagination
 	// DOC for pagination company
@@ -211,11 +211,12 @@ public class CompanyController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/pagination", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/pagination")
 	public ResultRespon paginationUniversity(
 			@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
-			@RequestParam(name = "sort", required = false, defaultValue = "1") String sort) {
+			@RequestParam(name = "sort", required = false, defaultValue = "1") String sort,
+			@RequestParam(name = "key", required = false, defaultValue = "") String key) {
 		Sort sortable = null;
 		if (sort.equals("ASC")) {
 			sortable = Sort.by("nameCom").ascending();
@@ -223,10 +224,17 @@ public class CompanyController {
 		if (sort.equals("DESC")) {
 			sortable = Sort.by("nameCom").descending();
 		}
-		Pageable pageable = PageRequest.of(page, size, sortable);
-		Page<Company> compa = companyService.findCompa(pageable);
 		List<Page<Company>> companies = new ArrayList<Page<Company>>();
-		companies.add(compa);
+		Pageable pageable = PageRequest.of(page, size, sortable);
+		Pageable pageableSearch = PageRequest.of(page,size,sortable);
+		if(!key.equals("")) {
+			Page<Company> compaSea = companyService.searchCompany(key, pageableSearch);
+			companies.add(compaSea);
+		}else {
+			Page<Company> compa = companyService.findCompa(pageable);
+			companies.add(compa);
+		}
+	
 		return new ResultRespon(0, "Success", companies);
 	}
 }

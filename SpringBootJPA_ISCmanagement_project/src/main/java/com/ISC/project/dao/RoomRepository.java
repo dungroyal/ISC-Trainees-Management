@@ -15,12 +15,12 @@ public interface RoomRepository extends JpaRepository<Room, Long>{
 	@Query("Select codeRoom From Room Where codeRoom = :newCodeRoom")
 	public List<String> checkCodeRoom(@RequestParam("codeRoom") String newCodeRoom);
 
-	@Query("Select codeRoom From Room Where codeRoom not in (:newCodeRoom)")
-	public List<String> checkCodeRoomUpdate(@RequestParam("newCodeRoom") String newCodeRoom);
+	@Query("Select codeRoom From Room Where id = ?1")
+	public String getCodeById(@RequestParam("id") long id);
 	
 	@Query("select ro from Room ro")
 	public Page<Room> findRoom(Pageable pageable);
 	
 	@Query("select ro from Room ro where concat(ro.codeRoom, ro.nameRoom, ro.noteRoom) like %?1%")
-	public List<Room> searchRoom(String keyWord);
+	public Page<Room> searchRoom(String keyWord,Pageable pageable);
 }

@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.ISC.project.exception.ResourseNotFoundException;
+import com.ISC.project.model.Company;
 import com.ISC.project.model.StatusAc;
 import com.ISC.project.model.Student;
 import com.ISC.project.model.TypeStudent;
@@ -385,7 +386,9 @@ public class StudentController {
 			@Parameter(description = "Items in page", required = false)
 			@RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
 			@Parameter(description = "Sort by filed of Intems", required = false)
-			@RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
+			@RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort,
+			@Parameter(description = "Search by key", required = false)
+			@RequestParam(name = "key", required = false, defaultValue = "") String key) {
 		Sort sortable = null;
 		if (sort.equals("ASC")) {
 			sortable = Sort.by("lastName").ascending();
@@ -394,34 +397,42 @@ public class StudentController {
 			sortable = Sort.by("lastName").descending();
 		}
 		Pageable pageable = PageRequest.of(page, size, sortable); 
-		Page<Student> stu = studentService.findStudent(pageable);
+		Pageable pageableSearch = PageRequest.of(page, size, sortable); 
 		List<Page<Student>> students = new ArrayList<>();
-		students.add(stu);
+		if(!key.equals("")) {
+			Page<Student> stuSea = studentService.searchStudent(key, pageableSearch);
+			students.add(stuSea);
+		}else {
+			Page<Student> stu = studentService.findStudent(pageable);
+			students.add(stu);
+		}
+		
+		
 		return new ResultRespon(0, "Success", students) ;
 	}
 	
 	//Search Student
 	// DOC Search
-	@Operation(summary = "Search Student", description = "Search student")
-	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class))),
-	responseCode = "200", description = "Success")
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Success"),
-			@ApiResponse(responseCode = "404", description = "Not found"),
-			@ApiResponse(responseCode = "401", description = "Authorization Required"),
-			@ApiResponse(responseCode = "403", description = "Forbidden"),
-			@ApiResponse(responseCode = "500", description = "Internal Error Server")
-	})
-	@GetMapping(value = "/searchStudent")
-	public ResultRespon searchStudent(
-			@Parameter(description = "Enter the keywords you want to search", required = false)
-			@RequestParam("keyWord") String keyWord) {
-		if(this.studentService.searchStudent(keyWord).isEmpty()) {
-			throw new ResourseNotFoundException("Not Found Student");
-		} else {
-			
-			System.out.println(this.studentService.searchStudent(keyWord).toString());
-			return new ResultRespon(0, "Search Success", this.studentService.searchStudent(keyWord));
-		}
-	}
+//	@Operation(summary = "Search Student", description = "Search student")
+//	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class))),
+//	responseCode = "200", description = "Success")
+//	@ApiResponses(value = {
+//			@ApiResponse(responseCode = "200", description = "Success"),
+//			@ApiResponse(responseCode = "404", description = "Not found"),
+//			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+//			@ApiResponse(responseCode = "403", description = "Forbidden"),
+//			@ApiResponse(responseCode = "500", description = "Internal Error Server")
+//	})
+//	@GetMapping(value = "/searchStudent")
+//	public ResultRespon searchStudent(
+//			@Parameter(description = "Enter the keywords you want to search", required = false)
+//			@RequestParam("keyWord") String keyWord) {
+//		if(this.studentService.searchStudent(keyWord).isEmpty()) {
+//			throw new ResourseNotFoundException("Not Found Student");
+//		} else {
+//			
+//			System.out.println(this.studentService.searchStudent(keyWord).toString());
+//			return new ResultRespon(0, "Search Success", this.studentService.searchStudent(keyWord));
+//		}
+//	}
 }

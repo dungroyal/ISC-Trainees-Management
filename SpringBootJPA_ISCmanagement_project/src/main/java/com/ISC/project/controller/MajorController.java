@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.ISC.project.exception.ResourseNotFoundException;
+import com.ISC.project.model.Company;
 import com.ISC.project.model.Major;
 import com.ISC.project.payload.ResultRespon;
 import com.ISC.project.service.MajorService;
@@ -169,7 +170,8 @@ public class MajorController {
 	public ResultRespon paginationMajor(
 			@Parameter(description = "Number of page", required = false) @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@Parameter(description = "Items in page", required = false) @RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
-			@Parameter(description = "Sort by filed of Intems", required = false) @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
+			@Parameter(description = "Sort by filed of Intems", required = false) @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort,
+			@Parameter(description = "Search by key", required = false) @RequestParam(name = "key", required = false, defaultValue = "") String key) {
 		Sort sortable = null;
 		if (sort.equals("ASC")) {
 			sortable = Sort.by("nameMajor").ascending();
@@ -178,28 +180,35 @@ public class MajorController {
 			sortable = Sort.by("nameMajor").descending();
 		}
 		Pageable pageable = PageRequest.of(page, size, sortable);
-		Page<Major> major = majorService.findMajor(pageable);
+		Pageable pageableSearch = PageRequest.of(page, size, sortable);
 		List<Page<Major>> majors = new ArrayList<Page<Major>>();
-		majors.add(major);
+		if(!key.equals("")) {
+			Page<Major> majorSea = majorService.searchMajor(key,pageableSearch);
+			majors.add(majorSea);
+		}else {
+			Page<Major> major = majorService.findMajor(pageable);
+			majors.add(major);
+		}
+		
 		return new ResultRespon(0, "Success", majors);
 	}
 
 	// Search major by keyword
-	@Operation(summary = "Search major", description = "Search major")
-	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Major.class))), responseCode = "200", description = "Success")
-	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
-			@ApiResponse(responseCode = "404", description = "Not found"),
-			@ApiResponse(responseCode = "401", description = "Authorization Required"),
-			@ApiResponse(responseCode = "403", description = "Forbidden"),
-			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/searchMajor", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
-	public ResultRespon searchMajor(
-			@Parameter(description = "Enter the keywords you want to search", required = false) @RequestParam("keyWord") String keyWord) {
-		if (this.majorService.searchMajor(keyWord).isEmpty()) {
-			throw new ResourceNotFoundException("Not found major by keyword " + keyWord);
-		} else {
-			System.out.println(this.majorService.searchMajor(keyWord).toString());
-			return new ResultRespon(0, "Search Success", this.majorService.searchMajor(keyWord));
-		}
-	}
+//	@Operation(summary = "Search major", description = "Search major")
+//	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Major.class))), responseCode = "200", description = "Success")
+//	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
+//			@ApiResponse(responseCode = "404", description = "Not found"),
+//			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+//			@ApiResponse(responseCode = "403", description = "Forbidden"),
+//			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
+//	@GetMapping(value = "/searchMajor", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+//	public ResultRespon searchMajor(
+//			@Parameter(description = "Enter the keywords you want to search", required = false) @RequestParam("keyWord") String keyWord) {
+//		if (this.majorService.searchMajor(keyWord).isEmpty()) {
+//			throw new ResourceNotFoundException("Not found major by keyword " + keyWord);
+//		} else {
+//			System.out.println(this.majorService.searchMajor(keyWord).toString());
+//			return new ResultRespon(0, "Search Success", this.majorService.searchMajor(keyWord));
+//		}
+//	}
 }

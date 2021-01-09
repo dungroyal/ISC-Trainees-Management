@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ISC.project.exception.ResourseNotFoundException;
+import com.ISC.project.model.Company;
 import com.ISC.project.model.JobTitle;
 import com.ISC.project.payload.ResultRespon;
 import com.ISC.project.service.JobTitleService;
@@ -165,21 +166,21 @@ public class JobTitleController {
 			
 			// search by name
 			// DOC for search jobTitle
-			@Operation(summary = "Search jobTitle", description = "Search jobTitle from the database")
-			@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = JobTitle.class))), responseCode = "200", description = "Search jobTitle success")
-			@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
-					@ApiResponse(responseCode = "404", description = "Not found"),
-					@ApiResponse(responseCode = "401", description = "Authorization Required"),
-					@ApiResponse(responseCode = "403", description = "Forbidden"),
-					@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-			@GetMapping(value = "/searchJobTitle")
-			public ResultRespon searchjobTitle(@RequestParam("keyWord") String keyWord) {
-				if (this.jobTitleService.searchJob(keyWord).isEmpty()) {
-					throw new ResourseNotFoundException("Not found jobTitle by keyword " + keyWord);
-				} else {
-					return new ResultRespon(0, "Success", this.jobTitleService.searchJob(keyWord));
-				}
-			}
+//			@Operation(summary = "Search jobTitle", description = "Search jobTitle from the database")
+//			@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = JobTitle.class))), responseCode = "200", description = "Search jobTitle success")
+//			@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
+//					@ApiResponse(responseCode = "404", description = "Not found"),
+//					@ApiResponse(responseCode = "401", description = "Authorization Required"),
+//					@ApiResponse(responseCode = "403", description = "Forbidden"),
+//					@ApiResponse(responseCode = "500", description = "Internal Error Server") })
+//			@GetMapping(value = "/searchJobTitle")
+//			public ResultRespon searchjobTitle(@RequestParam("keyWord") String keyWord) {
+//				if (this.jobTitleService.searchJob(keyWord).isEmpty()) {
+//					throw new ResourseNotFoundException("Not found jobTitle by keyword " + keyWord);
+//				} else {
+//					return new ResultRespon(0, "Success", this.jobTitleService.searchJob(keyWord));
+//				}
+//			}
 			
 			// Pagination
 			// DOC for pagination jobTitle
@@ -190,22 +191,30 @@ public class JobTitleController {
 					@ApiResponse(responseCode = "401", description = "Authorization Required"),
 					@ApiResponse(responseCode = "403", description = "Forbidden"),
 					@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-			@GetMapping(value = "/pagination", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+			@GetMapping(value = "/pagination")
 			public ResultRespon paginationjobTitle(
 					@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 					@RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
-					@RequestParam(name = "sort", required = false, defaultValue = "1") String sort) {
+					@RequestParam(name = "sort", required = false, defaultValue = "1") String sort,
+					@RequestParam(name = "key", required = false, defaultValue = "") String key) {
 				Sort sortable = null;
 				if (sort.equals("ASC")) {
-					sortable = Sort.by("name").ascending();
+					sortable = Sort.by("nameJob").ascending();
 				}
 				if (sort.equals("DESC")) {
-					sortable = Sort.by("name").descending();
+					sortable = Sort.by("nameJob").descending();
 				}
+				Pageable pageableSearch = PageRequest.of(page, size, sortable);
 				Pageable pageable = PageRequest.of(page, size, sortable);
-				Page<JobTitle> job = jobTitleService.findJob(pageable);
 				List<Page<JobTitle>> jobTitles = new ArrayList<Page<JobTitle>>();
-				jobTitles.add(job);
+				if(!key.equals("")) {
+					Page<JobTitle> jobSea = jobTitleService.searchJob(key, pageableSearch);
+					jobTitles.add(jobSea);
+				}else {
+					Page<JobTitle> job = jobTitleService.findJob(pageable);
+					jobTitles.add(job);
+				}
+				
 				return new ResultRespon(0, "Success", jobTitles);
 			}
 }

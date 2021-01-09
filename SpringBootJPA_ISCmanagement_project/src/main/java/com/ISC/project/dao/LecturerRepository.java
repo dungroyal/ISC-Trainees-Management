@@ -27,5 +27,5 @@ public interface LecturerRepository extends JpaRepository<Lecturer, Long>{
 
 	// Search Major
 	@Query("select lecturer from Lecturer lecturer where concat(lecturer.createdBy, lecturer.updatedBy, lecturer.createdDate, lecturer.updatedDate, lecturer.codeLec, lecturer.firstName, lecturer.lastName, lecturer.addressLec, lecturer.phoneLec, lecturer.emailLec, lecturer.degree, lecturer.image, lecturer.statusLec, lecturer.noteLec) like %?1%")
-	public List<Lecturer> searchLecturer(String keyWord);
+	public Page<Lecturer> searchLecturer(String keyWord,Pageable pageable);
 }

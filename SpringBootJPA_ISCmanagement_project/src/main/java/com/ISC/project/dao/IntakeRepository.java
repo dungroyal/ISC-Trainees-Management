@@ -21,5 +21,5 @@ public interface IntakeRepository extends JpaRepository<Intake, Long>{
 		
 	//Search Major
 	@Query("select intake from Intake intake where concat(intake.createdBy, intake.updatedBy, intake.createdDate, intake.updatedDate, intake.codeIntake, intake.nameIntake, intake.startDay, intake.endDay, intake.statusIntake) like %?1%")
-	public List<Intake> searchIntake(String keyWord);
+	public Page<Intake> searchIntake(String keyWord,Pageable pageable);
 }

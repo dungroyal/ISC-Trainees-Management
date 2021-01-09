@@ -47,7 +47,7 @@ public class SubjectService {
 		return this.subjectRepository.findSubject(pageable);
 	}
 	
-	public List<Subject> searchSubject(String keyWord){
-		return this.subjectRepository.searchSubject(keyWord);
+	public Page<Subject> searchSubject(String keyWord,Pageable pageable){
+		return this.subjectRepository.searchSubject(keyWord,pageable);
 	}
 }

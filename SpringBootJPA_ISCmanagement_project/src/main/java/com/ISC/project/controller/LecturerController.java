@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.ISC.project.exception.ResourseNotFoundException;
+import com.ISC.project.model.Company;
 import com.ISC.project.model.Lecturer;
 import com.ISC.project.model.StatusAc;
 import com.ISC.project.payload.ResultRespon;
@@ -292,7 +293,8 @@ public class LecturerController {
 	public ResultRespon paginationLecturer(
 			@Parameter(description = "Number of page", required = false) @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@Parameter(description = "Items in page", required = false) @RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
-			@Parameter(description = "Sort by filed of Intems", required = false) @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
+			@Parameter(description = "Sort by filed of Intems", required = false) @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort,
+			@Parameter(description = "Search by key", required = false) @RequestParam(name = "key", required = false, defaultValue = "") String key) {
 		Sort sortable = null;
 		if (sort.equals("ASC")) {
 			sortable = Sort.by("lastName").ascending();
@@ -301,28 +303,35 @@ public class LecturerController {
 			sortable = Sort.by("lastName").descending();
 		}
 		Pageable pageable = PageRequest.of(page, size, sortable);
-		Page<Lecturer> lecturer = lecturerService.findLecturer(pageable);
+		Pageable pageableSearch = PageRequest.of(page, size, sortable);
 		List<Page<Lecturer>> lecturers = new ArrayList<Page<Lecturer>>();
-		lecturers.add(lecturer);
-		return new ResultRespon(0, "Success", lecturers);
+		if(!key.equals("")) {
+			Page<Lecturer> lecSea = lecturerService.searchLecturer(key, pageableSearch);
+			lecturers.add(lecSea);
+		}else {
+			Page<Lecturer> lecturer = lecturerService.findLecturer(pageable);
+			lecturers.add(lecturer);
+		}
+		
+			return new ResultRespon(0, "Success", lecturers);
 	}
 
 	// Search lecturer by keyword
-	@Operation(summary = "Search lecturer", description = "Search lecturer")
-	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Lecturer.class))), responseCode = "200", description = "Success")
-	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
-			@ApiResponse(responseCode = "404", description = "Not found"),
-			@ApiResponse(responseCode = "401", description = "Authorization Required"),
-			@ApiResponse(responseCode = "403", description = "Forbidden"),
-			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/searchLecturer", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
-	public ResultRespon searchLecturer(
-			@Parameter(description = "Enter the keywords you want to search", required = false) @RequestParam("keyWord") String keyWord) {
-		if (this.lecturerService.searchLecturer(keyWord).isEmpty()) {
-			throw new ResourceNotFoundException("Not found lecturer by keyword " + keyWord);
-		} else {
-			System.out.println(this.lecturerService.searchLecturer(keyWord).toString());
-			return new ResultRespon(0, "Success", this.lecturerService.searchLecturer(keyWord));
-		}
-	}
+//	@Operation(summary = "Search lecturer", description = "Search lecturer")
+//	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Lecturer.class))), responseCode = "200", description = "Success")
+//	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
+//			@ApiResponse(responseCode = "404", description = "Not found"),
+//			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+//			@ApiResponse(responseCode = "403", description = "Forbidden"),
+//			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
+//	@GetMapping(value = "/searchLecturer", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+//	public ResultRespon searchLecturer(
+//			@Parameter(description = "Enter the keywords you want to search", required = false) @RequestParam("keyWord") String keyWord) {
+//		if (this.lecturerService.searchLecturer(keyWord).isEmpty()) {
+//			throw new ResourceNotFoundException("Not found lecturer by keyword " + keyWord);
+//		} else {
+//			System.out.println(this.lecturerService.searchLecturer(keyWord).toString());
+//			return new ResultRespon(0, "Success", this.lecturerService.searchLecturer(keyWord));
+//		}
+//	}
 }

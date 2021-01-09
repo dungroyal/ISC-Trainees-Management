@@ -174,7 +174,8 @@ public class SubjectController {
 	public ResultRespon paginationSubject(
 			@Parameter(description = "Number of page", required = false) @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@Parameter(description = "Items in page", required = false) @RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
-			@Parameter(description = "Sort by filed of Intems", required = false) @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
+			@Parameter(description = "Sort by filed of Intems", required = false) @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort,
+			@Parameter(description = "Search by key", required = false) @RequestParam(name = "key", required = false, defaultValue = "") String key) {
 		Sort sortable = null;
 		if (sort.equals("ASC")) {
 			sortable = Sort.by("nameSub").ascending();
@@ -183,28 +184,35 @@ public class SubjectController {
 			sortable = Sort.by("nameSub").descending();
 		}
 		Pageable pageable = PageRequest.of(page, size, sortable);
-		Page<Subject> subject = subjectService.findSubject(pageable);
+		Pageable pageableSearch = PageRequest.of(page, size, sortable);
 		List<Page<Subject>> subjects = new ArrayList<Page<Subject>>();
-		subjects.add(subject);
+		if(!key.equals("")) {
+			Page<Subject> subjectSea = subjectService.searchSubject(key, pageableSearch);
+			subjects.add(subjectSea);
+		}else {
+			Page<Subject> subject = subjectService.findSubject(pageable);
+			subjects.add(subject);
+		}
+		
 		return new ResultRespon(0, "Success", subjects);
 	}
 
 	// Search subject by keyword
-	@Operation(summary = "Search subject", description = "Search subject")
-	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Subject.class))), responseCode = "200", description = "Success")
-	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
-			@ApiResponse(responseCode = "404", description = "Not found"),
-			@ApiResponse(responseCode = "401", description = "Authorization Required"),
-			@ApiResponse(responseCode = "403", description = "Forbidden"),
-			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/searchSubject", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
-	public ResultRespon searchSubject(
-			@Parameter(description = "Enter the keywords you want to search", required = false) @RequestParam("keyWord") String keyWord) {
-		if (this.subjectService.searchSubject(keyWord).isEmpty()) {
-			throw new ResourceNotFoundException("Not found subject by keyword " + keyWord);
-		} else {
-			System.out.println(this.subjectService.searchSubject(keyWord).toString());
-			return new ResultRespon(0, "Search Success", this.subjectService.searchSubject(keyWord));
-		}
-	}
+//	@Operation(summary = "Search subject", description = "Search subject")
+//	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Subject.class))), responseCode = "200", description = "Success")
+//	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
+//			@ApiResponse(responseCode = "404", description = "Not found"),
+//			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+//			@ApiResponse(responseCode = "403", description = "Forbidden"),
+//			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
+//	@GetMapping(value = "/searchSubject", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+//	public ResultRespon searchSubject(
+//			@Parameter(description = "Enter the keywords you want to search", required = false) @RequestParam("keyWord") String keyWord) {
+//		if (this.subjectService.searchSubject(keyWord).isEmpty()) {
+//			throw new ResourceNotFoundException("Not found subject by keyword " + keyWord);
+//		} else {
+//			System.out.println(this.subjectService.searchSubject(keyWord).toString());
+//			return new ResultRespon(0, "Search Success", this.subjectService.searchSubject(keyWord));
+//		}
+//	}
 }

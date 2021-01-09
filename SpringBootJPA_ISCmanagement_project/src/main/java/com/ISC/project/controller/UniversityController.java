@@ -1,4 +1,4 @@
-package com.ISC.project.controller;
+	package com.ISC.project.controller;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -167,21 +167,21 @@ public class UniversityController {
 
 	// search university by keyword
 	// DOC for search university
-	@Operation(summary = "search university", description = "search university from the database")
-	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Company.class))), responseCode = "200", description = "search university success")
-	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
-			@ApiResponse(responseCode = "404", description = "Not found"),
-			@ApiResponse(responseCode = "401", description = "Authorization Required"),
-			@ApiResponse(responseCode = "403", description = "Forbidden"),
-			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/searchUniversity")
-	public ResultRespon searchUni(@RequestParam("keyWord") String keyWord) {
-		if (this.universityService.searchUni(keyWord).isEmpty()) {
-			throw new ResourseNotFoundException("Not found university by keyword " + keyWord);
-		} else {
-			return new ResultRespon(0, "Success", this.universityService.searchUni(keyWord));
-		}
-	}
+//	@Operation(summary = "search university", description = "search university from the database")
+//	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Company.class))), responseCode = "200", description = "search university success")
+//	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
+//			@ApiResponse(responseCode = "404", description = "Not found"),
+//			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+//			@ApiResponse(responseCode = "403", description = "Forbidden"),
+//			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
+//	@GetMapping(value = "/searchUniversity")
+//	public ResultRespon searchUni(@RequestParam("keyWord") String keyWord) {
+//		if (this.universityService.searchUni(keyWord).isEmpty()) {
+//			throw new ResourseNotFoundException("Not found university by keyword " + keyWord);
+//		} else {
+//			return new ResultRespon(0, "Success", this.universityService.searchUni(keyWord));
+//		}
+//	}
 
 	// Pagination
 	// DOC for Pagination university
@@ -192,11 +192,12 @@ public class UniversityController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping("/university/pagination")
+	@GetMapping("/pagination")
 	public ResultRespon paginationUniversity(
 			@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
-			@RequestParam(name = "sort", required = false, defaultValue = "1") String sort) {
+			@RequestParam(name = "sort", required = false, defaultValue = "1") String sort,
+			@RequestParam(name = "key", required = false, defaultValue = "") String key) {
 		Sort sortable = null;
 		if (sort.equals("ASC")) {
 			sortable = Sort.by("nameUni").ascending();
@@ -204,10 +205,16 @@ public class UniversityController {
 		if (sort.equals("DESC")) {
 			sortable = Sort.by("nameUni").descending();
 		}
+		Pageable pageableSearch = PageRequest.of(page, size, sortable);
 		Pageable pageable = PageRequest.of(page, size, sortable);
-		Page<University> uni = universityService.findUni(pageable);
 		List<Page<University>> universities = new ArrayList<Page<University>>();
-		universities.add(uni);
+		if(!key.equals("")) {
+			Page<University> uniSea = universityService.searchUni(key, pageable);
+			universities.add(uniSea);
+		}else {
+			Page<University> uni = universityService.findUni(pageable);
+			universities.add(uni);
+		}
 		return new ResultRespon(0, "Success", universities);
 	}
 }

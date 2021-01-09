@@ -120,6 +120,7 @@ public class ClazzController {
 			if (this.clazzService.getNameById(id).equals(clazz.getNameClazz())) {
 				oldclazz.setNumOfStu(clazz.getNumOfStu());
 				oldclazz.setPointGra(clazz.getPointGra());
+				oldclazz.setClazzStatus(clazz.getClazzStatus());
 				oldclazz.setCreatedBy(clazz.getCreatedBy());
 				oldclazz.setUpdatedBy(clazz.getUpdatedBy());
 				oldclazz.setUpdatedDate(LocalDateTime.now());
@@ -131,6 +132,7 @@ public class ClazzController {
 					oldclazz.setNameClazz(clazz.getNameClazz());
 					oldclazz.setNumOfStu(clazz.getNumOfStu());
 					oldclazz.setPointGra(clazz.getPointGra());
+					oldclazz.setClazzStatus(clazz.getClazzStatus());
 					oldclazz.setCreatedBy(clazz.getCreatedBy());
 					oldclazz.setUpdatedBy(clazz.getUpdatedBy());
 					oldclazz.setUpdatedDate(LocalDateTime.now());
@@ -166,21 +168,21 @@ public class ClazzController {
 		
 		// search by name
 		// DOC for search clazz
-		@Operation(summary = "Search clazz", description = "Search clazz from the database")
-		@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Clazz.class))), responseCode = "200", description = "Search clazz success")
-		@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
-				@ApiResponse(responseCode = "404", description = "Not found"),
-				@ApiResponse(responseCode = "401", description = "Authorization Required"),
-				@ApiResponse(responseCode = "403", description = "Forbidden"),
-				@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-		@GetMapping(value = "/searchClazz")
-		public ResultRespon searchClazz(@RequestParam("keyWord") String keyWord) {
-			if (this.clazzService.searchClz(keyWord).isEmpty()) {
-				throw new ResourseNotFoundException("Not found clazz by keyword " + keyWord);
-			} else {
-				return new ResultRespon(0, "Success", this.clazzService.searchClz(keyWord));
-			}
-		}
+//		@Operation(summary = "Search clazz", description = "Search clazz from the database")
+//		@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Clazz.class))), responseCode = "200", description = "Search clazz success")
+//		@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
+//				@ApiResponse(responseCode = "404", description = "Not found"),
+//				@ApiResponse(responseCode = "401", description = "Authorization Required"),
+//				@ApiResponse(responseCode = "403", description = "Forbidden"),
+//				@ApiResponse(responseCode = "500", description = "Internal Error Server") })
+//		@GetMapping(value = "/searchClazz")
+//		public ResultRespon searchClazz(@RequestParam("keyWord") String keyWord) {
+//			if (this.clazzService.searchCll(keyWord).isEmpty()) {
+//				throw new ResourseNotFoundException("Not found clazz by keyword " + keyWord);
+//			} else {
+//				return new ResultRespon(0, "Success", this.clazzService.searchCll(keyWord));
+//			}
+//		}
 		
 		// Pagination
 		// DOC for pagination clazz
@@ -191,22 +193,29 @@ public class ClazzController {
 				@ApiResponse(responseCode = "401", description = "Authorization Required"),
 				@ApiResponse(responseCode = "403", description = "Forbidden"),
 				@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-		@GetMapping(value = "/pagination", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+		@GetMapping(value = "/pagination")
 		public ResultRespon paginationClazz(
 				@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 				@RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
-				@RequestParam(name = "sort", required = false, defaultValue = "1") String sort) {
+				@RequestParam(name = "sort", required = false, defaultValue = "1") String sort,
+				@RequestParam(name = "key",required = false,defaultValue = "") String key) {
 			Sort sortable = null;
 			if (sort.equals("ASC")) {
-				sortable = Sort.by("name").ascending();
+				sortable = Sort.by("nameClazz").ascending();
 			}
 			if (sort.equals("DESC")) {
-				sortable = Sort.by("name").descending();
+				sortable = Sort.by("nameClazz").descending();
 			}
-			Pageable pageable = PageRequest.of(page, size, sortable);
-			Page<Clazz> clz = clazzService.findClz(pageable);
 			List<Page<Clazz>> clazzs = new ArrayList<Page<Clazz>>();
-			clazzs.add(clz);
+			Pageable pageable = PageRequest.of(page, size, sortable);
+			Pageable pageableSearch = PageRequest.of(page, size, sortable);
+			if(!key.equals(" ")) {
+				Page<Clazz> clzSea = clazzService.searchClazz(key, pageableSearch);
+				clazzs.add(clzSea);
+			}else {
+				Page<Clazz> Clz = clazzService.findClz(pageable);
+				clazzs.add(Clz);
+			}
 			return new ResultRespon(0, "Success", clazzs);
 		}
 }

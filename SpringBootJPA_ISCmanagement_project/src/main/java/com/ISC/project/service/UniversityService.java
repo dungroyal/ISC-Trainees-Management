@@ -44,8 +44,8 @@ public class UniversityService {
 		return this.universityRepository.checkNameUni(newNameUni);
 	}
 	
-	public List<University> searchUni(String keyWord){
-		return this.universityRepository.searchUni(keyWord);
+	public Page<University> searchUni(String keyWord,Pageable pageable){
+		return this.universityRepository.searchUni(keyWord,pageable);
 	}
 	
 	public Page<University> findUni(Pageable pageable){

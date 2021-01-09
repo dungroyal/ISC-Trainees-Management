@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ISC.project.exception.ResourseNotFoundException;
+import com.ISC.project.model.JobTitle;
 import com.ISC.project.model.Room;
 import com.ISC.project.payload.ResultRespon;
 import com.ISC.project.service.RoomService;
@@ -124,8 +125,7 @@ public class RoomController {
 			@RequestParam("id") long id) {
 		List<Room> newRoom = new ArrayList<>();
 		Room oldRoom = roomService.findById(id).orElseThrow(()->new ResourseNotFoundException("Not found room with id: " + id));
-		if(!this.roomService.checkCodeRoom(room.getCodeRoom()).isEmpty()) {
-				oldRoom.setCodeRoom(room.getCodeRoom());
+		if(this.roomService.getCodeRoomById(id).equals(room.getCodeRoom())) {
 				oldRoom.setNameRoom(room.getNameRoom());
 				oldRoom.setTypeRoom(room.getTypeRoom());
 				oldRoom.setStatusRoom(room.getStatusRoom());
@@ -136,24 +136,20 @@ public class RoomController {
 				oldRoom.setUpdatedDate(LocalDateTime.now());
 				newRoom.add(roomService.save(oldRoom));
 				return new ResultRespon(0,"Update success",newRoom);
-		}else if(this.roomService.checkCodeRoom(room.getCodeRoom()).isEmpty()){
-			if(!this.roomService.checkCodeRoomUpdate(room.getCodeRoom()).contains(room.getCodeRoom())) {
-				System.out.println(this.roomService.checkCodeRoomUpdate(room.getCodeRoom()));
+		}else {
+			if(this.roomService.checkCodeRoom(room.getCodeRoom()).isEmpty()) {
 				oldRoom.setCodeRoom(room.getCodeRoom());
 				oldRoom.setNameRoom(room.getNameRoom());
 				oldRoom.setTypeRoom(room.getTypeRoom());
 				oldRoom.setStatusRoom(room.getStatusRoom());
 				oldRoom.setNoteRoom(room.getNoteRoom());
-				oldRoom.setCreatedBy(room.getCreatedBy());
 				oldRoom.setUpdatedBy(room.getUpdatedBy());
-				oldRoom.setCreatedDate(room.getCreatedDate());
 				oldRoom.setUpdatedDate(LocalDateTime.now());
 				newRoom.add(roomService.save(oldRoom));
 				return new ResultRespon(0,"Update success with new code room",newRoom);
 			}
 			throw new ResourseNotFoundException("Duplicate code room");
 		}
-		throw new ResourseNotFoundException("Duplicate code room");
 	}
 	
 	// Delete Room
@@ -187,11 +183,12 @@ public class RoomController {
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server")
 	})
-	@GetMapping(value = "/pagination", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json") 
+	@GetMapping(value = "/pagination") 
 	public ResultRespon paginationRoom(
 			@RequestParam(name="page", required = false, defaultValue = "1") Integer page,
 			@RequestParam(name="size", required = false, defaultValue = "1") Integer size,
-			@RequestParam(name="sort", required = false, defaultValue = "ASC") String sort) {
+			@RequestParam(name="sort", required = false, defaultValue = "ASC") String sort,
+			@RequestParam(name="key", required = false, defaultValue = "") String key) {
 		Sort sortable = null;
 		if(sort.equals("ASC")) {
 			sortable = Sort.by("nameRoom").ascending();
@@ -200,31 +197,37 @@ public class RoomController {
 			sortable = Sort.by("nameRoom").descending();
 		}
 		
+		Pageable pageableSearch = PageRequest.of(page, size, sortable);
 		Pageable pageable = PageRequest.of(page, size, sortable);
-		Page<Room> room = roomService.findRoom(pageable);
 		List<Page<Room>> rooms = new ArrayList<>();
-		rooms.add(room);
+		if(!key.equals("")) {
+			Page<Room> roomSea = roomService.searchRoom(key, pageableSearch);
+			rooms.add(roomSea);
+		}else {
+			Page<Room> room = roomService.findRoom(pageable);
+			rooms.add(room);
+		}
 		return new ResultRespon(0, "Success", rooms);
 	}
 	
 	// Search Room
 	// DOC for search Room
-	@Operation(summary = "Search Room with keyword", description = "Search Room with keyword")
-	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Room.class))),
-	responseCode = "200", description = "Search room success")
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Success"),
-			@ApiResponse(responseCode = "404", description = "Not found"),
-			@ApiResponse(responseCode = "401", description = "Authorization Required"),
-			@ApiResponse(responseCode = "403", description = "Forbidden"),
-			@ApiResponse(responseCode = "500", description = "Internal Error Server")
-	})	
-	@GetMapping(value = "/searchRoom", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json") 
-	public ResultRespon searchRoom(@Parameter(description = "Search keyword id is required", required = true) @RequestParam("keyWord") String keyWord) {
-		if(this.roomService.searchRoom(keyWord).isEmpty()) {
-			throw new ResourseNotFoundException("Not found room witd keyword: "+keyWord);
-		}else {
-			return new ResultRespon(0, "Search success", this.roomService.searchRoom(keyWord));
-		}
-	}
+//	@Operation(summary = "Search Room with keyword", description = "Search Room with keyword")
+//	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Room.class))),
+//	responseCode = "200", description = "Search room success")
+//	@ApiResponses(value = {
+//			@ApiResponse(responseCode = "200", description = "Success"),
+//			@ApiResponse(responseCode = "404", description = "Not found"),
+//			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+//			@ApiResponse(responseCode = "403", description = "Forbidden"),
+//			@ApiResponse(responseCode = "500", description = "Internal Error Server")
+//	})	
+//	@GetMapping(value = "/searchRoom", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json") 
+//	public ResultRespon searchRoom(@Parameter(description = "Search keyword id is required", required = true) @RequestParam("keyWord") String keyWord) {
+//		if(this.roomService.searchRoom(keyWord).isEmpty()) {
+//			throw new ResourseNotFoundException("Not found room witd keyword: "+keyWord);
+//		}else {
+//			return new ResultRespon(0, "Search success", this.roomService.searchRoom(keyWord));
+//		}
+//	}
 }

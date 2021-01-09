@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.ISC.project.exception.ResourseNotFoundException;
+import com.ISC.project.model.Company;
 import com.ISC.project.model.Intake;
 import com.ISC.project.model.Major;
 import com.ISC.project.payload.ResultRespon;
@@ -53,7 +54,7 @@ public class IntakeController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/listIntake", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@GetMapping(value = "/listIntake")
 	public ResultRespon listIntake() {
 		return new ResultRespon(0, "Success", this.intakeService.listAllCourse());
 	}
@@ -191,7 +192,9 @@ public class IntakeController {
 	public ResultRespon paginationIntake(
 			@Parameter(description = "Number of page", required = false) @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
 			@Parameter(description = "Items in page", required = false) @RequestParam(name = "size", required = false, defaultValue = "1") Integer size,
-			@Parameter(description = "Sort by filed of Items", required = false) @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort) {
+			@Parameter(description = "Sort by filed of Items", required = false) @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort,
+			@Parameter(description = "Search by key", required = false) @RequestParam(name = "key", required = false, defaultValue = "") String key) {
+		
 		Sort sortable = null;
 		if (sort.equals("ASC")) {
 			sortable = Sort.by("nameIntake").ascending();
@@ -199,29 +202,35 @@ public class IntakeController {
 		if (sort.equals("DESC")) {
 			sortable = Sort.by("nameIntake").descending();
 		}
-		Pageable pageable = PageRequest.of(page, size, sortable);
-		Page<Intake> intake = intakeService.findIntake(pageable);
 		List<Page<Intake>> intakes = new ArrayList<Page<Intake>>();
-		intakes.add(intake);
+		Pageable pageable = PageRequest.of(page, size, sortable);
+		Pageable pageableSearch = PageRequest.of(page, size, sortable);
+		if(!key.equals("")) {
+			Page<Intake> intakeSea = intakeService.searchIntake(key, pageableSearch);
+			intakes.add(intakeSea);
+		}else {
+			Page<Intake> intake = intakeService.findIntake(pageable);
+			intakes.add(intake);
+		}
 		return new ResultRespon(0, "Success", intakes);
 	}
 
 	// Search intake by keyword
-	@Operation(summary = "Search intake", description = "Search intake")
-	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Intake.class))), responseCode = "200", description = "Success")
-	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
-			@ApiResponse(responseCode = "404", description = "Not found"),
-			@ApiResponse(responseCode = "401", description = "Authorization Required"),
-			@ApiResponse(responseCode = "403", description = "Forbidden"),
-			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@GetMapping(value = "/searchIntake", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
-	public ResultRespon searchIntake(
-			@Parameter(description = "Enter the keywords you want to search", required = false) @RequestParam("keyWord") String keyWord) {
-		if (this.intakeService.searchIntake(keyWord).isEmpty()) {
-			throw new ResourceNotFoundException("Not found intake by keyword " + keyWord);
-		} else {
-			System.out.println(this.intakeService.searchIntake(keyWord).toString());
-			return new ResultRespon(0, "Search Success", this.intakeService.searchIntake(keyWord));
-		}
-	}
+//	@Operation(summary = "Search intake", description = "Search intake")
+//	@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = Intake.class))), responseCode = "200", description = "Success")
+//	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Success"),
+//			@ApiResponse(responseCode = "404", description = "Not found"),
+//			@ApiResponse(responseCode = "401", description = "Authorization Required"),
+//			@ApiResponse(responseCode = "403", description = "Forbidden"),
+//			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
+//	@GetMapping(value = "/searchIntake", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+//	public ResultRespon searchIntake(
+//			@Parameter(description = "Enter the keywords you want to search", required = false) @RequestParam("keyWord") String keyWord) {
+//		if (this.intakeService.searchIntake(keyWord).isEmpty()) {
+//			throw new ResourceNotFoundException("Not found intake by keyword " + keyWord);
+//		} else {
+//			System.out.println(this.intakeService.searchIntake(keyWord).toString());
+//			return new ResultRespon(0, "Search Success", this.intakeService.searchIntake(keyWord));
+//		}
+//	}
 }
