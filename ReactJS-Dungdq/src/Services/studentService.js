@@ -8,7 +8,7 @@ const remove = (id) => api.delete(`${api.url.deleteStudent}?id=${id}`).then(res 
 const add = (data) => api.post(api.url.addStudent, data).then(res => res.data);
 const add1 = (firstName,
     lastName, code, address, phoneNumber, email, typeStudent, GPA,
-    workingStatus, note, image,createdBy, univerId) => {
+    workingStatus, note, image, createdBy, univerId) => {
     let formData = new FormData();
     formData.append("firstName", firstName);
     formData.append("lastName", lastName);

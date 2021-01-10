@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+
+
 const url = {
     image: "http://localhost:8080/api/file/downloadFile/",
 
@@ -83,6 +85,14 @@ const url = {
     editJobTitle: "/jobTitle/editJobTitle",
     deleteJobTitle: "/jobTitle/deleteJobTitle",
     paginationJobTitle: "/jobTitle/pagination",
+
+    //Lecturer
+    paginationLecturer: "/lecturer/pagination",
+    newLecturer: "/lecturer/newLecturer",
+    getLecturer: "/lecturer/getLecturer",
+    updateLecturerNotImage: "/lecturer/editLecturerNotImg", 
+    updateLecturerHasImage: "/lecturer/editLecturerImg",
+    deleteLecturer: "/lecturer/deleteLecturer",
 }
 const instance = axios.create({
     baseURL : url.baseURL,
@@ -118,13 +128,31 @@ const instance = axios.create({
     updateIntakeOfStuArray: url.updateIntakeOfStuArray,
     updateIntakeOfStu: url.updateIntakeOfStu,
     deleteIntakeOfStu: url.deleteIntakeOfStu,
+    //Lecturer
+    paginationLecturer: url.paginationLecturer,
+    newLecturer: url.newLecturer,
+    getLecturer: url.getLecturer,
+    updateLecturerNotImage: url.updateLecturerNotImage,
+    updateLecturerHasImage: url.updateLecturerHasImage,
+    deleteLecturer: url.deleteLecturer,
+
+    //Header
     headers: {
         "Content-Type" :"multipart/form-data",
-        "Accept": "application/json"
+        Accept: "application/json",
     }
 });
+
+// instance.interceptors.request.use((request) => {
+//     const state = store.getState();
+//     if (state.auth.token) {
+//       request.headers.Authorization = `Bearer ${state.auth.token}`;
+//     }
+//     return request;
+//   });
+
 const api = {
-    url, // url: url
+    url,
     instance: instance,
     get: instance.get,
     post: instance.post,

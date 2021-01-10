@@ -9,6 +9,7 @@ import Room from './Pages/Room/room';
 import Clazz from './Pages/Clazz/clazz';
 import JobTitle from './Pages/JobtTitle/jobtitle';
 import Subject from './Pages/Subject/subject';
+import Lecturer from './Pages/Lecturer/lecturer';
 
 const routes = [
     { path:"/",exact: true, component: DefaultLayout},
@@ -21,7 +22,8 @@ const routes = [
     { path:"/university",exact: false, component: University},
     { path:"/clazz",exact: false, component: Clazz},
     { path:"/jobTitle",exact:false,component: JobTitle},
-    { path:"/subject",exact:false,component: Subject}
+    { path:"/subject",exact:false,component: Subject},
+    { path:"/lecturer",exact:false,component: Lecturer}
 ];
 
 export default routes;

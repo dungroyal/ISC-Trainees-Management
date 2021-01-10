@@ -109,7 +109,6 @@ const Student = (props) => {
       university: "",
       intake: "",
       updateIntake: [{label: 'fake', values: 'fake'}],
-      image: "",
     },
     validationSchema: Yup.object({
       codeStu: Yup.string()
@@ -249,10 +248,9 @@ const Student = (props) => {
 
     if (dataId > 0) {
       setModalUpdate(true);
-      setModalShow(true);
       studentService.get(dataId).then((res) => {
+        setModalShow(true);
         const studentById = res.data[0];
-        console.log(studentById);
         formik.setValues(studentById);
         formik.setFieldValue('typeStudent',{ label: studentById.typeStu, value: studentById.typeStu})
         formik.setFieldValue('workingStatus',{ label: studentById.workingStatus, value: studentById.workingStatus})
@@ -284,14 +282,14 @@ const Student = (props) => {
     if (e) e.preventDefault();
     confirmAlert({
       title: 'Confirm to submit',
-      message: 'Bạn có muốn xóa sinh viên này?',
+      message: 'Do you want to delete this student?',
       buttons: [
         {
-          label: 'Đồng ý',
+          label: 'Yes',
           onClick: () => handleDeleteStudent(studentId)
         },
         {
-          label: 'Hủy bỏ'
+          label: 'No'
         }
       ]
     });
@@ -791,7 +789,7 @@ const Student = (props) => {
               rows="1"
               id="txtStuPhone"
               type="text"
-              label="Phone number"
+              label="Phone number *"
               frmField={formik.getFieldProps("phoneStu")}
               err={formik.touched.phoneStu && formik.errors.phoneStu}
               errMessage={formik.errors.phoneStu}
@@ -804,7 +802,7 @@ const Student = (props) => {
               rows="1"
               id="txtStuAddress"
               type="text"
-              label="Address"
+              label="Address *"
               frmField={formik.getFieldProps("addressStu")}
               err={formik.touched.addressStu && formik.errors.addressStu}
               errMessage={formik.errors.addressStu}
@@ -869,9 +867,14 @@ const Student = (props) => {
               </div>
             </div>
           </div>
-
-
           </Modal.Body>
+          <div className="row justify-content-end small">
+            <div className="col-auto pr-5">
+              <p className="p-0">
+                Field required (<span className="text-danger">*</span>)
+              </p>
+            </div>
+          </div>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleModalClose}>
               Close

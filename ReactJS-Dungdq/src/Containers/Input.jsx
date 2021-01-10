@@ -11,20 +11,15 @@ class Input extends Component {
         
         return (
             <Fragment>
-                
-                    
-                            <div className="col-md-6">
-                                    <div className="form-group">
-                                    <label htmlFor={id} >{label}</label>
-                                    <div >
-                                        <input type={type} onChange={onChange} id={id} name={name} className={inputClass} {...frmField} placeholder={placeholder} ref={refInput}/>
-                                        {error?<div className="invalid-feedback" ></div>: null}
-                                    </div>
-                                </div>
-                            </div>
-                            
-                      
-               
+                <div className="col-md-6">
+                        <div className="form-group">
+                        <label htmlFor={id} >{label}</label>
+                        <div >
+                            <input type={type} onChange={onChange} id={id} name={name} className={inputClass} {...frmField} placeholder={placeholder} ref={refInput}/>
+                            {error?<div className="invalid-feedback" ></div>: null}
+                        </div>
+                    </div>
+                </div>
             </Fragment>
         );
     }

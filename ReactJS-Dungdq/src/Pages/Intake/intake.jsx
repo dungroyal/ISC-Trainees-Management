@@ -62,7 +62,6 @@ const Intake = (props) => {
       selectMajor: Yup.object().required("Major is required"),
     }),
     onSubmit: (values) => {
-      console.log("formik: ", values);
       const newValue = {
         ...values,
         startDay: new Date(values.startDay).toLocaleDateString('vi-VI',{year: 'numeric', month: 'numeric', day: 'numeric'}),

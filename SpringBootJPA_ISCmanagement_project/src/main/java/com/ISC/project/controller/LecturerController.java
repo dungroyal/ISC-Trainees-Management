@@ -88,7 +88,7 @@ public class LecturerController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PostMapping(value = "/newLecturer", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
+	@PostMapping(value = "/newLecturer")
 	public ResultRespon addLecturer(@RequestParam("createdBy") String createdBy,
 			@RequestParam("updatedBy") String updatedBy,
 			@Parameter(description = "Lecturer Code is required!", required = true) @RequestParam("codeLec") String codeLec,
@@ -137,7 +137,7 @@ public class LecturerController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PutMapping(value = "/editLecturerImg", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
+	@PutMapping(value = "/editLecturerImg")
 	public ResultRespon editLecturerNewImage(@RequestParam("id") Long id, @RequestParam("createdBy") String createdBy,
 			@RequestParam("updatedBy") String updatedBy,
 			@Parameter(description = "Lecturer Code is required!", required = true) @RequestParam("codeLec") String codeLec,
@@ -206,7 +206,7 @@ public class LecturerController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PutMapping(value = "/editLecturerNotImg", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
+	@PutMapping(value = "/editLecturerNotImg")
 	public ResultRespon editLecturerNewImage(@RequestParam("id") Long id, @RequestParam("createdBy") String createdBy,
 			@RequestParam("updatedBy") String updatedBy,
 			@Parameter(description = "Lecturer Code is required!", required = true) @RequestParam("codeLec") String codeLec,
