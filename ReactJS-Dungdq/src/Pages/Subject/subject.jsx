@@ -151,11 +151,6 @@ const handleSearchChange = (newSearch) => {
         }
       });
     }
-    // subjectService.getAll().then(res=>{
-    //   if (res.status === 0) {
-    //     setSubjects(res.data)
-    //   }
-    // })
   }
   const handleFormSubmit = (data) => {
     subjectService
@@ -183,11 +178,11 @@ const handleSearchChange = (newSearch) => {
         <div className="row">
           <div className="col-12">
             <div className="page-title-box d-flex align-items-center justify-content-between">
-              <h4 className="mb-0 font-size-18">Danh sách Môn Học</h4>
+              <h4 className="mb-0 font-size-18">Subjects List</h4>
               <div className="page-title-right">
                 <ol className="breadcrumb m-0">
                   <li className="breadcrumb-item"><a href="#">ISC Quang Trung</a></li>
-                  <li className="breadcrumb-item active">Quản lý Môn Học</li>
+                  <li className="breadcrumb-item active">Subjects List</li>
                 </ol>
               </div>
             </div>
@@ -213,7 +208,7 @@ const handleSearchChange = (newSearch) => {
                       data-toggle="modal" 
                       onClick={()=>handleModalShow(null,0)} 
                       data-target=".addStudentModal" 
-                      className="btn btn-success btn-rounded waves-effect waves-light mb-2 mr-2"><i className="bx bxs-add-to-queue" /> Thêm mới môn học</button>
+                      className="btn btn-success btn-rounded waves-effect waves-light mb-2 mr-2"><i className="bx bxs-add-to-queue" /> Add new subject</button>
                     </div>
                   </div>{/* end col*/}
                 </div>
@@ -229,28 +224,24 @@ const handleSearchChange = (newSearch) => {
                           </div> */}
                           #
                         </th>
-                        <th>Mã Môn học</th>
-                        <th>Tên môn học</th>
-                        <th>Tín chỉ môn học</th>
-                        <th>Điểm qua môn</th>
-                        <th>Trạng thái</th>
-                        <th>Ghi chú</th>
+                        <th>Code Subject</th>
+                        <th>Name Subject</th>
+                        <th>Credit Subject</th>
+                        <th>Pass the subject</th>
+                        <th>Status</th>
+                        <th>Note</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {subjects == null?(
                         <tr className="text-center">
-                            <td colspan="9">Not found subject with keyword: "<strong>{searchSubject.searchTerm}</strong>"!</td>
+                            <td colspan="9">Not found subject!</td>
                           </tr>
                       ):(subjects.map((subject,idx) => {
                         return(
                           <tr key={subject.id}>
                         <td>
-                          {/* <div className="custom-control custom-checkbox">
-                            <input type="checkbox" className="custom-control-input" id="customCheck9" />
-                            <label className="custom-control-label" htmlFor="customCheck9">&nbsp;</label>
-                          </div> */}
                           {idx+1}
                         </td>
                         <td><a href="#" className="text-body font-weight-bold"></a>{subject.codeSub}</td>
@@ -268,7 +259,6 @@ const handleSearchChange = (newSearch) => {
                           {subject.noteSub}
                         </td>
                         <td>
-                          {/* <a href="#" className="mr-3 text-success" data-toggle="modal" data-target=".viewStudentModal"><i className="far fa-eye font-size-18" /></a> */}
                           <a href="#" onClick={(e) => handleModalShow(e,subject.id)} className="mr-3 text-primary"><i className="fas fa-user-edit font-size-18" /></a>
                           <a href="#" onClick={(e) => deleteRow(e,subject.id)} className="text-danger"><i className="far fa-trash-alt font-size-18" /></a>
                         </td>
@@ -300,34 +290,35 @@ const handleSearchChange = (newSearch) => {
         </Modal.Header>
         <form onSubmit={formik.handleSubmit}>
             <Modal.Body>
-            <div className="row">
-            <div className="col-sm-12 col-lg-6">
+            <div className="row px-3">
                 <Input
+                    typeInput="1"
+                    column="12"
+                    rows="1"
                     id="txtNameSubject"
                     type="text"
-                    label="Tên môn học"
+                    label="Name Subject *"
                     frmField={formik.getFieldProps("nameSub")}
-                    error={formik.touched.nameSub && formik.errors.nameSub}
-                    errorMessage={formik.errors.nameSub}
+                    err={formik.touched.nameSub && formik.errors.nameSub}
+                    errMessage={formik.errors.nameSub}
                 />
                 <Input
+                    typeInput="1"
+                    column="6"
+                    rows="1"
                     id="txtCodeSubject"
                     type="text"
-                    label="Mã môn học"
+                    label="Code Subject *"
                     frmField={formik.getFieldProps("codeSub")}
-                    error={formik.touched.codeSub && formik.errors.codeSub}
-                    errorMessage={formik.errors.codeSub}
+                    err={formik.touched.codeSub && formik.errors.codeSub}
+                    errMessage={formik.errors.codeSub}
                     /> 
 
                 {modalUpdate?(
                 <div className="col-6">
                         <div className="form-group">
-                          <label htmlFor="aaaaaaaaaaa">Trạng thái môn học</label>
+                          <label>Status Subject *</label>
                           <Select
-                              id="aaaaaaaaaaa"
-                              placeholder="Chọn trạng thái môn học..."
-                              // onChange={(val) => {setSelectedSubjectStatus(val)}}
-                              // onChange={(val) => {console.log(val.value);}}
                               onChange = {(val) => {
                                 formik.setFieldValue("statusSub", val.value);
                                 setSelectedSubjectStatus(val);
@@ -338,55 +329,65 @@ const handleSearchChange = (newSearch) => {
                             />
                         </div>
                   </div> 
-                    ):(<div className="form-group">
-                    <label htmlFor="aaaaaaaaaaa">Trạng thái môn học</label>
-                    <Select
-                        id="aaaaaaaaaaa"
-                        placeholder="Chọn trạng thái môn học..."
-                        // onChange={(val) => {setSelectedSubjectStatus(val)}}
-                        // onChange={(val) => {console.log(val.value);}}
-                        onChange = {(val) => {
-                          formik.setFieldValue("statusSub", val.value);
-                          setSelectedSubjectStatus(val);
-                        }}
-                        value={selectedSubjectStatus}
-                        closeMenuOnSelect={true}
-                        options={optionsSubjectStatus}
-                      />
+                    ):(
+                    
+                  <div className="col-6">
+                    <div className="form-group">
+                      <label>Status Subject</label>
+                      <Select
+                          onChange = {(val) => {
+                            formik.setFieldValue("statusSub", val.value);
+                            setSelectedSubjectStatus(val);
+                          }}
+                          value={selectedSubjectStatus}
+                          closeMenuOnSelect={true}
+                          options={optionsSubjectStatus}
+                        />
+                    </div>
                   </div>)}
-                   
-				</div>
-                <div className="col-sm-12 col-lg-6">
-                
                     <Input
+                        typeInput="1"
+                        column="6"
+                        rows="1"
                         id="creditSub"
                         type="number"
-                        label="Số tín chỉ"
+                        label="Credit *"
                         frmField={formik.getFieldProps("creditSub")}
-                        error={formik.touched.creditSub && formik.errors.creditSub}
-                        errorMessage={formik.errors.creditSub}
+                        err={formik.touched.creditSub && formik.errors.creditSub}
+                        errMessage={formik.errors.creditSub}
                     />
                     <Input
+                        typeInput="1"
+                        column="6"
+                        rows="1"
                         id="passCore"
                         type="number"
-                        label="Điểm qua môn"
+                        label="Pass the subject *"
                         frmField={formik.getFieldProps("passCore")}
-                        error={formik.touched.passCore && formik.errors.passCore}
-                        errorMessage={formik.errors.passCore}
+                        err={formik.touched.passCore && formik.errors.passCore}
+                        errMessage={formik.errors.passCore}
                     />
                         <Input
+                        typeInput="1"
+                        column="12"
+                        rows="2"
                         id="noteSub"
                         type="text"
-                        label="Ghi chú"
-                        rows="3"
+                        label="Note"
                         frmField={formik.getFieldProps("noteSub")}
-                        error={formik.touched.noteSub && formik.errors.noteSub}
-                        errorMessage={formik.errors.noteSub}
+                        err={formik.touched.noteSub && formik.errors.noteSub}
+                        errMessage={formik.errors.noteSub}
                     />  
-                </div>
                 </div>
             
             </Modal.Body>
+                <div className="row justify-content-end small">
+                  <div className="col-auto pr-5">
+                    <p className="p-0">
+                    Field required (<span className="text-danger">*</span>)
+                    </p>
+                  </div>
+                </div>
             <Modal.Footer>
             <Button variant="secondary" onClick={handleModalClose}>
                         Close

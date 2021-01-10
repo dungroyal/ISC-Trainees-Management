@@ -180,13 +180,13 @@ const Company = (props) => {
       <div className="row">
         <div className="col-12">
           <div className="page-title-box d-flex align-items-center justify-content-between">
-            <h4 className="mb-0 font-size-18">Danh sách Công Ty</h4>
+            <h4 className="mb-0 font-size-18">List Company</h4>
             <div className="page-title-right">
               <ol className="breadcrumb m-0">
                 <li className="breadcrumb-item">
                   <a href="#">ISC Quang Trung</a>
                 </li>
-                <li className="breadcrumb-item active">Quản lý Công Ty</li>
+                <li className="breadcrumb-item active">List Company</li>
               </ol>
             </div>
           </div>
@@ -222,7 +222,7 @@ const Company = (props) => {
                       className="btn btn-success btn-rounded waves-effect waves-light mb-2 mr-2"
                       onClick={() => handleModalShow(null, 0)}
                     >
-                      <i className="bx bxs-add-to-queue" /> Thêm mới công ty
+                      <i className="bx bxs-add-to-queue" /> Add new Company
                     </button>
                   </div>
                 </div>
@@ -232,33 +232,12 @@ const Company = (props) => {
                 <table className="table table-centered table-nowrap">
                   <thead className="thead-light">
                     <tr>
-                      <th style={{ width: 20, textAlign: "center" }}>
-                        <div className="custom-control custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-control-input"
-                            id="customCheck1"
-                          />
-                          <label
-                            className="custom-control-label"
-                            htmlFor="customCheck1"
-                          >
-                            &nbsp;
-                          </label>
-                        </div>
-                      </th>
-
                       <th>#</th>
                       <th>Company Name</th>
                       <th>Address</th>
                       <th>Contact Person</th>
                       <th>Website</th>
                       <th>Status</th>
-                      <th>Note</th>
-                      {/* <th>Created By</th>
-                      <th>Created Date</th>
-                      <th>Updated By</th>
-                      <th>Updated Date</th> */}
                       <th></th>
                     </tr>
                   </thead>
@@ -266,21 +245,6 @@ const Company = (props) => {
                     {company.map((company, idx) => {
                       return (
                         <tr key={company.id}>
-                          <td>
-                            <div className="custom-control custom-checkbox">
-                              <input
-                                type="checkbox"
-                                className="custom-control-input"
-                                id="customCheck9"
-                              />
-                              <label
-                                className="custom-control-label"
-                                htmlFor="customCheck9"
-                              >
-                                &nbsp;
-                              </label>
-                            </div>
-                          </td>
 
                           <td>{idx + 1}</td>
                           <td>
@@ -293,10 +257,10 @@ const Company = (props) => {
                           <td>{company.websiteCom}</td>
                           <td>
                             <span className="badge badge-pill badge-soft-success font-size-12">
-                              {company.statusCom}
+                              Active
+                              {/* {company.statusCom} */}
                             </span>
                           </td>
-                          <td>{company.noteCom}</td>
                           <td>
                             <a
                               href="#"
@@ -329,57 +293,59 @@ const Company = (props) => {
               onHide={handleModalClose}
               backdropClassName="static"
               keyboard={false}
-              size="xl"
+              size="lg"
             >
               <Modal.Header closeButton>
                 {modalUpdate ? (
-                  <Modal.Title>Cập nhật công ty</Modal.Title>
+                  <Modal.Title>Update Company</Modal.Title>
                 ) : (
-                  <Modal.Title>Thêm mới công ty</Modal.Title>
+                  <Modal.Title>Add new Company</Modal.Title>
                 )}
               </Modal.Header>
               <form onSubmit={formik.handleSubmit}>
                 <Modal.Body>
-                  <div className="row">
-                    <div className="col-sm-6">
+                  <div className="row px-3">
                       <Input
+                        typeInput="1"
+                        column="12"
+                        rows="1"
                         id="txtName"
                         type="text"
-                        label="Tên"
+                        label="Name Company"
                         frmField={formik.getFieldProps("nameCom")}
                         err={formik.touched.nameCom && formik.errors.nameCom}
                         errMessage={formik.errors.nameCom}
                       />
-                    </div>
-                    <div className="col-sm-6">
                       <Input
+                        typeInput="1"
+                        column="6"
+                        rows="1"
                         id="txtAdd"
                         type="text"
-                        label="Địa chỉ"
+                        label="Address"
                         frmField={formik.getFieldProps("addresCom")}
                         err={
                           formik.touched.addresCom && formik.errors.addresCom
                         }
                         errMessage={formik.errors.addresCom}
                       />
-                    </div>
-                  </div>
-                  <br />
-                  <div className="row">
-                    <div className="col-sm-6">
                       <Input
+                        typeInput="1"
+                        column="6"
+                        rows="1"
                         id="txtStatus"
                         type="text"
-                        label="Trạng thái"
+                        label="Status"
                         frmField={formik.getFieldProps("statusCom")}
                         err={
                           formik.touched.statusCom && formik.errors.statusCom
                         }
                         errMessage={formik.errors.statusCom}
                       />
-                    </div>
-                    <div className="col-sm-6">
                       <Input
+                        typeInput="1"
+                        column="6"
+                        rows="1"
                         id="txtWeb"
                         type="text"
                         label="Website"
@@ -389,15 +355,13 @@ const Company = (props) => {
                         }
                         errMessage={formik.errors.websiteCom}
                       />
-                    </div>
-                  </div>
-                  <br />
-                  <div className="row">
-                    <div className="col-sm-6">
                       <Input
+                        typeInput="1"
+                        column="6"
+                        rows="1"
                         id="txtConP"
                         type="text"
-                        label="Người liên hệ"
+                        label="Contact Person"
                         frmField={formik.getFieldProps("contactPerson")}
                         err={
                           formik.touched.contactPerson &&
@@ -405,24 +369,11 @@ const Company = (props) => {
                         }
                         errMessage={formik.errors.contactPerson}
                       />
-                    </div>
-                    <div className="col-sm-6">
-                      <Input
-                        id="txtCreatedBy"
-                        type="text"
-                        label="Người tạo"
-                        frmField={formik.getFieldProps("createdBy")}
-                        err={
-                          formik.touched.createdBy && formik.errors.createdBy
-                        }
-                        errMessage={formik.errors.createdBy}
-                      />
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-sm-6">
                       {modalUpdate ? (
                         <Input
+                          typeInput="1"
+                          column="6"
+                          rows="1"
                           id="txtNote"
                           type="text"
                           label="Ghi chú"
@@ -433,10 +384,11 @@ const Company = (props) => {
                       ) : (
                         ""
                       )}
-                    </div>
-                    <div className="col-sm-6">
                       {modalUpdate ? (
                         <Input
+                          typeInput="1"
+                          column="6"
+                          rows="1"
                           id="txtUpdatedBy"
                           type="text"
                           label="Người cập nhật"
@@ -448,53 +400,54 @@ const Company = (props) => {
                         />
                       ) : (
                         <Input
+                          typeInput="1"
+                          column="12"
+                          rows="2"
                           id="txtNote"
                           type="text"
-                          label="Ghi chú"
+                          label="Note"
                           frmField={formik.getFieldProps("noteCom")}
                           err={formik.touched.noteCom && formik.errors.noteCom}
                           errMessage={formik.errors.noteCom}
                         />
                       )}
-                    </div>
-                  </div>
 
-                  {modalUpdate ? (
-                    <div className="row">
-                      <div className="col-sm-6">
-                        <Input
-                          rows="1"
-                          disabled
-                          label="Ngày tạo"
-                          value={moment(formik.values.createdDate).format(
-                            "DD-MM-YYYY"
-                          )}
-                        />
-                      </div>
-                      <div className="col-sm-6">
-                        {formik.values.updatedDate === null ? (
-                          <Input
-                            label="Ngày cập nhật"
-                            rows="1"
-                            disabled
-                            value=""
-                          />
-                        ) : (
-                          <Input
-                            label="Ngày cập nhật"
-                            rows="1"
-                            disabled
-                            value={moment(formik.values.updatedDate).format(
-                              "DD-MM-YYYY"
-                            )}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  ) : (
-                    ""
-                  )}
+                   {modalUpdate ? (
+                    <Fragment>
+                    <Input
+                      typeInput="1"
+                      column="6"
+                      rows="1"
+                      readOnly
+                      type="text"
+                      label="Created by"
+                      value = {`${formik.values.createdBy} - ${new Date(formik.values.createdDate).toLocaleDateString('vi-VI',{year: 'numeric', month: 'numeric', day: 'numeric', hour: "2-digit", minute: "2-digit"})}`}
+                      />
+                      {formik.values.updatedBy != null ?(
+                      <Fragment>
+                      <Input
+                      typeInput="1"
+                      column="6"
+                      rows="1"
+                      readOnly
+                      type="text"
+                      label="Update by"
+                      value = {`${formik.values.updatedBy} - ${new Date(formik.values.updatedDate).toLocaleDateString('vi-VI',{year: 'numeric', month: 'numeric', day: 'numeric', hour: "2-digit", minute: "2-digit"})}`}
+                      />
+                      </Fragment>
+                      ):("")}
+                    </Fragment>
+                  ) : ("")}
+
+                  </div>
                 </Modal.Body>
+                <div className="row justify-content-end small">
+                  <div className="col-auto pr-5">
+                    <p className="p-0">
+                    Field required (<span className="text-danger">*</span>)
+                    </p>
+                  </div>
+                </div>
                 <Modal.Footer>
                   <Button variant="secondary" onClick={handleModalClose}>
                     Hủy

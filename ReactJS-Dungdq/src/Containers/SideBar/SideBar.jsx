@@ -29,7 +29,7 @@ const SideBar = ({collapsed, toggled, handleToggleSidebar }) => {
               <MenuItem>Subjects <Link to="/subject" /></MenuItem>
               <MenuItem>Lecturers <Link to="/lecturer" /></MenuItem>
               <MenuItem>Rooms <Link to="/room" /></MenuItem>
-              <MenuItem>Class <Link to="/clazz" /></MenuItem>
+              {/* <MenuItem>Class <Link to="/clazz" /></MenuItem> */}
             </SubMenu>
             <SubMenu title="Account manage" icon={<FaGem />}>
               <MenuItem>Account</MenuItem>

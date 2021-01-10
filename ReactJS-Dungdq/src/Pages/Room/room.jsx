@@ -181,13 +181,13 @@ const Room = (props) => {
       <div className="row">
         <div className="col-12">
           <div className="page-title-box d-flex align-items-center justify-content-between">
-            <h4 className="mb-0 font-size-18">Danh sách Phòng Học</h4>
+            <h4 className="mb-0 font-size-18">Rooms List</h4>
             <div className="page-title-right">
               <ol className="breadcrumb m-0">
                 <li className="breadcrumb-item">
                   <a href="#">ISC Quang Trung</a>
                 </li>
-                <li className="breadcrumb-item active">Quản lý Phòng Học</li>
+                <li className="breadcrumb-item active">Rooms List</li>
               </ol>
             </div>
           </div>
@@ -222,7 +222,7 @@ const Room = (props) => {
                       className="btn btn-success btn-rounded waves-effect waves-light mb-2 mr-2"
                       onClick={() => handleModalShow(null, 0)}
                     >
-                      <i className="bx bxs-add-to-queue" /> Thêm mới phòng học
+                      <i className="bx bxs-add-to-queue" /> Add new room
                     </button>
                   </div>
                 </div>
@@ -232,51 +232,18 @@ const Room = (props) => {
                 <table className="table table-centered table-nowrap">
                   <thead className="thead-light">
                     <tr>
-                      <th style={{ width: 20 }}>
-                        <div className="custom-control custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-control-input"
-                            id="customCheck1"
-                          />
-                          <label
-                            className="custom-control-label"
-                            htmlFor="customCheck1"
-                          >
-                            &nbsp;
-                          </label>
-                        </div>
-                      </th>
-
                       <th>#</th>
                       <th>Code</th>
                       <th>Name</th>
                       <th>Type</th>
                       <th>Status</th>
-                      <th>Note</th>
-                      <th></th>
+                      <th>Active</th>
                     </tr>
                   </thead>
                   <tbody>
                     {room.map((room, idx) => {
                       return (
                         <tr key={room.id}>
-                          <td>
-                            <div className="custom-control custom-checkbox">
-                              <input
-                                type="checkbox"
-                                className="custom-control-input"
-                                id="customCheck9"
-                              />
-                              <label
-                                className="custom-control-label"
-                                htmlFor="customCheck9"
-                              >
-                                &nbsp;
-                              </label>
-                            </div>
-                          </td>
-
                           <td>{idx + 1}</td>
                           <td>
                             <a href="#" className="text-body font-weight-bold">
@@ -290,7 +257,6 @@ const Room = (props) => {
                               {room.statusRoom}
                             </span>
                           </td>
-                          <td>{room.noteRoom}</td>
                           <td>
                             <a
                               href="#"
@@ -323,86 +289,90 @@ const Room = (props) => {
               onHide={handleModalClose}
               backdropClassName="static"
               keyboard={false}
-              size="xl"
+              size="lg"
             >
               <Modal.Header closeButton>
                 {modalUpdate ? (
-                  <Modal.Title>Cập nhật phòng học</Modal.Title>
+                  <Modal.Title>Update rooms</Modal.Title>
                 ) : (
-                  <Modal.Title>Thêm mới phòng học</Modal.Title>
+                  <Modal.Title>Add rooms</Modal.Title>
                 )}
               </Modal.Header>
               <form onSubmit={formik.handleSubmit}>
                 <Modal.Body>
-                  <div className="row">
-                    <div className="col-sm-6">
+                  <div className="row px-3">
+                  <Input
+                        typeInput="1"
+                        column="12"
+                        rows="1"
+                        id="txtName"
+                        type="text"
+                        label="Name room *"
+                        frmField={formik.getFieldProps("nameRoom")}
+                        err={formik.touched.nameRoom && formik.errors.nameRoom}
+                        errMessage={formik.errors.nameRoom}
+                      />
                       <Input
+                        typeInput="1"
+                        column="6"
+                        rows="1"
                         id="txtCode"
                         type="text"
-                        label="Mã phòng"
+                        label="Code room *"
                         name="codeRoom"
                         frmField={formik.getFieldProps("codeRoom")}
                         err={formik.touched.codeRoom && formik.errors.codeRoom}
                         errMessage={formik.errors.codeRoom}
                       />
-                    </div>
-                    <div className="col-sm-6">
-                      <Input
-                        id="txtName"
-                        type="text"
-                        label="Tên phòng"
-                        frmField={formik.getFieldProps("nameRoom")}
-                        err={formik.touched.nameRoom && formik.errors.nameRoom}
-                        errMessage={formik.errors.nameRoom}
-                      />
-                    </div>
-                  </div>
-                  <br />
-                  <div className="row">
-                    <div className="col-sm-6">
                       {modalUpdate ? (
-                        <Select
-                          label="Loại phòng"
-                          name="type"
-                          id="typeRoom"
-                          value={formik.values.typeRoom}
-                          frmField={formik.getFieldProps("typeRoom")}
-                        >
-                          <option value={formik.values.typeRoom} hiden>
-                            {formik.values.typeRoom}
-                          </option>
-                          {formik.values.typeRoom == "Lab" ? (
-                            <option label="Theory" value="Theory">
-                              Theory
-                            </option>
-                          ) : (
-                            <option label="Lab" value="Lab">
-                              {" "}
-                              Lab
-                            </option>
-                          )}
-                        </Select>
+                            <div className="col-6">
+                                <div className="form-group">
+                                  <label htmlFor="setSelected"> Status</label>
+                                      <Select
+                                        label="Type room *"
+                                        name="type"
+                                        id="typeRoom"
+                                        value={formik.values.typeRoom}
+                                        frmField={formik.getFieldProps("typeRoom")}
+                                      >
+                                        <option value={formik.values.typeRoom} hiden>
+                                          {formik.values.typeRoom}
+                                        </option>
+                                        {formik.values.typeRoom == "Lab" ? (
+                                          <option label="Theory" value="Theory">
+                                            Theory
+                                          </option>
+                                        ) : (
+                                          <option label="Lab" value="Lab">
+                                            {" "}
+                                            Lab
+                                          </option>
+                                        )}
+                                      </Select>
+                                    </div>
+                                </div>
                       ) : (
-                        <Select
-                          label="Loại phòng"
-                          name="type"
-                          id="typeRoom"
-                          value={formik.values.typeRoom}
-                          frmField={formik.getFieldProps("typeRoom")}
-                          required
-                        >
-                          <option value="" hidden>
-                            Chọn loại phòng...
-                          </option>
-                          <option value="Lab">Lab</option>
-                          <option value="Theory">Theory</option>
-                        </Select>
+                        <div className="col-6">
+                          <div className="form-group">
+                          <Select
+                            label="Type room *"
+                            name="type"
+                            id="typeRoom"
+                            value={formik.values.typeRoom}
+                            frmField={formik.getFieldProps("typeRoom")}
+                            required
+                          >
+                            <option value="Lab">Lab</option>
+                            <option value="Theory">Theory</option>
+                          </Select>
+                            </div>
+                        </div>
                       )}
-                    </div>
-                    <div className="col-sm-6">
+
+
                       {modalUpdate ? (
                         <Select
-                          label="Trạng thái"
+                          label="Active"
                           name="status"
                           id="statusRoom"
                           value={formik.values.statusRoom}
@@ -421,48 +391,23 @@ const Room = (props) => {
                             </option>
                           )}
                         </Select>
-                      ) : (
-                        <Select
-                          label="Trạng thái"
-                          name="status"
-                          id="statusRoom"
-                          disabled
-                        >
-                          <option value="Active">Active</option>
-                        </Select>
-                      )}
-                    </div>
-                  </div>
-                  <br />
-                  <div className="row">
-                    <div className="col-sm-6">
+                      ) : ("")}
                       <Input
+                        typeInput="1"
+                        column="12"
+                        rows="2"
                         id="txtNote"
                         type="text"
-                        label="Ghi chú"
+                        label="Note"
                         frmField={formik.getFieldProps("noteRoom")}
                         err={formik.touched.noteRoom && formik.errors.noteRoom}
                         errMessage={formik.errors.noteRoom}
                       />
-                    </div>
-                    <div className="col-sm-6">
-                      <Input
-                        id="txtCreatedBy"
-                        type="text"
-                        label="Người tạo"
-                        frmField={formik.getFieldProps("createdBy")}
-                        err={
-                          formik.touched.createdBy && formik.errors.createdBy
-                        }
-                        errMessage={formik.errors.createdBy}
-                      />
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-sm-6"></div>
-                    <div className="col-sm-6">
                       {modalUpdate ? (
                         <Input
+                          typeInput="1"
+                          column="6"
+                          rows="1"
                           id="txtUpdatedBy"
                           type="text"
                           label="Người cập nhật"
@@ -475,12 +420,10 @@ const Room = (props) => {
                       ) : (
                         ""
                       )}
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-sm-6">
                       {modalUpdate ? (
                         <Input
+                          typeInput="1"
+                          column="6"
                           rows="1"
                           disabled
                           label="Ngày tạo"
@@ -491,7 +434,6 @@ const Room = (props) => {
                       ) : (
                         ""
                       )}
-                    </div>
                     {modalUpdate ? (
                       <div className="col-sm-6">
                         {formik.values.updatedDate === null ? (
@@ -517,6 +459,13 @@ const Room = (props) => {
                     )}
                   </div>
                 </Modal.Body>
+                  <div className="row justify-content-end small">
+                    <div className="col-auto pr-5">
+                      <p className="p-0">
+                      Field required (<span className="text-danger">*</span>)
+                      </p>
+                    </div>
+                  </div>
                 <Modal.Footer>
                   <Button variant="secondary" onClick={handleModalClose}>
                     Close

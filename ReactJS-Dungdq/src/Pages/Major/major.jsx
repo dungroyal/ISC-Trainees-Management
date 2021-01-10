@@ -300,17 +300,8 @@ const Major = (props) => {
                                   {major.codeMajor}
                                 </a>{" "}
                               </td>
-                              {/* <td style={{width: 100}}>
-                                <img className="img-fluid img-thumbnai rounded mx-auto" 
-                                    src={api.url.image + student.image}
-                                    alt={"Hinh " + student.lastName} />
-                              </td> */}
                               <td>{major.nameMajor}</td>
                               <td>{major.descriptionMajor}</td>
-                              {/* <td>{major.createdBy}</td>
-                              <td>{major.createdDate}</td>
-                              <td>{major.updatedBy}</td>
-                              <td>{major.updatedDate}</td> */}
 
                               <td>
                                 <a
@@ -353,7 +344,7 @@ const Major = (props) => {
         onHide={handleModalClose}
         backdrop="static"
         keyboard={false}
-        size="xl"
+        size="md"
       >
         <Modal.Header closeButton>
           {modalUpdate ? (
@@ -398,7 +389,7 @@ const Major = (props) => {
               <Input
                 typeInput="1"
                 column="12"
-                rows="1"
+                rows="2"
                 id="descriptionMajor"
                 name="descriptionMajor"
                 type="text"
