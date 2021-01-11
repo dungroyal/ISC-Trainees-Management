@@ -1,4 +1,5 @@
 import React from 'react';
+import {Provider} from "react-redux";
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
@@ -12,6 +13,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import store from './Store/store';
 
 toast.configure({
   autoClose: 3000,
@@ -26,8 +28,8 @@ toast.configure({
 });
 
 ReactDOM.render(
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>,
+  <Provider store={store}>
+    <App />
+  </Provider>,
   document.getElementById('root')
 );

@@ -21,7 +21,6 @@ const SideBar = ({collapsed, toggled, handleToggleSidebar }) => {
               <MenuItem>Student <Link to="/student" /> </MenuItem>
               <MenuItem>University <Link to="/university" /></MenuItem>
               <MenuItem>Companies <Link to="/company" /></MenuItem>
-              <MenuItem>Job Title <Link to="/jobTitle" /></MenuItem>
             </SubMenu>
             <SubMenu title="Training manage" icon={<FaList />}>
               <MenuItem>Intakes <Link to="/intake"/></MenuItem>
@@ -29,7 +28,6 @@ const SideBar = ({collapsed, toggled, handleToggleSidebar }) => {
               <MenuItem>Subjects <Link to="/subject" /></MenuItem>
               <MenuItem>Lecturers <Link to="/lecturer" /></MenuItem>
               <MenuItem>Rooms <Link to="/room" /></MenuItem>
-              {/* <MenuItem>Class <Link to="/clazz" /></MenuItem> */}
             </SubMenu>
             <SubMenu title="Account manage" icon={<FaGem />}>
               <MenuItem>Account</MenuItem>

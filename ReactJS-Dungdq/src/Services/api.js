@@ -1,10 +1,8 @@
 import axios from 'axios';
-
-
+import store from './../Store/store';
 
 const url = {
     image: "http://localhost:8080/api/file/downloadFile/",
-
     baseURL : "http://localhost:8080/api",
     //Student
     listStudent: "/student/allStudent",
@@ -66,25 +64,9 @@ const url = {
     deleteRoom: "/room/deleteRoom",
     paginationRoom: "/room/pagination",
 
-    //clazz
-    listClazz: "/clazz/listClazz",
-    getClazz: "/clazz/getClazz",
-    newClazz: "/clazz/newClazz",
-    editClazz: "/clazz/editClazz",
-    deleteClazz: "/clazz/deleteClazz",
-    paginationClazz: "/clazz/pagination",
-
     //Subject
     paginationSubject : "/subject/pagination",
     searchSubject : "/subject/searchSubject",
-
-    //jobTitle
-    listJobTitle: "/jobTitle/listJobTitle",
-    getJobTitle: "/jobTitle/getJobTitle",
-    newJobTitle: "/jobTitle/newJobTitle",
-    editJobTitle: "/jobTitle/editJobTitle",
-    deleteJobTitle: "/jobTitle/deleteJobTitle",
-    paginationJobTitle: "/jobTitle/pagination",
 
     //Lecturer
     paginationLecturer: "/lecturer/pagination",
@@ -93,7 +75,12 @@ const url = {
     updateLecturerNotImage: "/lecturer/editLecturerNotImg", 
     updateLecturerHasImage: "/lecturer/editLecturerImg",
     deleteLecturer: "/lecturer/deleteLecturer",
+
+    // Auth
+    login: "/auth/login"
 }
+
+
 const instance = axios.create({
     baseURL : url.baseURL,
     //Student
@@ -143,13 +130,13 @@ const instance = axios.create({
     }
 });
 
-// instance.interceptors.request.use((request) => {
-//     const state = store.getState();
-//     if (state.auth.token) {
-//       request.headers.Authorization = `Bearer ${state.auth.token}`;
-//     }
-//     return request;
-//   });
+instance.interceptors.request.use((request) => {
+    const state = store.getState();    
+    if (state.auth.token) {
+      request.headers.Authorization = `Bearer ${state.auth.token}`;
+    }
+    return request;
+  });
 
 const api = {
     url,
@@ -157,7 +144,6 @@ const api = {
     get: instance.get,
     post: instance.post,
     put: instance.put,
-
     delete: instance.delete
 }
 export default api;

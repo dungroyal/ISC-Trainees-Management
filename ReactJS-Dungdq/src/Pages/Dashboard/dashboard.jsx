@@ -1,7 +1,67 @@
 import React, { useState, Fragment, useEffect } from "react";
-import avatar from "./../../Assets/images/users/avatar-1.jpg";
+import store from './../../Store/store';
+import studentService from './../../Services/studentService';
+import universityService from './../../Services/universityService';
+import companyService from './../../Services/companyService';
+import intakeService from './../../Services/intakeService';
 
 const Dashboard = (props) => {
+  const [countStudent, setCountStudent] = useState(0);
+  const [studentType, setStudentType] = useState([1,2,3]);
+  const [countUniversity, setCountUniversity] = useState(0);
+  const [countCompany, setCountCompany] = useState(0);
+  const [listIntake, setListIntake] = useState();
+
+  
+  const loadData = () => {
+    studentService.getAll().then((res) => {
+      if (res.status === 0) {
+        const listStudent  = res.data;
+        console.log(listStudent)
+        setCountStudent(listStudent.length)
+
+        var studentStudying = 0;
+        var studentGraduate = 0;
+        var studentReserve = 0;
+
+        for (let i = 0; i < listStudent.length; i++) {
+          if(listStudent[i].typeStu === "Studying"){
+            studentStudying+=1;
+          }
+          if(listStudent[i].typeStu === "Reserve"){
+            studentReserve+=1;
+          }else{
+            studentGraduate+=1;
+          }
+        }
+        setStudentType([studentStudying,studentGraduate,studentReserve])
+      }
+    });
+
+    universityService.getAll().then((res) => {
+      if (res.status === 0) {
+        setCountUniversity(res.data.length)
+      }
+    });
+
+    companyService.getAll().then((res) => {
+      if (res.status === 0) {
+        setCountCompany(res.data.length)
+      }
+    });
+
+    intakeService.getAll().then((res) => {
+      if (res.status === 0) {
+        setListIntake(res.data);
+      }
+    });
+  };
+
+  useEffect(() => {
+    loadData();
+    document.title = "Dashboard - ISC Quang Trung Management";
+  }, []);
+
   return (
     <Fragment>
       <div className="container-fluid">
@@ -35,9 +95,9 @@ const Dashboard = (props) => {
                 <div className="row">
                   <div className="col-sm-12">
                     <div className="avatar-md profile-user-wid mb-4">
-                      <img src={avatar} className="img-thumbnail rounded-circle" />
+                      <img src={`https://ui-avatars.com/api/?background=0D8ABC&color=fff&bold=true&name=${store.getState().auth.currentUser}`} alt={store.getState().auth.currentUser}  className="img-thumbnail rounded-circle" />
                     </div>
-                    <h5 className="font-size-15 text-truncate name_user"><strong>Đoàn Quốc Dũng</strong> <small>(Admin)</small></h5>
+                    <h5 className="font-size-15 text-truncate name_user"><strong>{store.getState().auth.currentUser}</strong> <small>(Admin)</small></h5>
                   </div>
                 </div>
               </div>
@@ -50,8 +110,8 @@ const Dashboard = (props) => {
                   <div className="card-body">
                     <div className="media">
                       <div className="media-body">
-                        <p className="text-muted font-weight-medium">Students</p>
-                        <h4 className="mb-0">1,235</h4>
+                        <p className="text-muted font-weight-medium">Students </p>
+                        <h4 className="mb-0">{countStudent}</h4>
                       </div>
                       <div className="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
                         <span className="avatar-title">
@@ -67,8 +127,8 @@ const Dashboard = (props) => {
                   <div className="card-body">
                     <div className="media">
                       <div className="media-body">
-                        <p className="text-muted font-weight-medium">Class</p>
-                        <h4 className="mb-0">1,235</h4>
+                        <p className="text-muted font-weight-medium">University</p>
+                        <h4 className="mb-0">{countUniversity}</h4>
                       </div>
                       <div className="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
                         <span className="avatar-title">
@@ -84,8 +144,8 @@ const Dashboard = (props) => {
                   <div className="card-body">
                     <div className="media">
                       <div className="media-body">
-                        <p className="text-muted font-weight-medium">Majors</p>
-                        <h4 className="mb-0">1,235</h4>
+                        <p className="text-muted font-weight-medium">Company {studentType.studentStudying}</p>
+                        <h4 className="mb-0">{countCompany}</h4>
                       </div>
                       <div className="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
                         <span className="avatar-title">
@@ -157,8 +217,7 @@ const Dashboard = (props) => {
             <div className="card">
               <div className="card-body">
                 <h4 className="card-title mb-5">Intakes</h4>
-                <ul className="verti-timeline list-unstyled">
-                  
+                <ul className="verti-timeline list-unstyled">                  
                   <li className="event-list active">
                     <div className="event-timeline-dot">
                       <i className="bx bxs-right-arrow-circle font-size-18 bx-fade-right" />
@@ -220,30 +279,34 @@ const Dashboard = (props) => {
                   <div className="mb-4">
                     <i className="bx bx-map-pin text-primary display-4" />
                   </div>
-                  <h3>1,456</h3>
-                  <p>San Francisco</p>
+                  <h3>{countStudent}</h3>
+                  <p>Student</p>
                 </div>
                 <div className="table-responsive mt-4">
                   <table className="table table-centered table-nowrap">
                     <tbody>
                       <tr>
                         <td style={{width: '30%'}}>
-                          <p className="mb-0">San Francisco</p>
+                          <p className="mb-0">Studying</p>
                         </td>
                         <td style={{width: '25%'}}>
-                          <h5 className="mb-0">1,456</h5></td>
+                          <h5 className="mb-0">{studentType[0]}</h5></td>
                         <td>
                           <div className="progress bg-transparent progress-sm">
-                            <div className="progress-bar bg-primary rounded" role="progressbar" style={{width: '94%'}} aria-valuenow={94} aria-valuemin={0} aria-valuemax={100} />
+                            <div className="progress-bar bg-primary rounded" 
+                            role="progressbar" 
+                            style={{width: '94%'}} 
+                            aria-valuenow={94} 
+                            aria-valuemin={0} aria-valuemax={100} />
                           </div>
                         </td>
                       </tr>
                       <tr>
                         <td>
-                          <p className="mb-0">Los Angeles</p>
+                          <p className="mb-0">Graduate</p>
                         </td>
                         <td>
-                          <h5 className="mb-0">1,123</h5>
+                          <h5 className="mb-0">{studentType[1]}</h5>
                         </td>
                         <td>
                           <div className="progress bg-transparent progress-sm">
@@ -253,10 +316,10 @@ const Dashboard = (props) => {
                       </tr>
                       <tr>
                         <td>
-                          <p className="mb-0">San Diego</p>
+                          <p className="mb-0">Reserve</p>
                         </td>
                         <td>
-                          <h5 className="mb-0">1,026</h5>
+                          <h5 className="mb-0">{studentType[2]}</h5>
                         </td>
                         <td>
                           <div className="progress bg-transparent progress-sm">

@@ -67,7 +67,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.authorizeRequests().antMatchers("/api/auth/**").permitAll()
-			.antMatchers("/api/**").permitAll()
+			.antMatchers("/api/file/downloadFile/**").permitAll()
+			.antMatchers("/api/**").hasAnyRole("USER", "ADMIN")
 			.antMatchers(AUTH_WHITELIST).permitAll()
 //			.antMatchers("/api/**").hasAnyRole("USER", "ADMIN")
 			.anyRequest().authenticated();

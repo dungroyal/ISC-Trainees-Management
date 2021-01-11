@@ -1,6 +1,8 @@
-import { Route, Switch } from "react-router-dom";
-import  routes from "./../routes"
-const Body = () => {
+import { Route, Switch, Redirect } from "react-router-dom";
+import  routes from "./../routes";
+import {connect} from "react-redux";
+const Body = (props) => {
+	const {isLoggedIn} = props;
 	return (
 		<div className="main-content">
 			<div className="page-content">
@@ -9,8 +11,7 @@ const Body = () => {
 						<div className="container-fluid">
 							{ 
 							<Switch>
-								{
-									routes.map((route,index)=>{
+								{!isLoggedIn ? (<Redirect to="/login"/>) : (routes.map((route,index)=>{
 										return route.component ? (
 											<Route
 											key={index}
@@ -19,7 +20,7 @@ const Body = () => {
 											component={route.component}
 											/>
 										): null
-									})}
+									}))}
 							</Switch>
 							}
 						</div>
@@ -29,5 +30,7 @@ const Body = () => {
 		</div>
 	);
 };
-
-export default Body;
+const mapStateToProps = state =>({
+    isLoggedIn: state.auth.isLoggedIn
+});
+export default connect(mapStateToProps)(Body);
