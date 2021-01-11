@@ -21,11 +21,6 @@ const Company = (props) => {
 
   //load data
   const loadData = () => {
-    // companyService.getAll().then((res) => {
-    //   if (res.status === 0) {
-    //     setCompany(res.data);
-    //   }
-    // });
     handlePagination();
   };
 
@@ -234,7 +229,7 @@ const Company = (props) => {
                     <tr>
                       <th>#</th>
                       <th>Company Name</th>
-                      <th>Address</th>
+                      {/* <th with={'10%'}>Address</th> */}
                       <th>Contact Person</th>
                       <th>Website</th>
                       <th>Status</th>
@@ -252,7 +247,7 @@ const Company = (props) => {
                               {company.nameCom}
                             </a>{" "}
                           </td>
-                          <td>{company.addresCom}</td>
+                          {/* <td with={'10%'}>{company.addresCom}</td> */}
                           <td>{company.contactPerson}</td>
                           <td>{company.websiteCom}</td>
                           <td>

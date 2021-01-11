@@ -12,6 +12,7 @@ import Pagination from "../../Controls/pagination";
 import Select from "react-select";
 import SearchLecturer from "./searchLecturer";
 import api from "../../Services/api";
+import store from './../../Store/store';
 
 const Lecturer = () => {
 	const [showModal, setShow] = useState(false);
@@ -146,6 +147,7 @@ const Lecturer = () => {
 					let item = res.data[0]
 					formik.setValues(item);
 					formik.setFieldValue("statusLec", {label: item.statusLec, value: item.statusLec})
+					formik.setFieldValue("image", item.image)
 				}
 			});
 			setUploadImg(true);
@@ -160,8 +162,8 @@ const Lecturer = () => {
 	const addNewLecturer = (data) => {
 		lecturerService
 			.addNewLecturer(
-				"Admin",
-				"Admin",
+				store.getState().auth.isLoggedIn ? store.getState().auth.currentUser :"",
+				store.getState().auth.isLoggedIn ? store.getState().auth.currentUser :"",
 				data.codeLec,
 				data.firstName,
 				data.lastName,
@@ -193,8 +195,8 @@ const Lecturer = () => {
 		lecturerService
 			.updateLecturerHasImage(
 				id,
-				"Admin",
-				"Admin",
+				store.getState().auth.isLoggedIn ? store.getState().auth.currentUser :"",
+				store.getState().auth.isLoggedIn ? store.getState().auth.currentUser :"",
 				data.codeLec,
 				data.firstName,
 				data.lastName,
@@ -218,12 +220,11 @@ const Lecturer = () => {
 			});
 	};
 	const updateLecturerNotImage = (id, data) => {
-		// console.log("updateLecturerNotImage: ", id, data);
 		lecturerService
 			.updateLecturerNotImage(
 				id,
-				"Admin",
-				"Admin",
+				store.getState().auth.isLoggedIn ? store.getState().auth.currentUser :"",
+				store.getState().auth.isLoggedIn ? store.getState().auth.currentUser :"",
 				data.codeLec,
 				data.firstName,
 				data.lastName,
@@ -446,7 +447,7 @@ const Lecturer = () => {
 											{" "}
 											<i className="bx bxs-cloud-upload"></i>
 										</label>
-										{uploadImg ? (<div id="imagePreview" style={{ backgroundImage: "url(" + `${api.url.image + formik.values.image}` + ")" }}></div>):
+										{uploadImg ? (<div id={formik.values.image} style={{backgroundImage: 'url("'+api.url.image + formik.values.image +'")'}}></div>):
 										
 										<div id="imagePreview" style={{ backgroundImage: "url('https://timvieclam.xyz/images/avata-playhoder.jpg')" }}></div>
 											

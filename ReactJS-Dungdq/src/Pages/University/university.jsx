@@ -30,12 +30,6 @@ const University = (props) => {
 
   //load data
   const loadData = () => {
-    // universityService.getAll().then((res) => {
-    //   if (res.status === 0) {
-    //     setUniversity(res.data);
-    //   } else {
-    //   }
-    // });
     handlePagination();
   };
   //pagination
@@ -189,6 +183,7 @@ const University = (props) => {
     loadData();
     document.title = "University - ISC Quang Trung Management";
   }, [filters]);
+  
   return (
     <Fragment>
       <div className="row">

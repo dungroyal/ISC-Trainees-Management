@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Pagination from "./paginationMajor";
 import SearchMajor from "./searchMajor";
+import store from './../../Store/store';
 toast.configure();
 
 const Major = (props) => {
@@ -181,7 +182,7 @@ const Major = (props) => {
           formik.values.codeMajor,
           formik.values.nameMajor,
           formik.values.descriptionMajor,
-          "Admin"
+          store.getState().auth.isLoggedIn ? store.getState().auth.currentUser :""
         )
         .then((res) => {
           if (res.status === 0) {
@@ -199,7 +200,7 @@ const Major = (props) => {
           formik.values.codeMajor,
           formik.values.nameMajor,
           formik.values.descriptionMajor,
-          "Admin"
+          store.getState().auth.isLoggedIn ? store.getState().auth.currentUser :""
         )
         .then((res) => {
           if (res.status === 0) {

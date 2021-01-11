@@ -97,7 +97,6 @@ const formik = useFormik({
             }),
             onSubmit:(values) =>{
               console.log("data",values);
-              // console.log(selectedSubjectStatus.value);
               handleFormSubmit(values);
             },
     });
@@ -127,7 +126,6 @@ const handleSearchChange = (newSearch) => {
     if (searchSubject.searchTerm == "" || searchSubject.keyWord == "") {
       const paramsFilters = queryString.stringify(filters);
       subjectService.paginationSubject(paramsFilters).then((res) => {
-        console.log(JSON.stringify(res))
         const totalRows = res.data[0].totalElements;
         const totalPage = res.data[0].totalPages;
         const size = res.data[0].size;
@@ -218,10 +216,6 @@ const handleSearchChange = (newSearch) => {
                     <thead className="thead-light">
                       <tr>
                         <th style={{width: 20}}>
-                          {/* <div className="custom-control custom-checkbox">
-                            <input type="checkbox" className="custom-control-input" id="customCheck1" />
-                            <label className="custom-control-label" htmlFor="customCheck1">&nbsp;</label>
-                          </div> */}
                           #
                         </th>
                         <th>Code Subject</th>

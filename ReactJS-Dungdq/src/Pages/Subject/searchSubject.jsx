@@ -35,7 +35,6 @@ function SearchSubject(props) {
         <input 
         type="search" 
         value={searchTerm}
-        $$={console.log("search",searchTerm)} 
         onChange={handleSearchTermChange} 
         className="form-control" 
         placeholder="Search..." />

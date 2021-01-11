@@ -1,6 +1,5 @@
 import React,{Fragment, useState} from 'react';
-// import profile from "./../../plugin/images/profile-img.png";
-// import logo from "./../../plugin/images/logo.svg";
+import logo from "./../../Assets/images/favicon.ico";
 import "./login.css";
 import userService from "../../Services/userService";
 import ActionTypes from "../../Store/actions";
@@ -16,27 +15,20 @@ const Login = (props) => {
         event.preventDefault();
         const userName = userNameRef.current.value;
         const password = passwordRef.current.value;
-
-        console.log("userName: ",userName);
-        console.log("password: ",password);
         //call api
         userService.login(userName, password).then(res=>{
             if (res.status > 0){
-                setMessage(res.message)
+                setMessage("Wrong username or password")
             }else{
-                setMessage("")
+                setMessage(res.message)
                 onUserLogin(res.accessToken, res.username);
-                console.log("here")
-                console.log(res.accessToken)
-                console.log(res.username)
-                  history.push("/dashboard")
+                history.push("/dashboard")
             }
-
         })
-       
     }
     return (
         <Fragment>
+
             <div className="account-pages my-5 pt-sm-5">
                 <div className="container">
                     <div className="row justify-content-center">
@@ -60,7 +52,7 @@ const Login = (props) => {
                                 <a href="index.html">
                                     <div className="avatar-md profile-user-wid mb-4">
                                     <span className="avatar-title rounded-circle bg-light">
-                                        {/* <img src={logo} alt="hello" className="rounded-circle" height={34} /> */}
+                                        <img src={logo} alt="hello" className="rounded-circle" height={60} />
                                     </span>
                                     </div>
                                 </a>
@@ -72,11 +64,6 @@ const Login = (props) => {
                                             <div className="text-center text-danger"> {message}</div>
                                         </div>
                                     </div>
-                                    {/* <Input id="email" type="text"  name="userName" lable="UserName" placeholder="Enter user Name" refInput={userNameRef}/>
-                                    <Input id="pass" type="password"  name="userName" lable="Password" placeholder="Enter PassWord" refInput={passwordRef}/>
-                                    <div className="mt-3">
-                                        <button className="btn btn-primary btn-block waves-effect waves-light" type="submit">Log In</button>
-                                    </div>   */}
                                     <div className="form-group">
                                     <label htmlFor="username">Username</label>
                                     <input type="text" className="form-control" id="username" placeholder="Enter username" ref={userNameRef}/>
@@ -99,11 +86,12 @@ const Login = (props) => {
                                 </div>
                             </div>
                             </div>
-                            
                         </div>
                     </div>
+                    <div className="pyro"><div className="before" /><div className="after" /></div>
                 </div>
             </div>
+                            
 
         </Fragment>
     )

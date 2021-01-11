@@ -20,6 +20,7 @@ import studentIntakeService from "../../Services/studentIntakeService";
 import {toast} from 'react-toastify';  
 import Pagination from './paginationStudent';
 import SearchStudent from './searchStudent';
+import store from './../../Store/store';
 
 const Student = (props) => {
   //Test
@@ -100,8 +101,8 @@ const Student = (props) => {
       gpa: "",
       phoneStu: "",
       addressStu: "",
-      createdBy: "Admin",
-      updatedBy:"Admin",
+      createdBy: "",
+      updatedBy: "",
       noteStu: "",
       image: "",
       typeStudent: { label: "Studying", value: "Studying" },
@@ -336,7 +337,7 @@ const Student = (props) => {
           formik.values.workingStatus.value,
           formik.values.noteStu,
           formik.values.image,
-          "Admin",
+          store.getState().auth.isLoggedIn ? store.getState().auth.currentUser :"",
           formik.values.university.value,
         )
         .then((stu) => {
@@ -381,7 +382,7 @@ const Student = (props) => {
           formik.values.gpa,
           formik.values.workingStatus.value,
           formik.values.noteStu,
-          "Admin",
+          store.getState().auth.isLoggedIn ? store.getState().auth.currentUser :"",
           formik.values.university.value,
         )
         .then((res) => {
@@ -418,7 +419,7 @@ const Student = (props) => {
           formik.values.workingStatus.value,
           formik.values.noteStu,
           formik.values.image,
-          "Admin",
+          store.getState().auth.isLoggedIn ? store.getState().auth.currentUser :"",
           formik.values.university.value,
         )
         .then((res) => {
@@ -523,7 +524,6 @@ const Student = (props) => {
                               <td>{student.firstName} {student.lastName}</td>
                               <td>{student.phoneStu}</td>
                               <td>{student.emailStu}</td>
-                              {/* <td>ISC-13</td> */}
                               <td>{student.university.nameUni}</td>
                               <td>
                                 {(() => {

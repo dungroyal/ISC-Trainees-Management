@@ -19,11 +19,6 @@ const Room = (props) => {
   const [modalUpdate, setModalUpdate] = useState(false);
   //load data
   const loadData = () => {
-    // roomService.getAll().then((res) => {
-    //   if (res.status === 0) {
-    //     setRoom(res.data);
-    //   }
-    // });
     handlePagination();
   };
   //pagination
@@ -176,6 +171,7 @@ const Room = (props) => {
     loadData();
     document.title = "Rooms - ISC Quang Trung Management";
   }, [filters]);
+  
   return (
     <Fragment>
       <div className="row">
@@ -327,7 +323,6 @@ const Room = (props) => {
                       {modalUpdate ? (
                             <div className="col-6">
                                 <div className="form-group">
-                                  <label htmlFor="setSelected"> Status</label>
                                       <Select
                                         label="Type room *"
                                         name="type"
@@ -370,28 +365,6 @@ const Room = (props) => {
                       )}
 
 
-                      {modalUpdate ? (
-                        <Select
-                          label="Active"
-                          name="status"
-                          id="statusRoom"
-                          value={formik.values.statusRoom}
-                          frmField={formik.getFieldProps("statusRoom")}
-                        >
-                          <option value={formik.values.statusRoom} hiden>
-                            {formik.values.statusRoom}
-                          </option>
-                          {formik.values.statusRoom == "Active" ? (
-                            <option label="Inactive" value="Inactive">
-                              Inactive
-                            </option>
-                          ) : (
-                            <option label="Active" value="Active">
-                              Active
-                            </option>
-                          )}
-                        </Select>
-                      ) : ("")}
                       <Input
                         typeInput="1"
                         column="12"
@@ -403,23 +376,6 @@ const Room = (props) => {
                         err={formik.touched.noteRoom && formik.errors.noteRoom}
                         errMessage={formik.errors.noteRoom}
                       />
-                      {modalUpdate ? (
-                        <Input
-                          typeInput="1"
-                          column="6"
-                          rows="1"
-                          id="txtUpdatedBy"
-                          type="text"
-                          label="Người cập nhật"
-                          frmField={formik.getFieldProps("updatedBy")}
-                          err={
-                            formik.touched.updatedBy && formik.errors.updatedBy
-                          }
-                          errMessage={formik.errors.updatedBy}
-                        />
-                      ) : (
-                        ""
-                      )}
                       {modalUpdate ? (
                         <Input
                           typeInput="1"

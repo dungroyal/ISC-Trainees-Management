@@ -12,6 +12,7 @@ import intakeService from "../../Services/intakeService";
 import majorService from "../../Services/majorService";
 import Pagination from "./paginationIntake";
 import SearchIntake from "./searchIntake";
+import store from './../../Store/store';
 
 
 const Intake = (props) => {
@@ -78,13 +79,13 @@ const Intake = (props) => {
 
   const [pagination, setPagination] = useState({
     page: 0,
-    size: 4,
+    size: 5,
     totalRows: 1,
   });
 
   const [filters, setFilters] = useState({
     page: 0,
-    size: 4,
+    size: 5,
     sort: "ASC",
     // typeIntake: "n",
     search: "",
@@ -204,7 +205,7 @@ const Intake = (props) => {
           new Date(formik.values.startDay).toISOString(),
           new Date(formik.values.endDay).toISOString(),
           formik.values.statusIntake.value,
-          "Admin",
+          store.getState().auth.isLoggedIn ? store.getState().auth.currentUser :"",
           formik.values.selectMajor.value,
         )
         .then((res) => {
@@ -225,7 +226,7 @@ const Intake = (props) => {
           new Date(formik.values.startDay).toISOString(),
           new Date(formik.values.endDay).toISOString(),
           formik.values.statusIntake.value,
-          "Admin",
+          store.getState().auth.isLoggedIn ? store.getState().auth.currentUser :"",
           formik.values.selectMajor.value,
         )
         .then((res) => {

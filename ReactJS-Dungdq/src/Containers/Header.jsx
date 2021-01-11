@@ -136,11 +136,11 @@ const Header = (props) => {
         </div>
       </div>
       
-      <Dropdown className="mt-2 d-inline-block bg-white">
+      <Dropdown className="mt-2 d-inline-block bg-white mr-3">
         <Dropdown.Toggle variant="red" id="dropdown-basic">
-            <img className="rounded-circle header-profile-user" src={`https://ui-avatars.com/api/?background=0D8ABC&color=fff&bold=true&name=${store.getState().auth.currentUser}`} alt={store.getState().auth.currentUser} />
+            <img className="rounded-circle header-profile-user" src={`https://ui-avatars.com/api/?background=0D8ABC&color=fff&bold=true&name=${store.getState().auth.isLoggedIn?(store.getState().auth.currentUser):("")}`}/>
             <span className="d-none d-xl-inline-block ml-1">
-              {store.getState().auth.currentUser}
+              {store.getState().auth.isLoggedIn?(store.getState().auth.currentUser):("")}
               </span>
             <i className="mdi mdi-chevron-down d-none d-xl-inline-block" />
         </Dropdown.Toggle>

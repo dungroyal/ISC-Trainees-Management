@@ -111,7 +111,7 @@ public class UniversityController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PutMapping(value = "/editUniversity", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@PutMapping(value = "/editUniversity")
 	public ResultRespon editUniversity(@RequestBody University university, @RequestParam("id") long id) {
 		List<University> univer = new ArrayList<>();
 		University olduniversity = universityService.findById(id)

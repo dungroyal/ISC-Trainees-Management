@@ -12,12 +12,10 @@ const Dashboard = (props) => {
   const [countCompany, setCountCompany] = useState(0);
   const [listIntake, setListIntake] = useState();
 
-  
   const loadData = () => {
     studentService.getAll().then((res) => {
       if (res.status === 0) {
         const listStudent  = res.data;
-        console.log(listStudent)
         setCountStudent(listStudent.length)
 
         var studentStudying = 0;
@@ -95,9 +93,9 @@ const Dashboard = (props) => {
                 <div className="row">
                   <div className="col-sm-12">
                     <div className="avatar-md profile-user-wid mb-4">
-                      <img src={`https://ui-avatars.com/api/?background=0D8ABC&color=fff&bold=true&name=${store.getState().auth.currentUser}`} alt={store.getState().auth.currentUser}  className="img-thumbnail rounded-circle" />
+                    <img className="rounded-circle header-profile-user" src={`https://ui-avatars.com/api/?background=0D8ABC&color=fff&bold=true&name=${store.getState().auth.isLoggedIn?(store.getState().auth.currentUser):("")}`}/>
                     </div>
-                    <h5 className="font-size-15 text-truncate name_user"><strong>{store.getState().auth.currentUser}</strong> <small>(Admin)</small></h5>
+                    <h5 className="font-size-15 text-truncate name_user"><strong>{store.getState().auth.isLoggedIn?(store.getState().auth.currentUser):("")}</strong> <small>(Admin)</small></h5>
                   </div>
                 </div>
               </div>
