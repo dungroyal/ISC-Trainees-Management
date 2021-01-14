@@ -138,7 +138,7 @@ const Major = (props) => {
       buttons: [
         {
           label: "Đồng ý",
-          onClick: () => confirmDeleteMajor(majorId),
+          onClick: () => handleDeleteMajor(majorId),
         },
         {
           label: "Hủy bỏ",
@@ -175,15 +175,10 @@ const Major = (props) => {
   };
 
   //   Add new major
-  const handleFormSubmit = () => {
+  const handleFormSubmit = (data) => {
     if (majorId === 0) {
       majorService
-        .add1(
-          formik.values.codeMajor,
-          formik.values.nameMajor,
-          formik.values.descriptionMajor,
-          store.getState().auth.isLoggedIn ? store.getState().auth.currentUser :""
-        )
+        .add(data)
         .then((res) => {
           if (res.status === 0) {
             toast.success("Add new major success");
@@ -270,7 +265,7 @@ const Major = (props) => {
                     <thead className="thead-light">
                       <tr>
                         <th style={{ width: 10 }}>#</th>
-                        <th>Mã chuyên ngành</th>
+                        <th>CODE</th>
                         <th>Tên chuyên ngành</th>
                         <th>Mô tả</th>
                         {/* <th>Người tạo</th>

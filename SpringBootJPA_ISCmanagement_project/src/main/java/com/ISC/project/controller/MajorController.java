@@ -82,7 +82,7 @@ public class MajorController {
 			@ApiResponse(responseCode = "401", description = "Authorization Required"),
 			@ApiResponse(responseCode = "403", description = "Forbidden"),
 			@ApiResponse(responseCode = "500", description = "Internal Error Server") })
-	@PostMapping(value = "/newMajor", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+	@PostMapping(value = "/newMajor")
 	public ResultRespon addMajor(
 			@Parameter(required = true)
 			@RequestBody Major major) {

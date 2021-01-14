@@ -13,7 +13,12 @@ const get = (id) =>
   api.get(`${api.url.getOneMajor}?id=${id}`).then((res) => res.data);
 const remove = (id) =>
   api.delete(`${api.url.deleteMajor}?id=${id}`).then((res) => res.data);
-const add = (data) => api.post(api.url.addMajor, data).then((res) => res.data);
+const add = (data) => api.post(api.url.addMajor, data,{
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+}).then((res) => res.data);
 
 const add1 = (codeMajor, nameMajor, descriptionMajor, createdBy) => {
   let formData = new FormData();
