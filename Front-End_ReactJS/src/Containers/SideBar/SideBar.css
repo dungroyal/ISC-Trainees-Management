@@ -1,0 +1,19 @@
+@import '~react-pro-sidebar/dist/css/styles.css';
+
+.pro-sidebar > .pro-sidebar-inner{
+    background: rgba(99, 44, 44, 0);
+}
+
+.pro-sidebar{
+    color: #a6b0cf !important;
+    width: 100% !important;
+    min-width: 100% !important;
+}
+
+/* .pro-sidebar:hover{
+    color: #ffffff !important;
+} */
+/* 
+.pro-menu-item:hover {
+    color: red !important;
+} */
